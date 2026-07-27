@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>今天值多少钱 Demo</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app-shell" aria-label="今天值多少钱小程序演示">
+      <section class="phone" aria-label="小程序界面">
+        <header class="status-bar" aria-hidden="true">
+          <span>13:20</span>
+          <span class="status-cluster">
+            <span></span>
+            <span></span>
+            <span></span>
+          </span>
+        </header>
+
+        <section class="app-header">
+          <div class="header-copy">
+            <span class="eyebrow">今日</span>
+            <h1>今天值多少钱</h1>
+            <p>把一天里的每段时间，换成一眼看懂的金额。</p>
+          </div>
+          <button class="icon-button" id="settingsButton" type="button" aria-label="打开工资设置">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 8.4a3.6 3.6 0 1 0 0 7.2 3.6 3.6 0 0 0 0-7.2Z" />
+              <path d="M19.2 13.2a7.8 7.8 0 0 0 .05-1.2 7.8 7.8 0 0 0-.05-1.2l2-1.55-2-3.46-2.36.95a8.32 8.32 0 0 0-2.08-1.2L14.4 3h-4.8l-.36 2.54a8.32 8.32 0 0 0-2.08 1.2L4.8 5.79l-2 3.46 2 1.55a7.8 7.8 0 0 0-.05 1.2 7.8 7.8 0 0 0 .05 1.2l-2 1.55 2 3.46 2.36-.95a8.32 8.32 0 0 0 2.08 1.2l.36 2.54h4.8l.36-2.54a8.32 8.32 0 0 0 2.08-1.2l2.36.95 2-3.46-2-1.55Z" />
+            </svg>
+          </button>
+        </section>
+
+        <section class="rate-panel" aria-label="时间单价">
+          <div class="rate-cell primary">
+            <span class="label">当前时薪</span>
+            <strong id="hourRate">￥68.18</strong>
+          </div>
+          <div class="rate-cell">
+            <span class="label">每分钟</span>
+            <strong id="minuteRate">￥1.14</strong>
+          </div>
+          <div class="rate-cell">
+            <span class="label">每秒</span>
+            <strong id="secondRate">￥0.019</strong>
+          </div>
+        </section>
+
+        <div class="content-scroll">
+          <section class="screen active" id="homeScreen" aria-label="首页">
+            <section class="hero-meter" aria-label="实时计时和收益">
+              <div class="meter-copy">
+                <span id="sessionState">今日待开工</span>
+                <strong id="timer">00:00:00</strong>
+                <p id="liveLine">点击开始，把今天最松弛的一段时间记进账本。</p>
+              </div>
+              <div class="earnings-orbit">
+                <span>已赚</span>
+                <strong id="liveEarning">￥0.00</strong>
+              </div>
+            </section>
+
+            <button class="primary-action" id="mainAction" type="button">
+              <span class="action-symbol" id="actionIcon" aria-hidden="true"></span>
+              <strong id="actionText">开始带薪拉屎</strong>
+            </button>
+
+            <section class="quick-log" aria-label="时间价值快捷入口">
+              <div class="section-title">
+                <h2>时间账本</h2>
+                <span>顺手记一笔</span>
+              </div>
+              <div class="ledger-grid">
+                <button class="ledger-item" data-kind="commute" type="button">
+                  <span class="glyph glyph-commute" aria-hidden="true"></span>
+                  <strong>通勤</strong>
+                  <small>赚了 ￥18.20</small>
+                </button>
+                <button class="ledger-item" data-kind="coffee" type="button">
+                  <span class="glyph glyph-coffee" aria-hidden="true"></span>
+                  <strong>咖啡</strong>
+                  <small>花了 14 分钟</small>
+                </button>
+                <button class="ledger-item" data-kind="meeting" type="button">
+                  <span class="glyph glyph-meeting" aria-hidden="true"></span>
+                  <strong>会议</strong>
+                  <small>浪费 ￥42.60</small>
+                </button>
+                <button class="ledger-item" data-kind="overtime" type="button">
+                  <span class="glyph glyph-overtime" aria-hidden="true"></span>
+                  <strong>加班</strong>
+                  <small>值不值？</small>
+                </button>
+              </div>
+            </section>
+
+            <section class="today-card">
+              <div class="section-title">
+                <h2>今日累计</h2>
+                <span id="todayMood">还没开始，状态很克制</span>
+              </div>
+              <div class="today-stats">
+                <div>
+                  <strong id="todayCount">0</strong>
+                  <span>次数</span>
+                </div>
+                <div>
+                  <strong id="todayDuration">0分钟</strong>
+                  <span>时长</span>
+                </div>
+                <div>
+                  <strong id="todayEarning">￥0.00</strong>
+                  <span>收入</span>
+                </div>
+              </div>
+            </section>
+          </section>
+
+          <section class="screen" id="statsScreen" aria-label="统计">
+            <div class="section-title">
+              <h2>数据统计</h2>
+              <span>日、周、月、职业生涯</span>
+            </div>
+            <div class="period-tabs" role="tablist" aria-label="统计周期">
+              <button class="period-button active" data-period="day" type="button">日</button>
+              <button class="period-button" data-period="week" type="button">周</button>
+              <button class="period-button" data-period="month" type="button">月</button>
+              <button class="period-button" data-period="career" type="button">生涯</button>
+            </div>
+            <section class="stats-board" id="statsBoard"></section>
+            <section class="timeline-card">
+              <div class="section-title">
+                <h2>今日轨迹</h2>
+                <span>时间价值切片</span>
+              </div>
+              <div class="timeline" id="timeline"></div>
+            </section>
+          </section>
+
+          <section class="screen" id="rankScreen" aria-label="排行榜">
+            <div class="section-title">
+              <h2>好友排行</h2>
+              <span>本月摸鱼战力</span>
+            </div>
+            <div class="rank-list" id="rankList"></div>
+            <div class="rank-categories">
+              <button type="button">今日摸鱼王</button>
+              <button type="button">本周厕所霸主</button>
+              <button type="button">单次最长记录</button>
+              <button type="button">收入最高记录</button>
+            </div>
+          </section>
+
+          <section class="screen" id="badgesScreen" aria-label="成就">
+            <div class="section-title">
+              <h2>成就系统</h2>
+              <span>让荒诞变成收藏</span>
+            </div>
+            <div class="badges-grid" id="badgesGrid"></div>
+          </section>
+        </div>
+
+        <nav class="tabbar" aria-label="主要功能">
+          <button class="tab-button active" data-tab="home" type="button">
+            <span class="tab-icon tab-home" aria-hidden="true"></span>
+            <span>首页</span>
+          </button>
+          <button class="tab-button" data-tab="stats" type="button">
+            <span class="tab-icon tab-stats" aria-hidden="true"></span>
+            <span>统计</span>
+          </button>
+          <button class="tab-button" data-tab="rank" type="button">
+            <span class="tab-icon tab-rank" aria-hidden="true"></span>
+            <span>排行</span>
+          </button>
+          <button class="tab-button" data-tab="badges" type="button">
+            <span class="tab-icon tab-badges" aria-hidden="true"></span>
+            <span>成就</span>
+          </button>
+        </nav>
+      </section>
+
+      <aside class="design-notes">
+        <span class="eyebrow">Apple 风方向</span>
+        <h2>轻、准、像系统自带</h2>
+        <p>这版把情绪收住，主界面用 iOS 分组、底部标签栏、半透明面板和大号数字建立质感；梗还在，但不会像表情包应用。</p>
+        <ul>
+          <li>第一屏只保留最重要的计时、收益和开始按钮。</li>
+          <li>工资设置做成系统 sheet，输入项清楚、触控区足够大。</li>
+          <li>统计、排行、成就用低饱和中性色承接长期留存。</li>
+        </ul>
+      </aside>
+    </main>
+
+    <dialog class="settings-dialog" id="settingsDialog">
+      <form method="dialog" class="dialog-card" id="salaryForm">
+        <div class="sheet-handle" aria-hidden="true"></div>
+        <div class="section-title">
+          <h2>工资设置</h2>
+          <span>随时可改</span>
+        </div>
+        <label>
+          月薪
+          <input id="salaryInput" type="number" min="1" value="12000" inputmode="decimal" />
+        </label>
+        <label>
+          每月工作天数
+          <input id="workdaysInput" type="number" min="1" value="22" inputmode="numeric" />
+        </label>
+        <label>
+          每天工作时长
+          <input id="hoursInput" type="number" min="1" value="8" inputmode="decimal" />
+        </label>
+        <div class="dialog-actions">
+          <button class="ghost-button" value="cancel" type="button" id="cancelSettings">取消</button>
+          <button class="save-button" value="default" type="submit">保存</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog class="report-dialog" id="reportDialog">
+      <section class="report-card">
+        <button class="icon-button report-close" id="closeReport" type="button" aria-label="关闭战报">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="m6 6 12 12M18 6 6 18" />
+          </svg>
+        </button>
+        <span class="report-title">本次带薪拉屎</span>
+        <strong id="reportMoney">￥0.00</strong>
+        <div class="report-grid">
+          <div>
+            <span>时长</span>
+            <strong id="reportDuration">0秒</strong>
+          </div>
+          <div>
+            <span>今日第</span>
+            <strong id="reportCount">1次</strong>
+          </div>
+          <div>
+            <span>今日累计</span>
+            <strong id="reportTotalDuration">0分钟</strong>
+          </div>
+          <div>
+            <span>累计收入</span>
+            <strong id="reportTotalMoney">￥0.00</strong>
+          </div>
+        </div>
+        <div class="share-poster">
+          <span>今日带薪拉屎</span>
+          <strong id="posterDuration">0分钟</strong>
+          <p id="posterMoney">赚了 ￥0.00</p>
+          <div class="qr-box">扫码进入</div>
+        </div>
+        <button class="save-button full" type="button">生成战报图</button>
+      </section>
+    </dialog>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
