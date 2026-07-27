@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>今天值多少钱 Demo</title>
-    <link rel="stylesheet" href="./styles.css?v=quick-log-feedback" />
+    <link rel="stylesheet" href="./styles.css?v=ledger-editable" />
   </head>
   <body>
     <main class="app-shell" aria-label="今天值多少钱小程序演示">
@@ -74,28 +74,7 @@
               <div class="ledger-feedback" id="ledgerFeedback" role="status" aria-live="polite">
                 选择一个场景，系统会把它换成时间价值。
               </div>
-              <div class="ledger-grid">
-                <button class="ledger-item" data-kind="commute" type="button" aria-pressed="false">
-                  <span class="glyph glyph-commute" aria-hidden="true"></span>
-                  <strong>通勤</strong>
-                  <small>赚了 ￥18.20</small>
-                </button>
-                <button class="ledger-item" data-kind="coffee" type="button" aria-pressed="false">
-                  <span class="glyph glyph-coffee" aria-hidden="true"></span>
-                  <strong>咖啡</strong>
-                  <small>花了 14 分钟</small>
-                </button>
-                <button class="ledger-item" data-kind="meeting" type="button" aria-pressed="false">
-                  <span class="glyph glyph-meeting" aria-hidden="true"></span>
-                  <strong>会议</strong>
-                  <small>浪费 ￥42.60</small>
-                </button>
-                <button class="ledger-item" data-kind="overtime" type="button" aria-pressed="false">
-                  <span class="glyph glyph-overtime" aria-hidden="true"></span>
-                  <strong>加班</strong>
-                  <small>值不值？</small>
-                </button>
-              </div>
+              <div class="ledger-grid" id="ledgerGrid"></div>
             </section>
 
             <section class="today-card">
@@ -222,6 +201,41 @@
       </form>
     </dialog>
 
+    <dialog class="ledger-dialog" id="ledgerDialog">
+      <form method="dialog" class="dialog-card" id="ledgerForm">
+        <div class="sheet-handle" aria-hidden="true"></div>
+        <div class="section-title">
+          <h2 id="ledgerDialogTitle">编辑账本</h2>
+          <span id="ledgerDialogSubtitle">自定义显示数据</span>
+        </div>
+        <label>
+          场景名称
+          <input id="ledgerTitleInput" type="text" maxlength="8" />
+        </label>
+        <label>
+          记录类型
+          <select id="ledgerModeInput">
+            <option value="earn-money">赚了金额</option>
+            <option value="spend-minutes">花了分钟</option>
+            <option value="waste-money">浪费金额</option>
+            <option value="question">只显示判断</option>
+          </select>
+        </label>
+        <label id="ledgerValueField">
+          数值
+          <input id="ledgerValueInput" type="number" min="0" step="0.01" inputmode="decimal" />
+        </label>
+        <label>
+          反馈文案
+          <textarea id="ledgerCopyInput" maxlength="80" rows="3"></textarea>
+        </label>
+        <div class="dialog-actions">
+          <button class="ghost-button" value="cancel" type="button" id="cancelLedger">取消</button>
+          <button class="save-button" value="default" type="submit">保存</button>
+        </div>
+      </form>
+    </dialog>
+
     <dialog class="report-dialog" id="reportDialog">
       <section class="report-card">
         <button class="icon-button report-close" id="closeReport" type="button" aria-label="关闭战报">
@@ -259,6 +273,6 @@
       </section>
     </dialog>
 
-    <script src="./app.js?v=quick-log-feedback"></script>
+    <script src="./app.js?v=ledger-editable"></script>
   </body>
 </html>

@@ -7,11 +7,46 @@ const encouragements = [
   "此刻，工位和马桶都在创造价值。"
 ];
 
-const ledgerCopy = {
-  commute: "通勤也算成本：今天先记一笔路上的精神折旧。",
-  coffee: "咖啡时间已入账，清醒也是生产资料。",
-  meeting: "会议价值已换算，沉默也有时薪。",
-  overtime: "加班不只看时长，还要看这段时间有没有真的值得。"
+const defaultLedgerEntries = [
+  {
+    kind: "commute",
+    title: "通勤",
+    glyph: "glyph-commute",
+    mode: "earn-money",
+    value: 18.2,
+    copy: "通勤也算成本：今天先记一笔路上的精神折旧。"
+  },
+  {
+    kind: "coffee",
+    title: "咖啡",
+    glyph: "glyph-coffee",
+    mode: "spend-minutes",
+    value: 14,
+    copy: "咖啡时间已入账，清醒也是生产资料。"
+  },
+  {
+    kind: "meeting",
+    title: "会议",
+    glyph: "glyph-meeting",
+    mode: "waste-money",
+    value: 42.6,
+    copy: "会议价值已换算，沉默也有时薪。"
+  },
+  {
+    kind: "overtime",
+    title: "加班",
+    glyph: "glyph-overtime",
+    mode: "question",
+    value: 0,
+    copy: "加班不只看时长，还要看这段时间有没有真的值得。"
+  }
+];
+
+const ledgerModeText = {
+  "earn-money": "赚了",
+  "spend-minutes": "花了",
+  "waste-money": "浪费",
+  question: ""
 };
 
 const baseStats = {
@@ -46,12 +81,14 @@ const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)
 
 const state = {
   profile: loadProfile(),
+  ledgerEntries: loadLedgerEntries(),
   sessions: [],
   running: false,
   startTime: 0,
   elapsedMs: 0,
   timerId: null,
-  activePeriod: "day"
+  activePeriod: "day",
+  activeLedgerKind: ""
 };
 
 const nodes = {
@@ -76,6 +113,17 @@ const nodes = {
   liveLine: document.querySelector("#liveLine"),
   liveEarning: document.querySelector("#liveEarning"),
   ledgerFeedback: document.querySelector("#ledgerFeedback"),
+  ledgerGrid: document.querySelector("#ledgerGrid"),
+  ledgerDialog: document.querySelector("#ledgerDialog"),
+  ledgerForm: document.querySelector("#ledgerForm"),
+  ledgerDialogTitle: document.querySelector("#ledgerDialogTitle"),
+  ledgerDialogSubtitle: document.querySelector("#ledgerDialogSubtitle"),
+  ledgerTitleInput: document.querySelector("#ledgerTitleInput"),
+  ledgerModeInput: document.querySelector("#ledgerModeInput"),
+  ledgerValueField: document.querySelector("#ledgerValueField"),
+  ledgerValueInput: document.querySelector("#ledgerValueInput"),
+  ledgerCopyInput: document.querySelector("#ledgerCopyInput"),
+  cancelLedger: document.querySelector("#cancelLedger"),
   todayCount: document.querySelector("#todayCount"),
   todayDuration: document.querySelector("#todayDuration"),
   todayEarning: document.querySelector("#todayEarning"),
@@ -104,6 +152,7 @@ function init() {
 
   bindEvents();
   renderRates();
+  renderLedger();
   renderToday();
   renderStats();
   renderTimeline();
@@ -156,28 +205,36 @@ function bindEvents() {
     startSession();
   });
 
-  const ledgerButtons = document.querySelectorAll(".ledger-item");
-  ledgerButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-      const message = ledgerCopy[button.dataset.kind];
-      nodes.liveLine.textContent = message;
-      nodes.ledgerFeedback.textContent = message;
-      ledgerButtons.forEach((item) => {
-        const isSelected = item === button;
-        item.classList.toggle("selected", isSelected);
-        item.setAttribute("aria-pressed", String(isSelected));
-      });
-      if (!prefersReducedMotion && typeof button.animate === "function") {
-        button.animate(
-          [
-            { transform: "translateY(0)" },
-            { transform: "translateY(-3px)" },
-            { transform: "translateY(0)" }
-          ],
-          { duration: 260, easing: "ease-out" }
-        );
-      }
-    });
+  nodes.ledgerGrid.addEventListener("click", (event) => {
+    const button = event.target.closest(".ledger-item");
+    if (!button) { return; }
+
+    const entry = findLedgerEntry(button.dataset.kind);
+    if (!entry) { return; }
+
+    selectLedgerEntry(entry.kind);
+    openLedgerEditor(entry);
+    if (!prefersReducedMotion && typeof button.animate === "function") {
+      button.animate(
+        [
+          { transform: "translateY(0)" },
+          { transform: "translateY(-3px)" },
+          { transform: "translateY(0)" }
+        ],
+        { duration: 260, easing: "ease-out" }
+      );
+    }
+  });
+
+  nodes.cancelLedger.addEventListener("click", () => {
+    nodes.ledgerDialog.close();
+  });
+
+  nodes.ledgerModeInput.addEventListener("change", updateLedgerValueField);
+
+  nodes.ledgerForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    saveLedgerEditor();
   });
 
   nodes.closeReport.addEventListener("click", () => {
@@ -192,6 +249,147 @@ function loadProfile() {
   } catch {
     return { ...defaultProfile };
   }
+}
+
+function loadLedgerEntries() {
+  try {
+    const saved = JSON.parse(localStorage.getItem("today-worth-ledger"));
+    if (!Array.isArray(saved)) {
+      return defaultLedgerEntries.map((entry) => ({ ...entry }));
+    }
+
+    return defaultLedgerEntries.map((defaultEntry) => {
+      const savedEntry = saved.find((entry) => entry.kind === defaultEntry.kind);
+      if (!savedEntry) {
+        return { ...defaultEntry };
+      }
+
+      return {
+        ...defaultEntry,
+        title: readLedgerText(savedEntry.title, defaultEntry.title, 8),
+        mode: ledgerModeText[savedEntry.mode] !== undefined ? savedEntry.mode : defaultEntry.mode,
+        value: readLedgerValue(savedEntry.value, defaultEntry.value),
+        copy: readLedgerText(savedEntry.copy, defaultEntry.copy, 80)
+      };
+    });
+  } catch {
+    return defaultLedgerEntries.map((entry) => ({ ...entry }));
+  }
+}
+
+function readLedgerText(value, fallback, maxLength) {
+  if (typeof value !== "string") { return fallback; }
+  const text = value.trim();
+  return text ? text.slice(0, maxLength) : fallback;
+}
+
+function readLedgerValue(value, fallback) {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) && parsed >= 0 ? parsed : fallback;
+}
+
+function saveLedgerEntries() {
+  localStorage.setItem("today-worth-ledger", JSON.stringify(state.ledgerEntries));
+}
+
+function findLedgerEntry(kind) {
+  return state.ledgerEntries.find((entry) => entry.kind === kind);
+}
+
+function renderLedger() {
+  const fragment = document.createDocumentFragment();
+
+  state.ledgerEntries.forEach((entry) => {
+    const button = document.createElement("button");
+    const isSelected = state.activeLedgerKind === entry.kind;
+    button.className = `ledger-item${isSelected ? " selected" : ""}`;
+    button.dataset.kind = entry.kind;
+    button.type = "button";
+    button.setAttribute("aria-pressed", String(isSelected));
+    button.setAttribute("aria-label", `编辑${entry.title}，${formatLedgerSummary(entry)}`);
+
+    const glyph = document.createElement("span");
+    glyph.className = `glyph ${entry.glyph}`;
+    glyph.setAttribute("aria-hidden", "true");
+
+    const title = document.createElement("strong");
+    title.textContent = entry.title;
+
+    const summary = document.createElement("small");
+    summary.textContent = formatLedgerSummary(entry);
+
+    button.append(glyph, title, summary);
+    fragment.append(button);
+  });
+
+  nodes.ledgerGrid.replaceChildren(fragment);
+}
+
+function selectLedgerEntry(kind) {
+  const entry = findLedgerEntry(kind);
+  if (!entry) { return; }
+
+  state.activeLedgerKind = kind;
+  nodes.liveLine.textContent = entry.copy;
+  nodes.ledgerFeedback.textContent = entry.copy;
+  renderLedger();
+}
+
+function openLedgerEditor(entry) {
+  nodes.ledgerDialogTitle.textContent = `编辑${entry.title}`;
+  nodes.ledgerDialogSubtitle.textContent = formatLedgerSummary(entry);
+  nodes.ledgerTitleInput.value = entry.title;
+  nodes.ledgerModeInput.value = entry.mode;
+  nodes.ledgerValueInput.value = entry.mode === "question" ? "" : entry.value;
+  nodes.ledgerCopyInput.value = entry.copy;
+  updateLedgerValueField();
+
+  if (typeof nodes.ledgerDialog.showModal === "function") {
+    nodes.ledgerDialog.showModal();
+  }
+}
+
+function updateLedgerValueField() {
+  const isQuestion = nodes.ledgerModeInput.value === "question";
+  nodes.ledgerValueInput.disabled = isQuestion;
+  nodes.ledgerValueInput.required = !isQuestion;
+  nodes.ledgerValueField.classList.toggle("disabled-field", isQuestion);
+}
+
+function saveLedgerEditor() {
+  const current = findLedgerEntry(state.activeLedgerKind);
+  if (!current) { return; }
+
+  const mode = nodes.ledgerModeInput.value;
+  const nextEntry = {
+    ...current,
+    title: readLedgerText(nodes.ledgerTitleInput.value, current.title, 8),
+    mode,
+    value: mode === "question" ? 0 : readLedgerValue(nodes.ledgerValueInput.value, current.value),
+    copy: readLedgerText(nodes.ledgerCopyInput.value, current.copy, 80)
+  };
+
+  state.ledgerEntries = state.ledgerEntries.map((entry) => (
+    entry.kind === current.kind ? nextEntry : entry
+  ));
+
+  saveLedgerEntries();
+  renderLedger();
+  selectLedgerEntry(nextEntry.kind);
+  renderTimeline();
+  nodes.ledgerDialog.close();
+}
+
+function formatLedgerSummary(entry) {
+  if (entry.mode === "question") {
+    return "值不值？";
+  }
+
+  if (entry.mode === "spend-minutes") {
+    return `${ledgerModeText[entry.mode]} ${Math.round(entry.value)} 分钟`;
+  }
+
+  return `${ledgerModeText[entry.mode]} ${formatMoney(entry.value)}`;
 }
 
 function normalizeNumber(value, fallback) {
@@ -355,10 +553,16 @@ function makeVerdict(money) {
 }
 
 function renderTimeline() {
+  const timelineTimes = ["09:12", "10:36", "14:00"];
+  const quickRows = state.ledgerEntries.slice(0, 3).map((entry, index) => ({
+    time: timelineTimes[index],
+    title: entry.title,
+    value: formatLedgerSummary(entry),
+    width: Math.min(82, Math.max(16, Number(entry.value) || 16))
+  }));
+
   const rows = [
-    { time: "09:12", title: "通勤", value: "￥18.20", width: 34 },
-    { time: "10:36", title: "咖啡", value: "-14分钟", width: 18 },
-    { time: "14:00", title: "会议", value: "￥42.60", width: 62 },
+    ...quickRows,
     {
       time: "刚刚",
       title: "带薪拉屎",

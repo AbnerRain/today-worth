@@ -460,12 +460,24 @@ input:focus-visible {
   border-radius: 8px;
   background: var(--surface-strong);
   text-align: left;
-  padding: 13px;
+  padding: 13px 32px 13px 13px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+  position: relative;
   transition:
     transform 160ms ease,
     background-color 160ms ease,
     border-color 160ms ease;
+}
+
+.ledger-item::after {
+  content: "›";
+  position: absolute;
+  top: 13px;
+  right: 13px;
+  color: var(--tertiary);
+  font-size: 24px;
+  line-height: 1;
+  font-weight: 400;
 }
 
 .ledger-item * {
@@ -487,11 +499,6 @@ input:focus-visible {
 
 .ledger-item.selected strong {
   color: var(--blue-deep);
-}
-
-.ledger-item.selected .glyph {
-  background: var(--blue);
-  color: #fff;
 }
 
 .glyph {
@@ -594,6 +601,11 @@ input:focus-visible {
   border-bottom: 2px solid currentColor;
   left: 16px;
   top: 10px;
+}
+
+.ledger-item.selected .glyph {
+  background: var(--blue);
+  color: #fff;
 }
 
 .ledger-item strong,
@@ -1114,6 +1126,33 @@ dialog::backdrop {
   font-size: 16px;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
+}
+
+.dialog-card select,
+.dialog-card textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-strong);
+  color: var(--ink);
+  padding: 0 12px;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.dialog-card select {
+  height: 48px;
+}
+
+.dialog-card textarea {
+  min-height: 82px;
+  padding-top: 12px;
+  line-height: 1.45;
+  resize: none;
+}
+
+.dialog-card label.disabled-field {
+  opacity: 0.45;
 }
 
 .dialog-actions {
