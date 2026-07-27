@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>今天值多少钱 Demo</title>
-    <link rel="stylesheet" href="./styles.css?v=ledger-editable" />
+    <link rel="stylesheet" href="./styles.css?v=report-share" />
   </head>
   <body>
     <main class="app-shell" aria-label="今天值多少钱小程序演示">
@@ -267,12 +267,16 @@
           <span>今日带薪拉屎</span>
           <strong id="posterDuration">0分钟</strong>
           <p id="posterMoney">赚了 ￥0.00</p>
-          <div class="qr-box">扫码进入</div>
+          <small>分享给朋友看看今天的时间价值</small>
         </div>
-        <button class="save-button full" type="button">生成战报图</button>
+        <p class="share-status" id="shareStatus" role="status" aria-live="polite"></p>
+        <div class="report-actions">
+          <button class="save-button" id="shareReport" type="button">分享战报</button>
+          <button class="ghost-button" id="copyReport" type="button">复制文案</button>
+        </div>
       </section>
     </dialog>
 
-    <script src="./app.js?v=ledger-editable"></script>
+    <script src="./app.js?v=report-share"></script>
   </body>
 </html>

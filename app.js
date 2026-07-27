@@ -88,7 +88,8 @@ const state = {
   elapsedMs: 0,
   timerId: null,
   activePeriod: "day",
-  activeLedgerKind: ""
+  activeLedgerKind: "",
+  lastReport: null
 };
 
 const nodes = {
@@ -140,7 +141,10 @@ const nodes = {
   reportTotalDuration: document.querySelector("#reportTotalDuration"),
   reportTotalMoney: document.querySelector("#reportTotalMoney"),
   posterDuration: document.querySelector("#posterDuration"),
-  posterMoney: document.querySelector("#posterMoney")
+  posterMoney: document.querySelector("#posterMoney"),
+  shareReport: document.querySelector("#shareReport"),
+  copyReport: document.querySelector("#copyReport"),
+  shareStatus: document.querySelector("#shareStatus")
 };
 
 init();
@@ -239,6 +243,14 @@ function bindEvents() {
 
   nodes.closeReport.addEventListener("click", () => {
     nodes.reportDialog.close();
+  });
+
+  nodes.shareReport.addEventListener("click", () => {
+    shareReport();
+  });
+
+  nodes.copyReport.addEventListener("click", () => {
+    copyReportText();
   });
 }
 
@@ -634,6 +646,8 @@ function renderBadges() {
 
 function renderReport(session) {
   const totals = getTodayTotals();
+  state.lastReport = { session, totals };
+  nodes.shareStatus.textContent = "";
   nodes.reportMoney.textContent = formatMoney(session.money);
   nodes.reportDuration.textContent = formatDuration(session.seconds);
   nodes.reportCount.textContent = `${totals.count}次`;
@@ -641,6 +655,95 @@ function renderReport(session) {
   nodes.reportTotalMoney.textContent = formatMoney(totals.money);
   nodes.posterDuration.textContent = formatDuration(totals.seconds);
   nodes.posterMoney.textContent = `赚了 ${formatMoney(totals.money)}`;
+}
+
+async function shareReport() {
+  if (!state.lastReport) {
+    nodes.shareStatus.textContent = "先结束一次计时，再分享战报。";
+    return;
+  }
+
+  const shareData = makeShareData(state.lastReport);
+  nodes.shareReport.disabled = true;
+  nodes.shareStatus.textContent = "正在准备分享...";
+
+  try {
+    if (typeof navigator !== "undefined" && typeof navigator.share === "function") {
+      await navigator.share(shareData);
+      nodes.shareStatus.textContent = "已打开系统分享。";
+      return;
+    }
+
+    await copyShareText(shareData.text);
+    nodes.shareStatus.textContent = "分享文案已复制，可以发给朋友了。";
+  } catch (error) {
+    if (error?.name === "AbortError") {
+      nodes.shareStatus.textContent = "已取消分享。";
+      return;
+    }
+
+    try {
+      await copyShareText(shareData.text);
+      nodes.shareStatus.textContent = "系统分享不可用，已复制分享文案。";
+    } catch {
+      nodes.shareStatus.textContent = "分享失败，请稍后再试。";
+    }
+  } finally {
+    nodes.shareReport.disabled = false;
+  }
+}
+
+async function copyReportText() {
+  if (!state.lastReport) {
+    nodes.shareStatus.textContent = "先结束一次计时，再复制分享文案。";
+    return;
+  }
+
+  try {
+    const shareData = makeShareData(state.lastReport);
+    await copyShareText(shareData.text);
+    nodes.shareStatus.textContent = "分享文案已复制，可以发给朋友了。";
+  } catch {
+    nodes.shareStatus.textContent = "复制失败，请手动截图分享。";
+  }
+}
+
+function makeShareData(report) {
+  const { session, totals } = report;
+  const text = [
+    "我刚算了一下今天值多少钱：",
+    `本次 ${formatDuration(session.seconds)}，赚了 ${formatMoney(session.money)}。`,
+    `今日累计 ${formatDuration(totals.seconds)}，共 ${formatMoney(totals.money)}。`,
+    "你也来算算你的时间价值。"
+  ].join("\n");
+
+  const data = {
+    title: "今天值多少钱",
+    text
+  };
+
+  if (!location.hostname.includes("127.0.0.1") && location.hostname !== "localhost") {
+    data.url = location.href;
+  }
+
+  return data;
+}
+
+async function copyShareText(text) {
+  if (typeof navigator !== "undefined" && navigator.clipboard?.writeText) {
+    await navigator.clipboard.writeText(text);
+    return;
+  }
+
+  const textarea = document.createElement("textarea");
+  textarea.value = text;
+  textarea.setAttribute("readonly", "");
+  textarea.style.position = "fixed";
+  textarea.style.top = "-999px";
+  document.body.append(textarea);
+  textarea.select();
+  document.execCommand("copy");
+  textarea.remove();
 }
 
 function formatClock(totalSeconds) {

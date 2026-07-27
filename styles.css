@@ -1177,6 +1177,12 @@ dialog::backdrop {
   transform: scale(0.985);
 }
 
+.ghost-button:disabled,
+.save-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.48;
+}
+
 .ghost-button {
   border: 1px solid var(--line);
   background: var(--surface-strong);
@@ -1187,11 +1193,6 @@ dialog::backdrop {
   border: 0;
   background: var(--blue);
   color: #fff;
-}
-
-.save-button.full {
-  width: 100%;
-  margin-top: 16px;
 }
 
 .report-card {
@@ -1276,22 +1277,36 @@ dialog::backdrop {
   font-weight: 900;
 }
 
-.qr-box {
+.share-poster small {
   position: absolute;
-  right: 16px;
-  bottom: 16px;
-  width: 74px;
-  height: 74px;
+  left: 18px;
+  right: 18px;
+  bottom: 18px;
+  color: rgba(255, 255, 255, 0.56);
+  font-size: 12px;
+  line-height: 1.45;
+  font-weight: 700;
+}
+
+.share-status {
+  min-height: 20px;
+  margin: 10px 2px 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.4;
+  font-weight: 700;
+}
+
+.report-actions {
   display: grid;
-  place-items: center;
-  border-radius: 8px;
-  background:
-    linear-gradient(90deg, #111 50%, transparent 50%) 0 0 / 12px 12px,
-    linear-gradient(#111 50%, transparent 50%) 0 0 / 12px 12px,
-    #fff;
-  color: #111;
-  font-size: 10px;
-  font-weight: 900;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.report-actions .save-button,
+.report-actions .ghost-button {
+  width: 100%;
 }
 
 @media (prefers-reduced-motion: reduce) {
