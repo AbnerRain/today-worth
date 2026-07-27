@@ -479,7 +479,13 @@ function tick() {
 
 function switchTab(tab) {
   nodes.tabButtons.forEach((button) => {
-    button.classList.toggle("active", button.dataset.tab === tab);
+    const isActive = button.dataset.tab === tab;
+    button.classList.toggle("active", isActive);
+    if (isActive) {
+      button.setAttribute("aria-current", "page");
+    } else {
+      button.removeAttribute("aria-current");
+    }
   });
   nodes.screens.forEach((screen) => {
     screen.classList.toggle("active", screen.id === `${tab}Screen`);

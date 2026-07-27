@@ -934,28 +934,32 @@ input:focus-visible {
 }
 
 .tabbar {
-  min-height: 72px;
+  min-height: 76px;
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 2px;
-  padding: 8px 16px 14px;
+  gap: 4px;
+  padding: 8px 14px calc(14px + env(safe-area-inset-bottom));
   border-top: 1px solid var(--line);
-  background: rgba(250, 250, 252, 0.82);
+  background: rgba(250, 250, 252, 0.86);
   backdrop-filter: blur(22px);
 }
 
 .tab-button {
   min-width: 0;
-  min-height: 50px;
+  min-height: 54px;
   border: 0;
   border-radius: 8px;
   background: transparent;
   color: var(--tertiary);
-  display: grid;
-  place-items: center;
-  gap: 3px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 800;
+  line-height: 1;
+  touch-action: manipulation;
   transition:
     color 160ms ease,
     background-color 160ms ease;
@@ -966,83 +970,33 @@ input:focus-visible {
   background: rgba(0, 122, 255, 0.08);
 }
 
-.tab-icon {
-  width: 22px;
-  height: 22px;
-  position: relative;
+.tab-button:focus-visible {
+  outline: 0;
+  box-shadow: inset 0 0 0 2px rgba(0, 122, 255, 0.22);
+}
+
+.tab-button > span {
   display: block;
+  line-height: 1;
 }
 
-.tab-icon::before,
-.tab-icon::after {
-  content: "";
-  position: absolute;
+.tab-icon {
+  width: 24px;
+  height: 24px;
+  display: block;
+  flex: 0 0 24px;
 }
 
-.tab-home::before {
-  width: 16px;
-  height: 13px;
-  left: 3px;
-  bottom: 2px;
-  border: 2px solid currentColor;
-  border-top: 0;
-  border-radius: 3px;
-}
-
-.tab-home::after {
-  width: 13px;
-  height: 13px;
-  left: 4px;
-  top: 3px;
-  border-left: 2px solid currentColor;
-  border-top: 2px solid currentColor;
-  transform: rotate(45deg);
-}
-
-.tab-stats::before {
-  width: 4px;
-  height: 12px;
-  left: 4px;
-  bottom: 3px;
-  border-radius: 999px;
-  background: currentColor;
-  box-shadow: 7px -5px 0 currentColor, 14px -9px 0 currentColor;
-}
-
-.tab-rank::before {
-  width: 18px;
-  height: 18px;
-  left: 2px;
-  top: 2px;
-  border: 2px solid currentColor;
-  border-radius: 999px;
-}
-
-.tab-rank::after {
-  width: 10px;
-  height: 2px;
-  left: 6px;
-  top: 10px;
-  background: currentColor;
-  box-shadow: 0 -4px 0 currentColor, 0 4px 0 currentColor;
-}
-
-.tab-badges::before {
-  width: 16px;
-  height: 16px;
-  left: 3px;
-  top: 2px;
-  border: 2px solid currentColor;
-  border-radius: 5px;
-}
-
-.tab-badges::after {
-  width: 8px;
-  height: 8px;
-  left: 7px;
-  top: 6px;
-  border-radius: 999px;
-  background: currentColor;
+.tab-icon path,
+.tab-icon rect,
+.tab-icon circle,
+.tab-icon line,
+.tab-icon polyline {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .design-notes {

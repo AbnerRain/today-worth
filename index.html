@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>今天值多少钱 Demo</title>
-    <link rel="stylesheet" href="./styles.css?v=report-share" />
+    <link rel="stylesheet" href="./styles.css?v=tab-align" />
   </head>
   <body>
     <main class="app-shell" aria-label="今天值多少钱小程序演示">
@@ -144,20 +144,37 @@
         </div>
 
         <nav class="tabbar" aria-label="主要功能">
-          <button class="tab-button active" data-tab="home" type="button">
-            <span class="tab-icon tab-home" aria-hidden="true"></span>
+          <button class="tab-button active" data-tab="home" type="button" aria-current="page">
+            <svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="m3.5 10.5 8.5-7 8.5 7" />
+              <path d="M5.5 9.5V20a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1V9.5" />
+              <path d="M9.5 21v-6a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1v6" />
+            </svg>
             <span>首页</span>
           </button>
           <button class="tab-button" data-tab="stats" type="button">
-            <span class="tab-icon tab-stats" aria-hidden="true"></span>
+            <svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M5 20v-8" />
+              <path d="M10 20V8" />
+              <path d="M15 20V4" />
+              <path d="M20 20V7" />
+            </svg>
             <span>统计</span>
           </button>
           <button class="tab-button" data-tab="rank" type="button">
-            <span class="tab-icon tab-rank" aria-hidden="true"></span>
+            <svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="9" />
+              <path d="M8 9h8" />
+              <path d="M8 12h8" />
+              <path d="M8 15h5" />
+            </svg>
             <span>排行</span>
           </button>
           <button class="tab-button" data-tab="badges" type="button">
-            <span class="tab-icon tab-badges" aria-hidden="true"></span>
+            <svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="4" y="4" width="16" height="16" rx="4" />
+              <circle cx="12" cy="12" r="3.25" />
+            </svg>
             <span>成就</span>
           </button>
         </nav>
@@ -277,6 +294,6 @@
       </section>
     </dialog>
 
-    <script src="./app.js?v=report-share"></script>
+    <script src="./app.js?v=tab-align"></script>
   </body>
 </html>
