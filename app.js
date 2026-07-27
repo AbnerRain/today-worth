@@ -75,6 +75,7 @@ const nodes = {
   sessionState: document.querySelector("#sessionState"),
   liveLine: document.querySelector("#liveLine"),
   liveEarning: document.querySelector("#liveEarning"),
+  ledgerFeedback: document.querySelector("#ledgerFeedback"),
   todayCount: document.querySelector("#todayCount"),
   todayDuration: document.querySelector("#todayDuration"),
   todayEarning: document.querySelector("#todayEarning"),
@@ -155,9 +156,17 @@ function bindEvents() {
     startSession();
   });
 
-  document.querySelectorAll(".ledger-item").forEach((button) => {
+  const ledgerButtons = document.querySelectorAll(".ledger-item");
+  ledgerButtons.forEach((button) => {
     button.addEventListener("click", () => {
-      nodes.liveLine.textContent = ledgerCopy[button.dataset.kind];
+      const message = ledgerCopy[button.dataset.kind];
+      nodes.liveLine.textContent = message;
+      nodes.ledgerFeedback.textContent = message;
+      ledgerButtons.forEach((item) => {
+        const isSelected = item === button;
+        item.classList.toggle("selected", isSelected);
+        item.setAttribute("aria-pressed", String(isSelected));
+      });
       if (!prefersReducedMotion && typeof button.animate === "function") {
         button.animate(
           [

@@ -251,7 +251,7 @@ input:focus-visible {
   flex: 1;
   min-height: 0;
   overflow-y: auto;
-  padding-bottom: 12px;
+  padding-bottom: 88px;
   scrollbar-width: none;
 }
 
@@ -441,6 +441,19 @@ input:focus-visible {
   gap: 10px;
 }
 
+.ledger-feedback {
+  min-height: 42px;
+  margin-bottom: 10px;
+  padding: 10px 12px;
+  border: 1px solid rgba(0, 122, 255, 0.16);
+  border-radius: 8px;
+  background: rgba(0, 122, 255, 0.08);
+  color: var(--blue-deep);
+  font-size: 13px;
+  line-height: 1.45;
+  font-weight: 700;
+}
+
 .ledger-item {
   min-height: 104px;
   border: 1px solid var(--line);
@@ -455,9 +468,30 @@ input:focus-visible {
     border-color 160ms ease;
 }
 
+.ledger-item * {
+  pointer-events: none;
+}
+
 .ledger-item:active {
   transform: scale(0.985);
   background: rgba(242, 242, 247, 0.9);
+}
+
+.ledger-item.selected {
+  border-color: rgba(0, 122, 255, 0.48);
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow:
+    0 0 0 3px rgba(0, 122, 255, 0.12),
+    0 12px 24px rgba(0, 122, 255, 0.12);
+}
+
+.ledger-item.selected strong {
+  color: var(--blue-deep);
+}
+
+.ledger-item.selected .glyph {
+  background: var(--blue);
+  color: #fff;
 }
 
 .glyph {

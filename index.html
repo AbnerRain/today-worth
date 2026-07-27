@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>今天值多少钱 Demo</title>
-    <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="./styles.css?v=quick-log-feedback" />
   </head>
   <body>
     <main class="app-shell" aria-label="今天值多少钱小程序演示">
@@ -71,23 +71,26 @@
                 <h2>时间账本</h2>
                 <span>顺手记一笔</span>
               </div>
+              <div class="ledger-feedback" id="ledgerFeedback" role="status" aria-live="polite">
+                选择一个场景，系统会把它换成时间价值。
+              </div>
               <div class="ledger-grid">
-                <button class="ledger-item" data-kind="commute" type="button">
+                <button class="ledger-item" data-kind="commute" type="button" aria-pressed="false">
                   <span class="glyph glyph-commute" aria-hidden="true"></span>
                   <strong>通勤</strong>
                   <small>赚了 ￥18.20</small>
                 </button>
-                <button class="ledger-item" data-kind="coffee" type="button">
+                <button class="ledger-item" data-kind="coffee" type="button" aria-pressed="false">
                   <span class="glyph glyph-coffee" aria-hidden="true"></span>
                   <strong>咖啡</strong>
                   <small>花了 14 分钟</small>
                 </button>
-                <button class="ledger-item" data-kind="meeting" type="button">
+                <button class="ledger-item" data-kind="meeting" type="button" aria-pressed="false">
                   <span class="glyph glyph-meeting" aria-hidden="true"></span>
                   <strong>会议</strong>
                   <small>浪费 ￥42.60</small>
                 </button>
-                <button class="ledger-item" data-kind="overtime" type="button">
+                <button class="ledger-item" data-kind="overtime" type="button" aria-pressed="false">
                   <span class="glyph glyph-overtime" aria-hidden="true"></span>
                   <strong>加班</strong>
                   <small>值不值？</small>
@@ -256,6 +259,6 @@
       </section>
     </dialog>
 
-    <script src="./app.js"></script>
+    <script src="./app.js?v=quick-log-feedback"></script>
   </body>
 </html>
