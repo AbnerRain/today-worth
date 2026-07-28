@@ -1060,6 +1060,13 @@ dialog::backdrop {
   background: rgba(60, 60, 67, 0.22);
 }
 
+.ledger-module-note {
+  margin: -2px 0 2px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
 .dialog-card label {
   display: grid;
   gap: 8px;
@@ -1098,11 +1105,42 @@ dialog::backdrop {
   height: 48px;
 }
 
+.value-input-wrap {
+  min-height: 48px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-strong);
+}
+
+.value-input-wrap input {
+  height: 46px;
+  border: 0;
+  background: transparent;
+}
+
+.value-input-wrap span {
+  padding-right: 12px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1;
+  font-weight: 800;
+}
+
 .dialog-card textarea {
   min-height: 82px;
   padding-top: 12px;
   line-height: 1.45;
   resize: none;
+}
+
+.field-hint {
+  color: var(--tertiary);
+  font-size: 11px;
+  line-height: 1.35;
+  font-weight: 600;
 }
 
 .dialog-card label.disabled-field {

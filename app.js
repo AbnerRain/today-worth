@@ -12,9 +12,9 @@ const defaultLedgerEntries = [
     kind: "commute",
     title: "通勤",
     glyph: "glyph-commute",
-    mode: "earn-money",
-    value: 18.2,
-    copy: "通勤也算成本：今天先记一笔路上的精神折旧。"
+    mode: "spend-minutes",
+    value: 45,
+    copy: "今天通勤 45 分钟，路上的精神折旧先记账。"
   },
   {
     kind: "coffee",
@@ -41,6 +41,197 @@ const defaultLedgerEntries = [
     copy: "加班不只看时长，还要看这段时间有没有真的值得。"
   }
 ];
+
+const ledgerModuleConfig = {
+  commute: {
+    dialogTitle: "通勤账本",
+    subtitle: "路上的时间和成本",
+    note: "把路上被吃掉的时间或交通成本单独记下来。",
+    titleLabel: "通勤标签",
+    titlePlaceholder: "例：地铁",
+    modeLabel: "通勤记录方式",
+    copyLabel: "通勤反馈文案",
+    modes: [
+      {
+        value: "spend-minutes",
+        label: "通勤耗时",
+        valueLabel: "通勤耗时",
+        unit: "分钟",
+        defaultValue: 45,
+        placeholder: "45",
+        step: "1",
+        inputMode: "numeric",
+        hint: "记录从出门到工位被路程吃掉的时间。",
+        summary: (value) => `路上 ${Math.round(value)} 分钟`
+      },
+      {
+        value: "waste-money",
+        label: "通勤成本",
+        valueLabel: "交通成本",
+        unit: "元",
+        defaultValue: 18.2,
+        placeholder: "18.2",
+        step: "0.01",
+        inputMode: "decimal",
+        hint: "记录车费、打车或路上折损的金额。",
+        summary: (value) => `通勤 ${formatMoney(value)}`
+      },
+      {
+        value: "question",
+        label: "只做判断",
+        valueLabel: "无需数值",
+        unit: "",
+        defaultValue: 0,
+        placeholder: "",
+        step: "1",
+        inputMode: "numeric",
+        hint: "只保留一句通勤状态判断。",
+        summary: () => "值不值？"
+      }
+    ]
+  },
+  coffee: {
+    dialogTitle: "咖啡账本",
+    subtitle: "清醒和休息都算数",
+    note: "记录一杯咖啡换来的清醒，或者顺手摸掉的几分钟。",
+    titleLabel: "咖啡标签",
+    titlePlaceholder: "例：冰美式",
+    modeLabel: "咖啡记录方式",
+    copyLabel: "咖啡反馈文案",
+    modes: [
+      {
+        value: "spend-minutes",
+        label: "休息时长",
+        valueLabel: "休息时长",
+        unit: "分钟",
+        defaultValue: 14,
+        placeholder: "14",
+        step: "1",
+        inputMode: "numeric",
+        hint: "记录从起身买咖啡到回到工位的时间。",
+        summary: (value) => `休息 ${Math.round(value)} 分钟`
+      },
+      {
+        value: "waste-money",
+        label: "咖啡支出",
+        valueLabel: "咖啡支出",
+        unit: "元",
+        defaultValue: 18,
+        placeholder: "18",
+        step: "0.01",
+        inputMode: "decimal",
+        hint: "记录这杯咖啡花掉的钱。",
+        summary: (value) => `咖啡 ${formatMoney(value)}`
+      },
+      {
+        value: "question",
+        label: "只做判断",
+        valueLabel: "无需数值",
+        unit: "",
+        defaultValue: 0,
+        placeholder: "",
+        step: "1",
+        inputMode: "numeric",
+        hint: "只保留一句清醒状态判断。",
+        summary: () => "清醒吗？"
+      }
+    ]
+  },
+  meeting: {
+    dialogTitle: "会议账本",
+    subtitle: "沉默也有时薪",
+    note: "记录会议消耗的时间，或者把会议损耗直接折算成金额。",
+    titleLabel: "会议标签",
+    titlePlaceholder: "例：周会",
+    modeLabel: "会议记录方式",
+    copyLabel: "会议反馈文案",
+    modes: [
+      {
+        value: "waste-money",
+        label: "会议损耗",
+        valueLabel: "会议损耗",
+        unit: "元",
+        defaultValue: 42.6,
+        placeholder: "42.6",
+        step: "0.01",
+        inputMode: "decimal",
+        hint: "记录这场会折算出的时间成本。",
+        summary: (value) => `浪费 ${formatMoney(value)}`
+      },
+      {
+        value: "spend-minutes",
+        label: "会议时长",
+        valueLabel: "会议时长",
+        unit: "分钟",
+        defaultValue: 30,
+        placeholder: "30",
+        step: "1",
+        inputMode: "numeric",
+        hint: "记录会议实际占用的分钟数。",
+        summary: (value) => `会议 ${Math.round(value)} 分钟`
+      },
+      {
+        value: "question",
+        label: "只做判断",
+        valueLabel: "无需数值",
+        unit: "",
+        defaultValue: 0,
+        placeholder: "",
+        step: "1",
+        inputMode: "numeric",
+        hint: "只保留一句会议是否有效的判断。",
+        summary: () => "有效吗？"
+      }
+    ]
+  },
+  overtime: {
+    dialogTitle: "加班账本",
+    subtitle: "先问值不值",
+    note: "加班可以只做判断，也可以记录加班时长或实际多赚的钱。",
+    titleLabel: "加班标签",
+    titlePlaceholder: "例：赶版本",
+    modeLabel: "加班记录方式",
+    copyLabel: "加班反馈文案",
+    modes: [
+      {
+        value: "question",
+        label: "值不值判断",
+        valueLabel: "无需数值",
+        unit: "",
+        defaultValue: 0,
+        placeholder: "",
+        step: "1",
+        inputMode: "numeric",
+        hint: "只保留一句加班值不值的判断。",
+        summary: () => "值不值？"
+      },
+      {
+        value: "spend-minutes",
+        label: "加班时长",
+        valueLabel: "加班时长",
+        unit: "分钟",
+        defaultValue: 60,
+        placeholder: "60",
+        step: "1",
+        inputMode: "numeric",
+        hint: "记录今天额外工作的分钟数。",
+        summary: (value) => `加班 ${Math.round(value)} 分钟`
+      },
+      {
+        value: "earn-money",
+        label: "加班收入",
+        valueLabel: "加班收入",
+        unit: "元",
+        defaultValue: 120,
+        placeholder: "120",
+        step: "0.01",
+        inputMode: "decimal",
+        hint: "记录这段加班实际多赚的钱。",
+        summary: (value) => `多赚 ${formatMoney(value)}`
+      }
+    ]
+  }
+};
 
 const ledgerModeText = {
   "earn-money": "赚了",
@@ -119,10 +310,17 @@ const nodes = {
   ledgerForm: document.querySelector("#ledgerForm"),
   ledgerDialogTitle: document.querySelector("#ledgerDialogTitle"),
   ledgerDialogSubtitle: document.querySelector("#ledgerDialogSubtitle"),
+  ledgerModuleNote: document.querySelector("#ledgerModuleNote"),
+  ledgerTitleLabel: document.querySelector("#ledgerTitleLabel"),
   ledgerTitleInput: document.querySelector("#ledgerTitleInput"),
+  ledgerModeLabel: document.querySelector("#ledgerModeLabel"),
   ledgerModeInput: document.querySelector("#ledgerModeInput"),
   ledgerValueField: document.querySelector("#ledgerValueField"),
+  ledgerValueLabel: document.querySelector("#ledgerValueLabel"),
   ledgerValueInput: document.querySelector("#ledgerValueInput"),
+  ledgerValueUnit: document.querySelector("#ledgerValueUnit"),
+  ledgerValueHint: document.querySelector("#ledgerValueHint"),
+  ledgerCopyLabel: document.querySelector("#ledgerCopyLabel"),
   ledgerCopyInput: document.querySelector("#ledgerCopyInput"),
   cancelLedger: document.querySelector("#cancelLedger"),
   todayCount: document.querySelector("#todayCount"),
@@ -234,7 +432,7 @@ function bindEvents() {
     nodes.ledgerDialog.close();
   });
 
-  nodes.ledgerModeInput.addEventListener("change", updateLedgerValueField);
+  nodes.ledgerModeInput.addEventListener("change", () => updateLedgerValueField({ resetValue: true }));
 
   nodes.ledgerForm.addEventListener("submit", (event) => {
     event.preventDefault();
@@ -276,11 +474,15 @@ function loadLedgerEntries() {
         return { ...defaultEntry };
       }
 
+      const savedMode = normalizeLedgerMode(defaultEntry.kind, savedEntry.mode, defaultEntry.mode);
+      const modeConfig = getLedgerModeConfig(defaultEntry.kind, savedMode);
+      const valueFallback = savedEntry.mode === savedMode ? defaultEntry.value : modeConfig.defaultValue;
+
       return {
         ...defaultEntry,
         title: readLedgerText(savedEntry.title, defaultEntry.title, 8),
-        mode: ledgerModeText[savedEntry.mode] !== undefined ? savedEntry.mode : defaultEntry.mode,
-        value: readLedgerValue(savedEntry.value, defaultEntry.value),
+        mode: savedMode,
+        value: savedMode === "question" ? 0 : readLedgerValue(savedEntry.value, valueFallback),
         copy: readLedgerText(savedEntry.copy, defaultEntry.copy, 80)
       };
     });
@@ -306,6 +508,41 @@ function saveLedgerEntries() {
 
 function findLedgerEntry(kind) {
   return state.ledgerEntries.find((entry) => entry.kind === kind);
+}
+
+function getLedgerModule(kind) {
+  return ledgerModuleConfig[kind] || ledgerModuleConfig.commute;
+}
+
+function getLedgerModeConfig(kind, mode) {
+  const module = getLedgerModule(kind);
+  return module.modes.find((item) => item.value === mode) || module.modes[0];
+}
+
+function normalizeLedgerMode(kind, mode, fallback) {
+  const module = getLedgerModule(kind);
+  const hasMode = module.modes.some((item) => item.value === mode);
+  if (hasMode) {
+    return mode;
+  }
+
+  const hasFallback = module.modes.some((item) => item.value === fallback);
+  return hasFallback ? fallback : module.modes[0].value;
+}
+
+function renderLedgerModeOptions(kind, selectedMode) {
+  const module = getLedgerModule(kind);
+  const normalizedMode = normalizeLedgerMode(kind, selectedMode, module.modes[0].value);
+  const options = module.modes.map((mode) => {
+    const option = document.createElement("option");
+    option.value = mode.value;
+    option.textContent = mode.label;
+    return option;
+  });
+
+  nodes.ledgerModeInput.replaceChildren(...options);
+  nodes.ledgerModeInput.value = normalizedMode;
+  return normalizedMode;
 }
 
 function renderLedger() {
@@ -348,11 +585,17 @@ function selectLedgerEntry(kind) {
 }
 
 function openLedgerEditor(entry) {
-  nodes.ledgerDialogTitle.textContent = `编辑${entry.title}`;
-  nodes.ledgerDialogSubtitle.textContent = formatLedgerSummary(entry);
+  const module = getLedgerModule(entry.kind);
+  const mode = renderLedgerModeOptions(entry.kind, entry.mode);
+  nodes.ledgerDialogTitle.textContent = module.dialogTitle;
+  nodes.ledgerDialogSubtitle.textContent = module.subtitle;
+  nodes.ledgerModuleNote.textContent = module.note;
+  nodes.ledgerTitleLabel.textContent = module.titleLabel;
+  nodes.ledgerTitleInput.placeholder = module.titlePlaceholder;
+  nodes.ledgerModeLabel.textContent = module.modeLabel;
+  nodes.ledgerCopyLabel.textContent = module.copyLabel;
   nodes.ledgerTitleInput.value = entry.title;
-  nodes.ledgerModeInput.value = entry.mode;
-  nodes.ledgerValueInput.value = entry.mode === "question" ? "" : entry.value;
+  nodes.ledgerValueInput.value = mode === "question" ? "" : entry.value;
   nodes.ledgerCopyInput.value = entry.copy;
   updateLedgerValueField();
 
@@ -361,8 +604,25 @@ function openLedgerEditor(entry) {
   }
 }
 
-function updateLedgerValueField() {
-  const isQuestion = nodes.ledgerModeInput.value === "question";
+function updateLedgerValueField(options = {}) {
+  const current = findLedgerEntry(state.activeLedgerKind);
+  if (!current) { return; }
+
+  const mode = normalizeLedgerMode(current.kind, nodes.ledgerModeInput.value, current.mode);
+  const modeConfig = getLedgerModeConfig(current.kind, mode);
+  const isQuestion = mode === "question";
+
+  nodes.ledgerModeInput.value = mode;
+  nodes.ledgerValueLabel.textContent = modeConfig.valueLabel;
+  nodes.ledgerValueInput.placeholder = modeConfig.placeholder;
+  nodes.ledgerValueInput.step = modeConfig.step;
+  nodes.ledgerValueInput.setAttribute("inputmode", modeConfig.inputMode);
+  nodes.ledgerValueUnit.textContent = modeConfig.unit;
+  nodes.ledgerValueUnit.hidden = isQuestion || !modeConfig.unit;
+  nodes.ledgerValueHint.textContent = modeConfig.hint;
+  if (options.resetValue) {
+    nodes.ledgerValueInput.value = isQuestion ? "" : modeConfig.defaultValue;
+  }
   nodes.ledgerValueInput.disabled = isQuestion;
   nodes.ledgerValueInput.required = !isQuestion;
   nodes.ledgerValueField.classList.toggle("disabled-field", isQuestion);
@@ -372,12 +632,13 @@ function saveLedgerEditor() {
   const current = findLedgerEntry(state.activeLedgerKind);
   if (!current) { return; }
 
-  const mode = nodes.ledgerModeInput.value;
+  const mode = normalizeLedgerMode(current.kind, nodes.ledgerModeInput.value, current.mode);
+  const modeConfig = getLedgerModeConfig(current.kind, mode);
   const nextEntry = {
     ...current,
     title: readLedgerText(nodes.ledgerTitleInput.value, current.title, 8),
     mode,
-    value: mode === "question" ? 0 : readLedgerValue(nodes.ledgerValueInput.value, current.value),
+    value: mode === "question" ? 0 : readLedgerValue(nodes.ledgerValueInput.value, modeConfig.defaultValue),
     copy: readLedgerText(nodes.ledgerCopyInput.value, current.copy, 80)
   };
 
@@ -393,14 +654,13 @@ function saveLedgerEditor() {
 }
 
 function formatLedgerSummary(entry) {
-  if (entry.mode === "question") {
-    return "值不值？";
+  const modeConfig = getLedgerModeConfig(entry.kind, entry.mode);
+  if (typeof modeConfig.summary === "function") {
+    return modeConfig.summary(entry.value);
   }
 
-  if (entry.mode === "spend-minutes") {
-    return `${ledgerModeText[entry.mode]} ${Math.round(entry.value)} 分钟`;
-  }
-
+  if (entry.mode === "question") { return "值不值？"; }
+  if (entry.mode === "spend-minutes") { return `${ledgerModeText[entry.mode]} ${Math.round(entry.value)} 分钟`; }
   return `${ledgerModeText[entry.mode]} ${formatMoney(entry.value)}`;
 }
 

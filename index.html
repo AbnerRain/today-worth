@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>今天值多少钱 Demo</title>
-    <link rel="stylesheet" href="./styles.css?v=tab-align" />
+    <link rel="stylesheet" href="./styles.css?v=ledger-modules" />
   </head>
   <body>
     <main class="app-shell" aria-label="今天值多少钱小程序演示">
@@ -225,25 +225,25 @@
           <h2 id="ledgerDialogTitle">编辑账本</h2>
           <span id="ledgerDialogSubtitle">自定义显示数据</span>
         </div>
+        <p class="ledger-module-note" id="ledgerModuleNote">每个场景都有自己的记录方式。</p>
         <label>
-          场景名称
-          <input id="ledgerTitleInput" type="text" maxlength="8" />
+          <span id="ledgerTitleLabel">场景名称</span>
+          <input id="ledgerTitleInput" type="text" maxlength="8" autocomplete="off" />
         </label>
         <label>
-          记录类型
-          <select id="ledgerModeInput">
-            <option value="earn-money">赚了金额</option>
-            <option value="spend-minutes">花了分钟</option>
-            <option value="waste-money">浪费金额</option>
-            <option value="question">只显示判断</option>
-          </select>
+          <span id="ledgerModeLabel">记录类型</span>
+          <select id="ledgerModeInput"></select>
         </label>
         <label id="ledgerValueField">
-          数值
-          <input id="ledgerValueInput" type="number" min="0" step="0.01" inputmode="decimal" />
+          <span id="ledgerValueLabel">数值</span>
+          <span class="value-input-wrap">
+            <input id="ledgerValueInput" type="number" min="0" step="0.01" inputmode="decimal" />
+            <span id="ledgerValueUnit">元</span>
+          </span>
+          <small class="field-hint" id="ledgerValueHint">输入和记录类型匹配的数值。</small>
         </label>
         <label>
-          反馈文案
+          <span id="ledgerCopyLabel">反馈文案</span>
           <textarea id="ledgerCopyInput" maxlength="80" rows="3"></textarea>
         </label>
         <div class="dialog-actions">
@@ -294,6 +294,6 @@
       </section>
     </dialog>
 
-    <script src="./app.js?v=tab-align"></script>
+    <script src="./app.js?v=ledger-modules"></script>
   </body>
 </html>
