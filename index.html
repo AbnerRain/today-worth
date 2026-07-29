@@ -4,11 +4,35 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>今天值多少钱 Demo</title>
-    <link rel="stylesheet" href="./styles.css?v=ledger-modules" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23ffdc3f'/%3E%3Cpath d='M9 18c0-5 2.5-9 7-9s7 4 7 9c0 3.5-2.5 5.5-7 5.5S9 21.5 9 18z' fill='%23131b2b'/%3E%3Ccircle cx='13.5' cy='16.5' r='1.3' fill='white'/%3E%3Ccircle cx='18.5' cy='16.5' r='1.3' fill='white'/%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="./styles.css?v=office-comic-7" />
   </head>
   <body>
+    <svg class="icon-sprite" aria-hidden="true">
+      <symbol id="ledger-icon-commute" viewBox="0 0 24 24">
+        <circle cx="6" cy="19" r="3"></circle>
+        <path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"></path>
+        <circle cx="18" cy="5" r="3"></circle>
+      </symbol>
+      <symbol id="ledger-icon-coffee" viewBox="0 0 24 24">
+        <path d="M5.116 4.104A1 1 0 0 1 6.11 3h11.78a1 1 0 0 1 .994 1.105L17.19 20.21A2 2 0 0 1 15.2 22H8.8a2 2 0 0 1-2-1.79z"></path>
+        <path d="M6 12a5 5 0 0 1 6 0 5 5 0 0 0 6 0"></path>
+      </symbol>
+      <symbol id="ledger-icon-meeting" viewBox="0 0 24 24">
+        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+        <path d="M16 3.128a4 4 0 0 1 0 7.744"></path>
+        <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+        <circle cx="9" cy="7" r="4"></circle>
+      </symbol>
+      <symbol id="ledger-icon-overtime" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="10"></circle>
+        <path d="M12 6v6h4"></path>
+      </symbol>
+    </svg>
+
     <main class="app-shell" aria-label="今天值多少钱小程序演示">
       <section class="phone" aria-label="小程序界面">
+        <div class="money-rain" id="moneyRain" aria-hidden="true"></div>
         <header class="status-bar" aria-hidden="true">
           <span>13:20</span>
           <span class="status-cluster">
@@ -20,9 +44,9 @@
 
         <section class="app-header">
           <div class="header-copy">
-            <span class="eyebrow">今日</span>
+            <span class="eyebrow">OFFICE COMIC · 01</span>
             <h1>今天值多少钱</h1>
-            <p>把一天里的每段时间，换成一眼看懂的金额。</p>
+            <p>算清每一分钟，摸鱼也要明明白白。</p>
           </div>
           <button class="icon-button" id="settingsButton" type="button" aria-label="打开工资设置">
             <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -120,20 +144,6 @@
             </section>
           </section>
 
-          <section class="screen" id="rankScreen" aria-label="排行榜">
-            <div class="section-title">
-              <h2>好友排行</h2>
-              <span>本月摸鱼战力</span>
-            </div>
-            <div class="rank-list" id="rankList"></div>
-            <div class="rank-categories">
-              <button type="button">今日摸鱼王</button>
-              <button type="button">本周厕所霸主</button>
-              <button type="button">单次最长记录</button>
-              <button type="button">收入最高记录</button>
-            </div>
-          </section>
-
           <section class="screen" id="badgesScreen" aria-label="成就">
             <div class="section-title">
               <h2>成就系统</h2>
@@ -161,15 +171,6 @@
             </svg>
             <span>统计</span>
           </button>
-          <button class="tab-button" data-tab="rank" type="button">
-            <svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true">
-              <circle cx="12" cy="12" r="9" />
-              <path d="M8 9h8" />
-              <path d="M8 12h8" />
-              <path d="M8 15h5" />
-            </svg>
-            <span>排行</span>
-          </button>
           <button class="tab-button" data-tab="badges" type="button">
             <svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true">
               <rect x="4" y="4" width="16" height="16" rx="4" />
@@ -181,13 +182,13 @@
       </section>
 
       <aside class="design-notes">
-        <span class="eyebrow">Apple 风方向</span>
-        <h2>轻、准、像系统自带</h2>
-        <p>这版把情绪收住，主界面用 iOS 分组、底部标签栏、半透明面板和大号数字建立质感；梗还在，但不会像表情包应用。</p>
+        <span class="eyebrow">职场漫画版本</span>
+        <h2>把上班，画成一本会计息的漫画</h2>
+        <p>这版采用粗描边、错位阴影、明亮色块和漫画网点，让“带薪拉屎”更像一款年轻、好玩、愿意分享的小工具。</p>
         <ul>
-          <li>第一屏只保留最重要的计时、收益和开始按钮。</li>
-          <li>工资设置做成系统 sheet，输入项清楚、触控区足够大。</li>
-          <li>统计、排行、成就用低饱和中性色承接长期留存。</li>
+          <li>第一屏是一格实时计价漫画，金额和计时一眼可见。</li>
+          <li>快捷账本变成彩色场景贴纸，分类清楚但不严肃。</li>
+          <li>战报是一张醒目的漫画成绩单，适合直接发给朋友。</li>
         </ul>
       </aside>
     </main>
@@ -230,10 +231,11 @@
           <span id="ledgerTitleLabel">场景名称</span>
           <input id="ledgerTitleInput" type="text" maxlength="8" autocomplete="off" />
         </label>
-        <label>
+        <div class="field-group">
           <span id="ledgerModeLabel">记录类型</span>
-          <select id="ledgerModeInput"></select>
-        </label>
+          <div class="mode-segmented" id="ledgerModeControl" role="radiogroup" aria-label="记录类型"></div>
+          <input id="ledgerModeInput" type="hidden" />
+        </div>
         <label id="ledgerValueField">
           <span id="ledgerValueLabel">数值</span>
           <span class="value-input-wrap">
@@ -294,6 +296,6 @@
       </section>
     </dialog>
 
-    <script src="./app.js?v=ledger-modules"></script>
+    <script src="./app.js?v=office-comic-7"></script>
   </body>
 </html>

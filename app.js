@@ -36,21 +36,19 @@ const defaultLedgerEntries = [
     kind: "overtime",
     title: "加班",
     glyph: "glyph-overtime",
-    mode: "question",
-    value: 0,
-    copy: "加班不只看时长，还要看这段时间有没有真的值得。"
+    mode: "spend-minutes",
+    value: 60,
+    copy: "今天加班 60 分钟，被拉长的夜晚先记一笔。"
   }
 ];
 
 const ledgerModuleConfig = {
   commute: {
-    dialogTitle: "通勤账本",
+    categoryLabel: "通勤",
+    dialogTitle: "通勤账单",
     subtitle: "路上的时间和成本",
     note: "把路上被吃掉的时间或交通成本单独记下来。",
-    titleLabel: "通勤标签",
     titlePlaceholder: "例：地铁",
-    modeLabel: "通勤记录方式",
-    copyLabel: "通勤反馈文案",
     modes: [
       {
         value: "spend-minutes",
@@ -62,6 +60,7 @@ const ledgerModuleConfig = {
         step: "1",
         inputMode: "numeric",
         hint: "记录从出门到工位被路程吃掉的时间。",
+        defaultCopy: "今天通勤 45 分钟，路上的精神折旧先记账。",
         summary: (value) => `路上 ${Math.round(value)} 分钟`
       },
       {
@@ -74,30 +73,17 @@ const ledgerModuleConfig = {
         step: "0.01",
         inputMode: "decimal",
         hint: "记录车费、打车或路上折损的金额。",
+        defaultCopy: "今天通勤花掉 18.2 元，路上的成本先记一笔。",
         summary: (value) => `通勤 ${formatMoney(value)}`
-      },
-      {
-        value: "question",
-        label: "只做判断",
-        valueLabel: "无需数值",
-        unit: "",
-        defaultValue: 0,
-        placeholder: "",
-        step: "1",
-        inputMode: "numeric",
-        hint: "只保留一句通勤状态判断。",
-        summary: () => "值不值？"
       }
     ]
   },
   coffee: {
-    dialogTitle: "咖啡账本",
+    categoryLabel: "饮品",
+    dialogTitle: "饮品账单",
     subtitle: "清醒和休息都算数",
-    note: "记录一杯咖啡换来的清醒，或者顺手摸掉的几分钟。",
-    titleLabel: "咖啡标签",
+    note: "记录一杯饮品换来的清醒，或者顺手摸掉的几分钟。",
     titlePlaceholder: "例：冰美式",
-    modeLabel: "咖啡记录方式",
-    copyLabel: "咖啡反馈文案",
     modes: [
       {
         value: "spend-minutes",
@@ -108,43 +94,31 @@ const ledgerModuleConfig = {
         placeholder: "14",
         step: "1",
         inputMode: "numeric",
-        hint: "记录从起身买咖啡到回到工位的时间。",
+        hint: "记录从起身接水或买饮品到回到工位的时间。",
+        defaultCopy: "休息时间已入账，清醒也是生产资料。",
         summary: (value) => `休息 ${Math.round(value)} 分钟`
       },
       {
         value: "waste-money",
-        label: "咖啡支出",
-        valueLabel: "咖啡支出",
+        label: "支出金额",
+        valueLabel: "支出金额",
         unit: "元",
         defaultValue: 18,
         placeholder: "18",
         step: "0.01",
         inputMode: "decimal",
-        hint: "记录这杯咖啡花掉的钱。",
-        summary: (value) => `咖啡 ${formatMoney(value)}`
-      },
-      {
-        value: "question",
-        label: "只做判断",
-        valueLabel: "无需数值",
-        unit: "",
-        defaultValue: 0,
-        placeholder: "",
-        step: "1",
-        inputMode: "numeric",
-        hint: "只保留一句清醒状态判断。",
-        summary: () => "清醒吗？"
+        hint: "记录这次花掉的钱。",
+        defaultCopy: "这次饮品花掉 18 元，清醒成本先摊销。",
+        summary: (value) => `饮品 ${formatMoney(value)}`
       }
     ]
   },
   meeting: {
-    dialogTitle: "会议账本",
+    categoryLabel: "会议",
+    dialogTitle: "会议账单",
     subtitle: "沉默也有时薪",
     note: "记录会议消耗的时间，或者把会议损耗直接折算成金额。",
-    titleLabel: "会议标签",
     titlePlaceholder: "例：周会",
-    modeLabel: "会议记录方式",
-    copyLabel: "会议反馈文案",
     modes: [
       {
         value: "waste-money",
@@ -156,6 +130,7 @@ const ledgerModuleConfig = {
         step: "0.01",
         inputMode: "decimal",
         hint: "记录这场会折算出的时间成本。",
+        defaultCopy: "会议价值已换算，沉默也有时薪。",
         summary: (value) => `浪费 ${formatMoney(value)}`
       },
       {
@@ -168,43 +143,18 @@ const ledgerModuleConfig = {
         step: "1",
         inputMode: "numeric",
         hint: "记录会议实际占用的分钟数。",
+        defaultCopy: "会议占用 30 分钟，时间成本已经入账。",
         summary: (value) => `会议 ${Math.round(value)} 分钟`
-      },
-      {
-        value: "question",
-        label: "只做判断",
-        valueLabel: "无需数值",
-        unit: "",
-        defaultValue: 0,
-        placeholder: "",
-        step: "1",
-        inputMode: "numeric",
-        hint: "只保留一句会议是否有效的判断。",
-        summary: () => "有效吗？"
       }
     ]
   },
   overtime: {
-    dialogTitle: "加班账本",
-    subtitle: "先问值不值",
-    note: "加班可以只做判断，也可以记录加班时长或实际多赚的钱。",
-    titleLabel: "加班标签",
+    categoryLabel: "加班",
+    dialogTitle: "加班账单",
+    subtitle: "时间和收入分开记",
+    note: "记录额外工作的时长，或者这段加班实际多赚的钱。",
     titlePlaceholder: "例：赶版本",
-    modeLabel: "加班记录方式",
-    copyLabel: "加班反馈文案",
     modes: [
-      {
-        value: "question",
-        label: "值不值判断",
-        valueLabel: "无需数值",
-        unit: "",
-        defaultValue: 0,
-        placeholder: "",
-        step: "1",
-        inputMode: "numeric",
-        hint: "只保留一句加班值不值的判断。",
-        summary: () => "值不值？"
-      },
       {
         value: "spend-minutes",
         label: "加班时长",
@@ -215,6 +165,7 @@ const ledgerModuleConfig = {
         step: "1",
         inputMode: "numeric",
         hint: "记录今天额外工作的分钟数。",
+        defaultCopy: "今天加班 60 分钟，被拉长的夜晚先记一笔。",
         summary: (value) => `加班 ${Math.round(value)} 分钟`
       },
       {
@@ -227,6 +178,7 @@ const ledgerModuleConfig = {
         step: "0.01",
         inputMode: "decimal",
         hint: "记录这段加班实际多赚的钱。",
+        defaultCopy: "这段加班多赚 120 元，夜晚终于有点回响。",
         summary: (value) => `多赚 ${formatMoney(value)}`
       }
     ]
@@ -236,8 +188,7 @@ const ledgerModuleConfig = {
 const ledgerModeText = {
   "earn-money": "赚了",
   "spend-minutes": "花了",
-  "waste-money": "浪费",
-  question: ""
+  "waste-money": "浪费"
 };
 
 const baseStats = {
@@ -245,13 +196,6 @@ const baseStats = {
   month: { count: 70, seconds: 20 * 3600 + 23 * 60, money: 1288 },
   career: { count: 512, seconds: 216 * 3600, money: 16237 }
 };
-
-const rankData = [
-  { name: "张三", tag: "本月 21 小时", money: 1600 },
-  { name: "你", tag: "本月 20 小时 23 分", money: 1288 },
-  { name: "李四", tag: "本月 18 小时", money: 1190 },
-  { name: "王五", tag: "连续打卡 12 天", money: 980 }
-];
 
 const badgeData = [
   { title: "第一泡", desc: "完成第一次带薪拉屎", key: "first" },
@@ -278,6 +222,7 @@ const state = {
   startTime: 0,
   elapsedMs: 0,
   timerId: null,
+  moneyRainId: null,
   activePeriod: "day",
   activeLedgerKind: "",
   lastReport: null
@@ -296,11 +241,13 @@ const nodes = {
   secondRate: document.querySelector("#secondRate"),
   tabButtons: document.querySelectorAll(".tab-button"),
   screens: document.querySelectorAll(".screen"),
+  contentScroll: document.querySelector(".content-scroll"),
   periodButtons: document.querySelectorAll(".period-button"),
   mainAction: document.querySelector("#mainAction"),
   actionIcon: document.querySelector("#actionIcon"),
   actionText: document.querySelector("#actionText"),
   timer: document.querySelector("#timer"),
+  moneyRain: document.querySelector("#moneyRain"),
   sessionState: document.querySelector("#sessionState"),
   liveLine: document.querySelector("#liveLine"),
   liveEarning: document.querySelector("#liveEarning"),
@@ -314,6 +261,7 @@ const nodes = {
   ledgerTitleLabel: document.querySelector("#ledgerTitleLabel"),
   ledgerTitleInput: document.querySelector("#ledgerTitleInput"),
   ledgerModeLabel: document.querySelector("#ledgerModeLabel"),
+  ledgerModeControl: document.querySelector("#ledgerModeControl"),
   ledgerModeInput: document.querySelector("#ledgerModeInput"),
   ledgerValueField: document.querySelector("#ledgerValueField"),
   ledgerValueLabel: document.querySelector("#ledgerValueLabel"),
@@ -329,7 +277,6 @@ const nodes = {
   todayMood: document.querySelector("#todayMood"),
   statsBoard: document.querySelector("#statsBoard"),
   timeline: document.querySelector("#timeline"),
-  rankList: document.querySelector("#rankList"),
   badgesGrid: document.querySelector("#badgesGrid"),
   reportDialog: document.querySelector("#reportDialog"),
   closeReport: document.querySelector("#closeReport"),
@@ -358,7 +305,6 @@ function init() {
   renderToday();
   renderStats();
   renderTimeline();
-  renderRank();
   renderBadges();
 }
 
@@ -432,7 +378,29 @@ function bindEvents() {
     nodes.ledgerDialog.close();
   });
 
-  nodes.ledgerModeInput.addEventListener("change", () => updateLedgerValueField({ resetValue: true }));
+  nodes.ledgerModeControl.addEventListener("click", (event) => {
+    const button = event.target.closest(".mode-option");
+    if (!button) { return; }
+
+    selectLedgerMode(button.dataset.mode, { resetValue: true, resetCopy: true });
+  });
+
+  nodes.ledgerModeControl.addEventListener("keydown", (event) => {
+    const keys = ["ArrowLeft", "ArrowUp", "ArrowRight", "ArrowDown", "Home", "End"];
+    if (!keys.includes(event.key)) { return; }
+
+    const options = [...nodes.ledgerModeControl.querySelectorAll(".mode-option")];
+    if (!options.length) { return; }
+
+    event.preventDefault();
+
+    const activeIndex = Math.max(
+      0,
+      options.findIndex((button) => button.dataset.mode === nodes.ledgerModeInput.value)
+    );
+    const nextIndex = getNextModeIndex(event.key, activeIndex, options.length);
+    selectLedgerMode(options[nextIndex].dataset.mode, { resetValue: true, resetCopy: true, focus: true });
+  });
 
   nodes.ledgerForm.addEventListener("submit", (event) => {
     event.preventDefault();
@@ -476,13 +444,16 @@ function loadLedgerEntries() {
 
       const savedMode = normalizeLedgerMode(defaultEntry.kind, savedEntry.mode, defaultEntry.mode);
       const modeConfig = getLedgerModeConfig(defaultEntry.kind, savedMode);
-      const valueFallback = savedEntry.mode === savedMode ? defaultEntry.value : modeConfig.defaultValue;
+      const valueFallback = modeConfig.defaultValue;
+      const value = savedEntry.mode === savedMode
+        ? readLedgerValue(savedEntry.value, valueFallback)
+        : valueFallback;
 
       return {
         ...defaultEntry,
         title: readLedgerText(savedEntry.title, defaultEntry.title, 8),
         mode: savedMode,
-        value: savedMode === "question" ? 0 : readLedgerValue(savedEntry.value, valueFallback),
+        value,
         copy: readLedgerText(savedEntry.copy, defaultEntry.copy, 80)
       };
     });
@@ -519,6 +490,15 @@ function getLedgerModeConfig(kind, mode) {
   return module.modes.find((item) => item.value === mode) || module.modes[0];
 }
 
+function updateLedgerEditorLabels(kind) {
+  const module = getLedgerModule(kind);
+  const label = module.categoryLabel || "场景";
+  nodes.ledgerDialogTitle.textContent = module.dialogTitle || `${label}账单`;
+  nodes.ledgerTitleLabel.textContent = `${label}标签`;
+  nodes.ledgerModeLabel.textContent = `${label}记录方式`;
+  nodes.ledgerCopyLabel.textContent = `${label}反馈文案`;
+}
+
 function normalizeLedgerMode(kind, mode, fallback) {
   const module = getLedgerModule(kind);
   const hasMode = module.modes.some((item) => item.value === mode);
@@ -534,15 +514,62 @@ function renderLedgerModeOptions(kind, selectedMode) {
   const module = getLedgerModule(kind);
   const normalizedMode = normalizeLedgerMode(kind, selectedMode, module.modes[0].value);
   const options = module.modes.map((mode) => {
-    const option = document.createElement("option");
-    option.value = mode.value;
+    const option = document.createElement("button");
+    const isActive = mode.value === normalizedMode;
+    option.className = `mode-option${isActive ? " active" : ""}`;
+    option.type = "button";
+    option.dataset.mode = mode.value;
+    option.setAttribute("role", "radio");
+    option.setAttribute("aria-checked", String(isActive));
+    option.tabIndex = isActive ? 0 : -1;
     option.textContent = mode.label;
     return option;
   });
 
-  nodes.ledgerModeInput.replaceChildren(...options);
+  nodes.ledgerModeControl.replaceChildren(...options);
   nodes.ledgerModeInput.value = normalizedMode;
   return normalizedMode;
+}
+
+function getNextModeIndex(key, activeIndex, total) {
+  if (key === "Home") { return 0; }
+  if (key === "End") { return total - 1; }
+  if (key === "ArrowLeft" || key === "ArrowUp") {
+    return (activeIndex - 1 + total) % total;
+  }
+
+  return (activeIndex + 1) % total;
+}
+
+function selectLedgerMode(mode, options = {}) {
+  nodes.ledgerModeInput.value = mode;
+  updateLedgerValueField({ resetValue: options.resetValue });
+
+  if (options.resetCopy) {
+    const current = findLedgerEntry(state.activeLedgerKind);
+    const modeConfig = current ? getLedgerModeConfig(current.kind, nodes.ledgerModeInput.value) : null;
+    if (modeConfig?.defaultCopy) {
+      nodes.ledgerCopyInput.value = modeConfig.defaultCopy;
+    }
+  }
+
+  if (options.focus) {
+    [...nodes.ledgerModeControl.querySelectorAll(".mode-option")]
+      .find((button) => button.dataset.mode === nodes.ledgerModeInput.value)
+      ?.focus();
+  }
+}
+
+function createLedgerGlyphIcon(kind) {
+  const namespace = "http://www.w3.org/2000/svg";
+  const icon = document.createElementNS(namespace, "svg");
+  const use = document.createElementNS(namespace, "use");
+  icon.classList.add("ledger-glyph-icon");
+  icon.setAttribute("viewBox", "0 0 24 24");
+  icon.setAttribute("focusable", "false");
+  use.setAttribute("href", `#ledger-icon-${kind}`);
+  icon.append(use);
+  return icon;
 }
 
 function renderLedger() {
@@ -560,6 +587,7 @@ function renderLedger() {
     const glyph = document.createElement("span");
     glyph.className = `glyph ${entry.glyph}`;
     glyph.setAttribute("aria-hidden", "true");
+    glyph.append(createLedgerGlyphIcon(entry.kind));
 
     const title = document.createElement("strong");
     title.textContent = entry.title;
@@ -587,15 +615,12 @@ function selectLedgerEntry(kind) {
 function openLedgerEditor(entry) {
   const module = getLedgerModule(entry.kind);
   const mode = renderLedgerModeOptions(entry.kind, entry.mode);
-  nodes.ledgerDialogTitle.textContent = module.dialogTitle;
   nodes.ledgerDialogSubtitle.textContent = module.subtitle;
   nodes.ledgerModuleNote.textContent = module.note;
-  nodes.ledgerTitleLabel.textContent = module.titleLabel;
   nodes.ledgerTitleInput.placeholder = module.titlePlaceholder;
-  nodes.ledgerModeLabel.textContent = module.modeLabel;
-  nodes.ledgerCopyLabel.textContent = module.copyLabel;
   nodes.ledgerTitleInput.value = entry.title;
-  nodes.ledgerValueInput.value = mode === "question" ? "" : entry.value;
+  updateLedgerEditorLabels(entry.kind);
+  nodes.ledgerValueInput.value = entry.value;
   nodes.ledgerCopyInput.value = entry.copy;
   updateLedgerValueField();
 
@@ -610,22 +635,26 @@ function updateLedgerValueField(options = {}) {
 
   const mode = normalizeLedgerMode(current.kind, nodes.ledgerModeInput.value, current.mode);
   const modeConfig = getLedgerModeConfig(current.kind, mode);
-  const isQuestion = mode === "question";
 
   nodes.ledgerModeInput.value = mode;
+  nodes.ledgerModeControl.querySelectorAll(".mode-option").forEach((button) => {
+    const isActive = button.dataset.mode === mode;
+    button.classList.toggle("active", isActive);
+    button.setAttribute("aria-checked", String(isActive));
+    button.tabIndex = isActive ? 0 : -1;
+  });
   nodes.ledgerValueLabel.textContent = modeConfig.valueLabel;
   nodes.ledgerValueInput.placeholder = modeConfig.placeholder;
   nodes.ledgerValueInput.step = modeConfig.step;
   nodes.ledgerValueInput.setAttribute("inputmode", modeConfig.inputMode);
   nodes.ledgerValueUnit.textContent = modeConfig.unit;
-  nodes.ledgerValueUnit.hidden = isQuestion || !modeConfig.unit;
+  nodes.ledgerValueUnit.hidden = !modeConfig.unit;
   nodes.ledgerValueHint.textContent = modeConfig.hint;
   if (options.resetValue) {
-    nodes.ledgerValueInput.value = isQuestion ? "" : modeConfig.defaultValue;
+    nodes.ledgerValueInput.value = modeConfig.defaultValue;
   }
-  nodes.ledgerValueInput.disabled = isQuestion;
-  nodes.ledgerValueInput.required = !isQuestion;
-  nodes.ledgerValueField.classList.toggle("disabled-field", isQuestion);
+  nodes.ledgerValueInput.disabled = false;
+  nodes.ledgerValueInput.required = true;
 }
 
 function saveLedgerEditor() {
@@ -638,7 +667,7 @@ function saveLedgerEditor() {
     ...current,
     title: readLedgerText(nodes.ledgerTitleInput.value, current.title, 8),
     mode,
-    value: mode === "question" ? 0 : readLedgerValue(nodes.ledgerValueInput.value, modeConfig.defaultValue),
+    value: readLedgerValue(nodes.ledgerValueInput.value, modeConfig.defaultValue),
     copy: readLedgerText(nodes.ledgerCopyInput.value, current.copy, 80)
   };
 
@@ -659,7 +688,6 @@ function formatLedgerSummary(entry) {
     return modeConfig.summary(entry.value);
   }
 
-  if (entry.mode === "question") { return "值不值？"; }
   if (entry.mode === "spend-minutes") { return `${ledgerModeText[entry.mode]} ${Math.round(entry.value)} 分钟`; }
   return `${ledgerModeText[entry.mode]} ${formatMoney(entry.value)}`;
 }
@@ -692,12 +720,14 @@ function startSession() {
   nodes.actionText.textContent = "冲水结束";
   nodes.sessionState.textContent = "带薪进行中";
   nodes.liveLine.textContent = encouragements[0];
+  startMoneyRain();
   tick();
   state.timerId = window.setInterval(tick, 250);
 }
 
 function stopSession() {
   window.clearInterval(state.timerId);
+  stopMoneyRain();
   tick();
   const seconds = Math.max(1, Math.round(state.elapsedMs / 1000));
   const money = seconds * getRates().second;
@@ -728,6 +758,61 @@ function stopSession() {
   }
 }
 
+function startMoneyRain() {
+  if (prefersReducedMotion || !nodes.moneyRain) { return; }
+
+  stopMoneyRain({ immediate: true });
+  nodes.moneyRain.classList.add("active");
+  spawnMoneyBills(12);
+  state.moneyRainId = window.setInterval(() => spawnMoneyBills(4), 430);
+}
+
+function stopMoneyRain(options = {}) {
+  if (!nodes.moneyRain) { return; }
+
+  window.clearInterval(state.moneyRainId);
+  state.moneyRainId = null;
+  nodes.moneyRain.classList.remove("active");
+
+  if (options.immediate) {
+    nodes.moneyRain.replaceChildren();
+    return;
+  }
+
+  window.setTimeout(() => {
+    if (!state.running) {
+      nodes.moneyRain.replaceChildren();
+    }
+  }, 1200);
+}
+
+function spawnMoneyBills(count) {
+  const fragment = document.createDocumentFragment();
+
+  Array.from({ length: count }).forEach(() => {
+    const bill = document.createElement("span");
+    const duration = 2.4 + Math.random() * 1.7;
+    const serial = Math.random().toString(36).slice(2, 8).toUpperCase();
+    bill.className = "money-bill";
+    bill.dataset.tone = String(Math.ceil(Math.random() * 3));
+    bill.innerHTML = `
+      <span class="bill-corner">￥</span>
+      <span class="bill-portrait" aria-hidden="true"></span>
+      <span class="bill-value">100</span>
+      <span class="bill-serial">${serial}</span>
+    `;
+    bill.style.left = `${Math.random() * 100}%`;
+    bill.style.setProperty("--drift", `${Math.round((Math.random() - 0.5) * 120)}px`);
+    bill.style.setProperty("--fall-duration", `${duration}s`);
+    bill.style.setProperty("--spin", `${Math.round((Math.random() - 0.5) * 520)}deg`);
+    bill.style.animationDelay = `${Math.random() * 0.28}s`;
+    bill.addEventListener("animationend", () => bill.remove());
+    fragment.append(bill);
+  });
+
+  nodes.moneyRain.append(fragment);
+}
+
 function tick() {
   state.elapsedMs = Date.now() - state.startTime;
   const seconds = Math.floor(state.elapsedMs / 1000);
@@ -750,6 +835,7 @@ function switchTab(tab) {
   nodes.screens.forEach((screen) => {
     screen.classList.toggle("active", screen.id === `${tab}Screen`);
   });
+  nodes.contentScroll.scrollTop = 0;
 }
 
 function getTodayTotals() {
@@ -860,26 +946,6 @@ function renderTimeline() {
         </div>
         <span>${row.value}</span>
       </div>
-    `
-    )
-    .join("");
-}
-
-function renderRank() {
-  nodes.rankList.innerHTML = rankData
-    .map(
-      (item, index) => `
-      <article class="rank-row">
-        <div class="rank-medal rank-${index + 1}">${index + 1}</div>
-        <div>
-          <strong>${item.name}</strong>
-          <span>${item.tag}</span>
-        </div>
-        <div class="rank-score">
-          <strong>￥${item.money}</strong>
-          <small>收入</small>
-        </div>
-      </article>
     `
     )
     .join("");
