@@ -355,6 +355,8 @@ const nodes = {
   todayCount: document.querySelector("#todayCount"),
   todayDuration: document.querySelector("#todayDuration"),
   todayEarning: document.querySelector("#todayEarning"),
+  todayCard: document.querySelector("#todayCard"),
+  todayTitle: document.querySelector("#todayTitle"),
   todayMood: document.querySelector("#todayMood"),
   todayActivityList: document.querySelector("#todayActivityList"),
   statsBoard: document.querySelector("#statsBoard"),
@@ -842,7 +844,7 @@ function renderActivityMode() {
     button.tabIndex = isActive ? 0 : -1;
   });
 
-  renderTodayActivityList();
+  renderToday();
 }
 
 function setActivityPickerDisabled(disabled) {
@@ -1053,18 +1055,22 @@ function renderTodayActivityList() {
 }
 
 function renderToday() {
-  const totals = getTodayTotals();
+  const activity = getActivityMode();
+  const totals = getTodayActivityTotals()[state.activeActivity];
+  nodes.todayCard.dataset.activity = state.activeActivity;
+  nodes.todayCard.dataset.label = `${state.activeActivity.toUpperCase()} SCORE`;
+  nodes.todayTitle.textContent = `今日${activity.shortLabel}累计`;
   nodes.todayCount.textContent = totals.count;
   nodes.todayDuration.textContent = formatDuration(totals.seconds);
   nodes.todayEarning.textContent = formatMoney(totals.money);
   renderTodayActivityList();
 
   if (totals.count === 0) {
-    nodes.todayMood.textContent = "还没开始，今天很克制";
+    nodes.todayMood.textContent = `今天还没有${activity.shortLabel}记录`;
   } else if (totals.money < 20) {
-    nodes.todayMood.textContent = "刚够一杯柠檬水";
+    nodes.todayMood.textContent = `${activity.shortLabel}已经开始回血`;
   } else {
-    nodes.todayMood.textContent = "老板的预算开始发热";
+    nodes.todayMood.textContent = `${activity.shortLabel}收益正在发热`;
   }
 }
 
