@@ -135,12 +135,12 @@
               <button class="period-button" data-period="career" type="button">生涯</button>
             </div>
             <section class="stats-board" id="statsBoard"></section>
-            <section class="timeline-card">
+            <section class="timeline-card" aria-live="polite">
               <div class="section-title">
-                <h2>今日轨迹</h2>
-                <span>时间价值切片</span>
+                <h2>收益明细</h2>
+                <span id="periodDetailSubtitle">日 · 按单次记录</span>
               </div>
-              <div class="timeline" id="timeline"></div>
+              <div class="period-table-wrap" id="periodTable"></div>
             </section>
           </section>
 

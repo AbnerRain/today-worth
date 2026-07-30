@@ -197,6 +197,35 @@ const baseStats = {
   career: { count: 512, seconds: 216 * 3600, money: 16237 }
 };
 
+const periodDetailConfig = {
+  day: {
+    label: "日",
+    granularity: "按单次记录",
+    rowHeader: "时间"
+  },
+  week: {
+    label: "周",
+    granularity: "按星期汇总",
+    rowHeader: "星期",
+    rows: ["周一", "周二", "周三", "周四", "周五", "周六", "周日"],
+    weights: [17, 14, 19, 16, 22, 7, 5]
+  },
+  month: {
+    label: "月",
+    granularity: "按周汇总",
+    rowHeader: "周次",
+    rows: ["第 1 周", "第 2 周", "第 3 周", "第 4 周", "本周"],
+    weights: [18, 23, 20, 24, 15]
+  },
+  career: {
+    label: "生涯",
+    granularity: "按年度汇总",
+    rowHeader: "年份",
+    rows: ["2023", "2024", "2025", "2026"],
+    weights: [12, 24, 31, 33]
+  }
+};
+
 const badgeData = [
   { title: "第一泡", desc: "完成第一次带薪拉屎", key: "first" },
   { title: "连续七天", desc: "连续七天留下时间价值", key: "streak" },
@@ -276,7 +305,8 @@ const nodes = {
   todayEarning: document.querySelector("#todayEarning"),
   todayMood: document.querySelector("#todayMood"),
   statsBoard: document.querySelector("#statsBoard"),
-  timeline: document.querySelector("#timeline"),
+  periodDetailSubtitle: document.querySelector("#periodDetailSubtitle"),
+  periodTable: document.querySelector("#periodTable"),
   badgesGrid: document.querySelector("#badgesGrid"),
   reportDialog: document.querySelector("#reportDialog"),
   closeReport: document.querySelector("#closeReport"),
@@ -304,7 +334,6 @@ function init() {
   renderLedger();
   renderToday();
   renderStats();
-  renderTimeline();
   renderBadges();
 }
 
@@ -678,7 +707,6 @@ function saveLedgerEditor() {
   saveLedgerEntries();
   renderLedger();
   selectLedgerEntry(nextEntry.kind);
-  renderTimeline();
   nodes.ledgerDialog.close();
 }
 
@@ -750,7 +778,6 @@ function stopSession() {
 
   renderToday();
   renderStats();
-  renderTimeline();
   renderBadges();
   renderReport(session);
   if (typeof nodes.reportDialog.showModal === "function") {
@@ -899,6 +926,8 @@ function renderStats() {
       <span>价值换算</span>
     </article>
   `;
+
+  renderPeriodTable(current);
 }
 
 function combineStats(base, addition) {
@@ -916,39 +945,102 @@ function makeVerdict(money) {
   return "机票级";
 }
 
-function renderTimeline() {
-  const timelineTimes = ["09:12", "10:36", "14:00"];
-  const quickRows = state.ledgerEntries.slice(0, 3).map((entry, index) => ({
-    time: timelineTimes[index],
-    title: entry.title,
-    value: formatLedgerSummary(entry),
-    width: Math.min(82, Math.max(16, Number(entry.value) || 16))
+function renderPeriodTable(total) {
+  const config = periodDetailConfig[state.activePeriod];
+  const rows = state.activePeriod === "day"
+    ? state.sessions.map((session, index) => ({
+        label: session.at instanceof Date
+          ? session.at.toLocaleTimeString("zh-CN", {
+              hour: "2-digit",
+              minute: "2-digit",
+              hour12: false
+            })
+          : `第 ${index + 1} 笔`,
+        count: 1,
+        seconds: session.seconds,
+        money: session.money
+      }))
+    : makeAggregateRows(total, config);
+
+  nodes.periodDetailSubtitle.textContent = `${config.label} · ${config.granularity}`;
+  nodes.periodTable.innerHTML = `
+    <table class="period-table">
+      <caption>${config.label}维度收益明细，${config.granularity}</caption>
+      <thead>
+        <tr>
+          <th scope="col">${config.rowHeader}</th>
+          <th scope="col">次数</th>
+          <th scope="col">时长</th>
+          <th scope="col">收益</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${
+          rows.length
+            ? rows
+                .map(
+                  (row) => `
+                    <tr>
+                      <th scope="row">${row.label}</th>
+                      <td>${row.count}</td>
+                      <td>${formatDuration(row.seconds)}</td>
+                      <td>${formatMoney(row.money)}</td>
+                    </tr>
+                  `
+                )
+                .join("")
+            : `
+                <tr class="period-table-empty">
+                  <td colspan="4">今天暂无记录，完成一次计时后会自动入账。</td>
+                </tr>
+              `
+        }
+      </tbody>
+      ${
+        rows.length
+          ? `
+              <tfoot>
+                <tr>
+                  <th scope="row">合计</th>
+                  <td>${total.count}</td>
+                  <td>${formatDuration(total.seconds)}</td>
+                  <td>${formatMoney(total.money)}</td>
+                </tr>
+              </tfoot>
+            `
+          : ""
+      }
+    </table>
+  `;
+}
+
+function makeAggregateRows(total, config) {
+  const counts = allocateByWeight(total.count, config.weights);
+  const seconds = allocateByWeight(total.seconds, config.weights);
+  const moneyInCents = allocateByWeight(Math.round(total.money * 100), config.weights);
+
+  return config.rows.map((label, index) => ({
+    label,
+    count: counts[index],
+    seconds: seconds[index],
+    money: moneyInCents[index] / 100
   }));
+}
 
-  const rows = [
-    ...quickRows,
-    {
-      time: "刚刚",
-      title: "带薪拉屎",
-      value: formatMoney(getTodayTotals().money),
-      width: Math.min(100, Math.max(8, getTodayTotals().seconds / 12))
-    }
-  ];
+function allocateByWeight(total, weights) {
+  const weightTotal = weights.reduce((sum, weight) => sum + weight, 0);
+  const rawValues = weights.map((weight) => (total * weight) / weightTotal);
+  const values = rawValues.map((value) => Math.floor(value));
+  const allocated = values.reduce((sum, value) => sum + value, 0);
+  const remainderOrder = rawValues
+    .map((value, index) => ({ index, fraction: value - values[index] }))
+    .sort((a, b) => b.fraction - a.fraction);
 
-  nodes.timeline.innerHTML = rows
-    .map(
-      (row) => `
-      <div class="timeline-row">
-        <span>${row.time}</span>
-        <div>
-          <strong>${row.title}</strong>
-          <div class="timeline-bar"><span style="width: ${row.width}%"></span></div>
-        </div>
-        <span>${row.value}</span>
-      </div>
-    `
-    )
-    .join("");
+  for (let index = 0; index < total - allocated; index += 1) {
+    values[remainderOrder[index % remainderOrder.length].index] += 1;
+  }
+
+  return values;
 }
 
 function renderBadges() {
