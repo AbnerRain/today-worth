@@ -1,11 +1,59 @@
-const encouragements = [
-  "老板正在为你的肠道健康买单。",
-  "这泡已经抵过半杯蜜雪冰城。",
-  "今天已经击败全国 37% 的打工人。",
-  "别急，财富正在以秒为单位到账。",
-  "你不是在摸鱼，你是在做现金流管理。",
-  "此刻，工位和马桶都在创造价值。"
-];
+const activityModes = {
+  toilet: {
+    label: "带薪拉屎",
+    shortLabel: "拉屎",
+    hint: "肠道健康也算现金流",
+    meterLabel: "摸鱼计价器 // TOILET",
+    idleState: "拉屎模式待开工",
+    idleLine: "点击开始，把今天最松弛的一段时间记进账本。",
+    runningState: "正在带薪拉屎",
+    stopAction: "冲水结束",
+    doneState: "本次已冲水",
+    doneLine: (money) => `刚刚入账 ${formatMoney(money)}，这笔钱很有味道。`,
+    encouragements: [
+      "老板正在为你的肠道健康买单。",
+      "这泡已经抵过半杯蜜雪冰城。",
+      "别急，财富正在以秒为单位到账。",
+      "此刻，工位和马桶都在创造价值。"
+    ]
+  },
+  meal: {
+    label: "带薪用膳",
+    shortLabel: "用膳",
+    hint: "午饭不是暂停，是带薪补给",
+    meterLabel: "饭点计价器 // DINING",
+    idleState: "用膳模式待开饭",
+    idleLine: "选好今天的带薪菜单，开饭后每一口都开始计价。",
+    runningState: "正在带薪用膳",
+    stopAction: "吃饱收工",
+    doneState: "本次已光盘",
+    doneLine: (money) => `这顿饭入账 ${formatMoney(money)}，午休终于有了回报。`,
+    encouragements: [
+      "这口饭由工作时间买单。",
+      "咀嚼不是暂停，是能量资产重组。",
+      "午饭吃得慢一点，收益跑得快一点。",
+      "饭还热着，现金流也在冒热气。"
+    ]
+  },
+  nap: {
+    label: "带薪睡觉",
+    shortLabel: "睡觉",
+    hint: "闭眼充电，醒来结算",
+    meterLabel: "补觉计价器 // NAP",
+    idleState: "睡觉模式待入梦",
+    idleLine: "找个不容易被发现的角落，闭眼后开始计算睡眠收益。",
+    runningState: "正在带薪睡觉",
+    stopAction: "睡醒收工",
+    doneState: "本次已充满",
+    doneLine: (money) => `这一觉入账 ${formatMoney(money)}，精神和余额一起回血。`,
+    encouragements: [
+      "眼睛闭上了，收益没有。",
+      "这是带薪充电，不是离线。",
+      "每一次呼吸都在刷新余额。",
+      "工位安静了，现金流还醒着。"
+    ]
+  }
+};
 
 const defaultLedgerEntries = [
   {
@@ -248,6 +296,8 @@ const state = {
   elapsedMs: 0,
   timerId: null,
   moneyRainId: null,
+  activeActivity: "toilet",
+  runningActivity: "",
   activePeriod: "day",
   activeLedgerKind: "",
   lastReport: null
@@ -268,6 +318,9 @@ const nodes = {
   screens: document.querySelectorAll(".screen"),
   contentScroll: document.querySelector(".content-scroll"),
   periodButtons: document.querySelectorAll(".period-button"),
+  activityButtons: document.querySelectorAll(".activity-option"),
+  activityHint: document.querySelector("#activityHint"),
+  heroMeter: document.querySelector("#heroMeter"),
   mainAction: document.querySelector("#mainAction"),
   actionIcon: document.querySelector("#actionIcon"),
   actionText: document.querySelector("#actionText"),
@@ -305,12 +358,15 @@ const nodes = {
   periodDetails: document.querySelector("#periodDetails"),
   badgesGrid: document.querySelector("#badgesGrid"),
   reportDialog: document.querySelector("#reportDialog"),
+  reportCard: document.querySelector(".report-card"),
   closeReport: document.querySelector("#closeReport"),
+  reportTitle: document.querySelector("#reportTitle"),
   reportMoney: document.querySelector("#reportMoney"),
   reportDuration: document.querySelector("#reportDuration"),
   reportCount: document.querySelector("#reportCount"),
   reportTotalDuration: document.querySelector("#reportTotalDuration"),
   reportTotalMoney: document.querySelector("#reportTotalMoney"),
+  posterTitle: document.querySelector("#posterTitle"),
   posterDuration: document.querySelector("#posterDuration"),
   posterMoney: document.querySelector("#posterMoney"),
   shareReport: document.querySelector("#shareReport"),
@@ -326,6 +382,7 @@ function init() {
   nodes.hoursInput.value = state.profile.hours;
 
   bindEvents();
+  renderActivityMode();
   renderRates();
   renderLedger();
   renderToday();
@@ -367,6 +424,30 @@ function bindEvents() {
       state.activePeriod = button.dataset.period;
       nodes.periodButtons.forEach((item) => item.classList.toggle("active", item === button));
       renderStats();
+    });
+  });
+
+  nodes.activityButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      if (state.running) { return; }
+      state.activeActivity = button.dataset.activity;
+      renderActivityMode();
+    });
+
+    button.addEventListener("keydown", (event) => {
+      const keys = ["ArrowLeft", "ArrowUp", "ArrowRight", "ArrowDown", "Home", "End"];
+      if (!keys.includes(event.key) || state.running) { return; }
+
+      event.preventDefault();
+      const options = [...nodes.activityButtons];
+      const activeIndex = Math.max(
+        0,
+        options.findIndex((item) => item.dataset.activity === state.activeActivity)
+      );
+      const nextIndex = getNextModeIndex(event.key, activeIndex, options.length);
+      state.activeActivity = options[nextIndex].dataset.activity;
+      renderActivityMode();
+      options[nextIndex].focus();
     });
   });
 
@@ -735,21 +816,55 @@ function renderRates() {
   nodes.secondRate.textContent = `￥${rates.second.toFixed(3)}`;
 }
 
+function getActivityMode(key = state.activeActivity) {
+  return activityModes[key] || activityModes.toilet;
+}
+
+function renderActivityMode() {
+  const activity = getActivityMode();
+  nodes.heroMeter.dataset.activity = state.activeActivity;
+  nodes.heroMeter.dataset.label = activity.meterLabel;
+  nodes.heroMeter.setAttribute("aria-label", `${activity.label}实时计时和收益`);
+  nodes.mainAction.dataset.activity = state.activeActivity;
+  nodes.activityHint.textContent = activity.hint;
+  nodes.actionText.textContent = `开始${activity.label}`;
+  nodes.sessionState.textContent = activity.idleState;
+  nodes.liveLine.textContent = activity.idleLine;
+
+  nodes.activityButtons.forEach((button) => {
+    const isActive = button.dataset.activity === state.activeActivity;
+    button.classList.toggle("active", isActive);
+    button.setAttribute("aria-checked", String(isActive));
+    button.tabIndex = isActive ? 0 : -1;
+  });
+}
+
+function setActivityPickerDisabled(disabled) {
+  nodes.activityButtons.forEach((button) => {
+    button.disabled = disabled;
+  });
+}
+
 function startSession() {
+  const activity = getActivityMode();
   state.running = true;
+  state.runningActivity = state.activeActivity;
   state.startTime = Date.now();
   state.elapsedMs = 0;
   nodes.mainAction.classList.add("running");
   nodes.actionIcon.classList.add("active");
-  nodes.actionText.textContent = "冲水结束";
-  nodes.sessionState.textContent = "带薪进行中";
-  nodes.liveLine.textContent = encouragements[0];
+  nodes.actionText.textContent = activity.stopAction;
+  nodes.sessionState.textContent = activity.runningState;
+  nodes.liveLine.textContent = activity.encouragements[0];
+  setActivityPickerDisabled(true);
   startMoneyRain();
   tick();
   state.timerId = window.setInterval(tick, 250);
 }
 
 function stopSession() {
+  const activityKey = state.runningActivity || state.activeActivity;
+  const activity = getActivityMode(activityKey);
   window.clearInterval(state.timerId);
   stopMoneyRain();
   tick();
@@ -758,19 +873,22 @@ function stopSession() {
   const session = {
     seconds,
     money,
+    activity: activityKey,
     at: new Date()
   };
 
   state.sessions.push(session);
   state.running = false;
+  state.runningActivity = "";
   state.elapsedMs = 0;
   nodes.mainAction.classList.remove("running");
   nodes.actionIcon.classList.remove("active");
-  nodes.actionText.textContent = "开始带薪拉屎";
-  nodes.sessionState.textContent = "本次已冲水";
-  nodes.liveLine.textContent = `刚刚入账 ${formatMoney(money)}，这笔钱很有味道。`;
+  nodes.actionText.textContent = `开始${activity.label}`;
+  nodes.sessionState.textContent = activity.doneState;
+  nodes.liveLine.textContent = activity.doneLine(money);
   nodes.timer.textContent = "00:00:00";
   nodes.liveEarning.textContent = "￥0.00";
+  setActivityPickerDisabled(false);
 
   renderToday();
   renderStats();
@@ -837,12 +955,15 @@ function spawnMoneyBills(count) {
 }
 
 function tick() {
+  const activity = getActivityMode(state.runningActivity || state.activeActivity);
   state.elapsedMs = Date.now() - state.startTime;
   const seconds = Math.floor(state.elapsedMs / 1000);
   const money = seconds * getRates().second;
   nodes.timer.textContent = formatClock(seconds);
   nodes.liveEarning.textContent = formatMoney(money);
-  nodes.liveLine.textContent = encouragements[Math.floor(seconds / 5) % encouragements.length];
+  nodes.liveLine.textContent = activity.encouragements[
+    Math.floor(seconds / 5) % activity.encouragements.length
+  ];
 }
 
 function switchTab(tab) {
@@ -880,7 +1001,7 @@ function renderToday() {
   nodes.todayEarning.textContent = formatMoney(totals.money);
 
   if (totals.count === 0) {
-    nodes.todayMood.textContent = "还没开始，肠道很克制";
+    nodes.todayMood.textContent = "还没开始，今天很克制";
   } else if (totals.money < 20) {
     nodes.todayMood.textContent = "刚够一杯柠檬水";
   } else {
@@ -954,7 +1075,8 @@ function renderPeriodDetails(total) {
           : `第 ${index + 1} 笔`,
         count: 1,
         seconds: session.seconds,
-        money: session.money
+        money: session.money,
+        activity: session.activity || "toilet"
       }))
     : makeAggregateRows(total, config);
 
@@ -973,7 +1095,7 @@ function renderPeriodDetails(total) {
     .map((row, index) => {
       const duration = formatDuration(row.seconds);
       const detail = state.activePeriod === "day"
-        ? `第 ${index + 1} 笔 · ${duration}`
+        ? `${getActivityMode(row.activity).shortLabel} · ${duration}`
         : `${row.count} 次 · ${duration}`;
       const width = Math.max(8, Math.round((row.money / maxMoney) * 100));
 
@@ -1053,7 +1175,11 @@ function renderBadges() {
 
 function renderReport(session) {
   const totals = getTodayTotals();
+  const activity = getActivityMode(session.activity);
   state.lastReport = { session, totals };
+  nodes.reportCard.dataset.activity = session.activity || "toilet";
+  nodes.reportTitle.textContent = `本次${activity.label}`;
+  nodes.posterTitle.textContent = `今日${activity.label}`;
   nodes.shareStatus.textContent = "";
   nodes.reportMoney.textContent = formatMoney(session.money);
   nodes.reportDuration.textContent = formatDuration(session.seconds);
@@ -1117,15 +1243,16 @@ async function copyReportText() {
 
 function makeShareData(report) {
   const { session, totals } = report;
+  const activity = getActivityMode(session.activity);
   const text = [
-    "我刚算了一下今天值多少钱：",
+    `我刚完成一次${activity.label}：`,
     `本次 ${formatDuration(session.seconds)}，赚了 ${formatMoney(session.money)}。`,
     `今日累计 ${formatDuration(totals.seconds)}，共 ${formatMoney(totals.money)}。`,
     "你也来算算你的时间价值。"
   ].join("\n");
 
   const data = {
-    title: "今天值多少钱",
+    title: `今天值多少钱 · ${activity.shortLabel}战报`,
     text
   };
 
