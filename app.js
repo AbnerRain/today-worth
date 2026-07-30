@@ -11,6 +11,15 @@ const activityModes = {
     stopAction: "冲水结束",
     doneState: "本次已冲水",
     doneLine: (money) => `刚刚入账 ${formatMoney(money)}，这笔钱很有味道。`,
+    reportTag: "冲水到账",
+    reportSceneLabel: "马桶冲水、纸卷转动和金币跳起",
+    reportMessages: [
+      "肠道清空一格，余额悄悄长了一格。",
+      "这次不是摸鱼，是有薪排空缓存。",
+      "人轻松了，钱包也更有分量了。"
+    ],
+    posterMark: "WC",
+    posterCaption: "冲水完成，今天的松弛时间已经入账。",
     encouragements: [
       "老板正在为你的肠道健康买单。",
       "这泡已经抵过半杯蜜雪冰城。",
@@ -30,6 +39,15 @@ const activityModes = {
     stopAction: "吃饱收工",
     doneState: "本次已光盘",
     doneLine: (money) => `这顿饭入账 ${formatMoney(money)}，午休终于有了回报。`,
+    reportTag: "光盘入账",
+    reportSceneLabel: "热气从饭碗升起，筷子和闪光轻轻跳动",
+    reportMessages: [
+      "胃里装满午饭，账上装满带薪能量。",
+      "这顿饭不只管饱，还顺手赚了钱。",
+      "筷子放下，午间收益正式入账。"
+    ],
+    posterMark: "饭",
+    posterCaption: "午饭负责补能量，工作时间负责买单。",
     encouragements: [
       "这口饭由工作时间买单。",
       "咀嚼不是暂停，是能量资产重组。",
@@ -49,6 +67,15 @@ const activityModes = {
     stopAction: "睡醒收工",
     doneState: "本次已充满",
     doneLine: (money) => `这一觉入账 ${formatMoney(money)}，精神和余额一起回血。`,
+    reportTag: "充电完成",
+    reportSceneLabel: "枕头轻轻呼吸，月亮旁的睡眠符号向上漂浮",
+    reportMessages: [
+      "眼睛休息了，现金流一刻没停。",
+      "这一觉把困意换成了余额。",
+      "人还在梦里，收益已经醒了。"
+    ],
+    posterMark: "ZZ",
+    posterCaption: "闭眼完成充电，醒来查收带薪睡眠收益。",
     encouragements: [
       "眼睛闭上了，收益没有。",
       "这是带薪充电，不是离线。",
@@ -248,6 +275,29 @@ const baseStats = {
   career: { count: 512, seconds: 216 * 3600, money: 16237 }
 };
 
+const valueBenchmarks = [
+  { price: 0.5, label: "购物袋有着落" },
+  { price: 1, label: "打印店单页王" },
+  { price: 2, label: "公交起步价" },
+  { price: 3, label: "矿泉水到手" },
+  { price: 5, label: "便利店冰棍" },
+  { price: 8, label: "蜜雪入账" },
+  { price: 12, label: "早餐保卫战" },
+  { price: 18, label: "咖啡续命局" },
+  { price: 25, label: "工作餐回血" },
+  { price: 35, label: "奶茶加料自由" },
+  { price: 60, label: "双人快餐局" },
+  { price: 120, label: "单人火锅局" },
+  { price: 220, label: "双人火锅局" },
+  { price: 400, label: "短途高铁往返" },
+  { price: 800, label: "周末酒店一晚" },
+  { price: 1500, label: "国内机票到账" },
+  { price: 3000, label: "周末出走基金" },
+  { price: 6000, label: "手机换新基金" },
+  { price: 10000, label: "年假旅行基金" },
+  { price: 15000, label: "电脑换新基金" }
+];
+
 const periodDetailConfig = {
   day: {
     label: "日",
@@ -365,9 +415,12 @@ const nodes = {
   badgesGrid: document.querySelector("#badgesGrid"),
   reportDialog: document.querySelector("#reportDialog"),
   reportCard: document.querySelector(".report-card"),
+  reportScene: document.querySelector("#reportScene"),
+  reportSceneTag: document.querySelector("#reportSceneTag"),
   closeReport: document.querySelector("#closeReport"),
   reportTitle: document.querySelector("#reportTitle"),
   reportMoney: document.querySelector("#reportMoney"),
+  reportQuote: document.querySelector("#reportQuote"),
   reportDuration: document.querySelector("#reportDuration"),
   reportCount: document.querySelector("#reportCount"),
   reportTotalDuration: document.querySelector("#reportTotalDuration"),
@@ -375,6 +428,8 @@ const nodes = {
   posterTitle: document.querySelector("#posterTitle"),
   posterDuration: document.querySelector("#posterDuration"),
   posterMoney: document.querySelector("#posterMoney"),
+  posterMark: document.querySelector("#posterMark"),
+  posterCaption: document.querySelector("#posterCaption"),
   shareReport: document.querySelector("#shareReport"),
   copyReport: document.querySelector("#copyReport"),
   shareStatus: document.querySelector("#shareStatus")
@@ -1083,6 +1138,7 @@ function renderStats() {
     career: combineStats(baseStats.career, today)
   };
   const current = stats[state.activePeriod];
+  const verdict = makeVerdict(current.money);
   const labels = {
     day: "今天",
     week: "本周",
@@ -1103,8 +1159,9 @@ function renderStats() {
       <strong>${formatMoney(current.money)}</strong>
       <span>累计收入</span>
     </article>
-    <article class="stat-card">
-      <strong>${makeVerdict(current.money)}</strong>
+    <article class="stat-card verdict-card">
+      <strong>${verdict.label}</strong>
+      <small>${verdict.detail}</small>
       <span>价值换算</span>
     </article>
   `;
@@ -1121,10 +1178,33 @@ function combineStats(base, addition) {
 }
 
 function makeVerdict(money) {
-  if (money < 20) return "蜜雪级";
-  if (money < 200) return "奶茶自由";
-  if (money < 1000) return "火锅局";
-  return "机票级";
+  const normalizedMoney = Math.max(0, Number(money) || 0);
+  if (normalizedMoney === 0) {
+    return {
+      label: "还没开始薅",
+      detail: "完成一次计时再换算"
+    };
+  }
+
+  const matched = [...valueBenchmarks]
+    .reverse()
+    .find((benchmark) => normalizedMoney >= benchmark.price);
+
+  if (!matched) {
+    const next = valueBenchmarks[0];
+    return {
+      label: "硬币正在加载",
+      detail: `距${next.label}还差 ${formatMoney(next.price - normalizedMoney)}`
+    };
+  }
+
+  const remainder = normalizedMoney - matched.price;
+  return {
+    label: matched.label,
+    detail: remainder < 0.01
+      ? `参考 ${formatMoney(matched.price)}，刚好拿下`
+      : `参考 ${formatMoney(matched.price)}，还能剩 ${formatMoney(remainder)}`
+  };
 }
 
 function renderPeriodDetails(total) {
@@ -1239,20 +1319,31 @@ function renderBadges() {
 }
 
 function renderReport(session) {
-  const totals = getTodayTotals();
-  const activity = getActivityMode(session.activity);
-  state.lastReport = { session, totals };
-  nodes.reportCard.dataset.activity = session.activity || "toilet";
+  const activityKey = activityModes[session.activity] ? session.activity : "toilet";
+  const totals = getTodayActivityTotals()[activityKey];
+  const activity = getActivityMode(activityKey);
+  const messageIndex = (session.seconds + totals.count - 1) % activity.reportMessages.length;
+  const message = activity.reportMessages[messageIndex];
+  state.lastReport = { session, totals, message };
+  nodes.reportCard.dataset.activity = activityKey;
+  nodes.reportScene.setAttribute(
+    "aria-label",
+    `${activity.shortLabel}结算动画：${activity.reportSceneLabel}`
+  );
+  nodes.reportSceneTag.textContent = activity.reportTag;
   nodes.reportTitle.textContent = `本次${activity.label}`;
   nodes.posterTitle.textContent = `今日${activity.label}`;
   nodes.shareStatus.textContent = "";
   nodes.reportMoney.textContent = formatMoney(session.money);
+  nodes.reportQuote.textContent = message;
   nodes.reportDuration.textContent = formatDuration(session.seconds);
   nodes.reportCount.textContent = `${totals.count}次`;
   nodes.reportTotalDuration.textContent = formatDuration(totals.seconds);
   nodes.reportTotalMoney.textContent = formatMoney(totals.money);
   nodes.posterDuration.textContent = formatDuration(totals.seconds);
   nodes.posterMoney.textContent = `赚了 ${formatMoney(totals.money)}`;
+  nodes.posterMark.textContent = activity.posterMark;
+  nodes.posterCaption.textContent = activity.posterCaption;
 }
 
 async function shareReport() {
@@ -1307,12 +1398,13 @@ async function copyReportText() {
 }
 
 function makeShareData(report) {
-  const { session, totals } = report;
+  const { session, totals, message } = report;
   const activity = getActivityMode(session.activity);
   const text = [
     `我刚完成一次${activity.label}：`,
     `本次 ${formatDuration(session.seconds)}，赚了 ${formatMoney(session.money)}。`,
     `今日累计 ${formatDuration(totals.seconds)}，共 ${formatMoney(totals.money)}。`,
+    message,
     "你也来算算你的时间价值。"
   ].join("\n");
 

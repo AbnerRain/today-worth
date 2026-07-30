@@ -1387,6 +1387,24 @@ textarea:focus-visible {
   font-size: 22px;
 }
 
+.stat-card.verdict-card {
+  gap: 3px;
+}
+
+.stat-card.verdict-card strong {
+  overflow-wrap: anywhere;
+  font-size: 18px;
+  line-height: 1.15;
+}
+
+.stat-card.verdict-card small {
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 9px;
+  line-height: 1.35;
+  font-weight: 800;
+}
+
 .stat-card.accent strong,
 .stat-card.accent span {
   color: #fff;
@@ -2024,47 +2042,516 @@ dialog[open] .report-card {
   position: relative;
 }
 
-.report-card::before {
-  content: "今日战绩!";
+.report-close {
   position: absolute;
-  top: 16px;
-  right: 66px;
-  padding: 4px 8px;
+  top: 12px;
+  right: 12px;
+  z-index: 8;
+  background: #fff;
+  box-shadow: 2px 2px 0 var(--ink);
+}
+
+.report-scene {
+  height: 164px;
+  margin: -20px -20px 0;
+  overflow: hidden;
+  border-bottom: 3px solid var(--ink);
+  background:
+    linear-gradient(rgba(19, 27, 43, 0.08) 1px, transparent 1px) 0 0 / 24px 24px,
+    linear-gradient(90deg, rgba(19, 27, 43, 0.08) 1px, transparent 1px) 0 0 / 24px 24px,
+    var(--sky);
+  position: relative;
+  isolation: isolate;
+}
+
+.report-scene::before {
+  content: "";
+  width: 92px;
+  height: 220px;
+  position: absolute;
+  top: -44px;
+  left: -28px;
+  z-index: -1;
+  border-right: 3px solid var(--ink);
+  background:
+    repeating-linear-gradient(
+      -45deg,
+      rgba(255, 255, 255, 0.76) 0 8px,
+      rgba(255, 255, 255, 0.18) 8px 14px
+    );
+  transform: rotate(12deg);
+}
+
+.report-card[data-activity="meal"] .report-scene {
+  background:
+    linear-gradient(rgba(19, 27, 43, 0.07) 2px, transparent 2px) 0 0 / 28px 28px,
+    linear-gradient(90deg, rgba(19, 27, 43, 0.07) 2px, transparent 2px) 0 0 / 28px 28px,
+    var(--coral-soft);
+}
+
+.report-card[data-activity="nap"] .report-scene {
+  background:
+    radial-gradient(circle, rgba(255, 255, 255, 0.82) 0 1px, transparent 1.5px) 0 0 / 25px 25px,
+    #a7c6ff;
+}
+
+.report-scene-tag {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  z-index: 5;
+  padding: 5px 9px;
   border: 2px solid var(--ink);
   border-radius: 4px;
   background: var(--yellow);
   color: var(--ink);
   font-family: var(--display);
   font-size: 11px;
-  font-weight: 900;
+  line-height: 1;
+  font-weight: 950;
   box-shadow: 2px 2px 0 var(--ink);
+  transform: rotate(-3deg);
+}
+
+.report-card[data-activity="meal"] .report-scene-tag {
+  background: #fff;
   transform: rotate(3deg);
 }
 
-.report-close {
+.report-card[data-activity="nap"] .report-scene-tag {
+  background: var(--mint-soft);
+}
+
+.report-illustration {
+  display: none;
   position: absolute;
-  top: 13px;
-  right: 13px;
+  inset: 0;
+}
+
+.report-card[data-activity="toilet"] .report-illustration-toilet,
+.report-card[data-activity="meal"] .report-illustration-meal,
+.report-card[data-activity="nap"] .report-illustration-nap {
+  display: block;
+}
+
+.report-illustration svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: visible;
+}
+
+.scene-speed-line {
+  fill: none;
+  stroke: rgba(19, 27, 43, 0.38);
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.report-sfx {
+  position: absolute;
+  right: 16px;
+  bottom: 13px;
+  padding: 5px 8px;
+  border: 2px solid var(--ink);
+  border-radius: 4px;
+  background: #fff;
+  color: var(--ink);
+  font-family: var(--display);
+  font-size: 13px;
+  line-height: 1;
+  font-weight: 950;
   box-shadow: 2px 2px 0 var(--ink);
+  transform: rotate(5deg);
+}
+
+.report-illustration-meal .report-sfx {
+  background: var(--yellow);
+  transform: rotate(-5deg);
+}
+
+.report-illustration-nap .report-sfx {
+  background: var(--mint-soft);
+  transform: rotate(4deg);
+}
+
+.toilet-fixture > rect,
+.toilet-fixture > path:not(.toilet-water),
+.toilet-fixture > circle {
+  fill: #fff;
+  stroke: var(--ink);
+  stroke-width: 4;
+  stroke-linejoin: round;
+}
+
+.toilet-fixture > circle {
+  fill: var(--yellow);
+}
+
+.toilet-water {
+  fill: var(--sky);
+  stroke: var(--ink);
+  stroke-width: 3;
+  stroke-linejoin: round;
+}
+
+.toilet-roll circle,
+.toilet-roll path {
+  fill: #fff;
+  stroke: var(--ink);
+  stroke-width: 4;
+  stroke-linejoin: round;
+}
+
+.toilet-roll circle:nth-child(2) {
+  fill: var(--yellow);
+}
+
+.scene-coin circle {
+  fill: var(--yellow);
+  stroke: var(--ink);
+  stroke-width: 3;
+}
+
+.scene-coin path {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.meal-steam path {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 6;
+  stroke-linecap: round;
+}
+
+.meal-chopsticks path {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 6;
+  stroke-linecap: round;
+}
+
+.meal-bowl > path {
+  stroke: var(--ink);
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.meal-bowl > path:nth-child(1) {
+  fill: #fff;
+}
+
+.meal-bowl > path:nth-child(2) {
+  fill: var(--yellow-soft);
+}
+
+.meal-bowl > .meal-rice {
+  fill: #fff;
+  stroke-width: 3;
+}
+
+.meal-bowl > path:last-child {
+  fill: none;
+}
+
+.meal-spark path {
+  fill: var(--yellow);
+  stroke: var(--ink);
+  stroke-width: 3;
+  stroke-linejoin: round;
+}
+
+.nap-moon {
+  fill: var(--yellow);
+  stroke: var(--ink);
+  stroke-width: 4;
+  stroke-linejoin: round;
+}
+
+.nap-zzz path {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.nap-bed rect,
+.nap-bed path,
+.nap-bed circle {
+  fill: #fff;
+  stroke: var(--ink);
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.nap-bed circle {
+  fill: var(--yellow-soft);
+}
+
+.nap-bed .nap-face {
+  fill: none;
+  stroke-width: 3;
+}
+
+.nap-bed .nap-blanket {
+  fill: var(--blue);
+}
+
+dialog[open] .report-illustration-toilet .toilet-fixture {
+  animation: toilet-pop 520ms cubic-bezier(0.18, 0.86, 0.38, 1.24) both;
+}
+
+dialog[open] .report-illustration-toilet .toilet-roll {
+  transform-origin: 231px 83px;
+  animation: toilet-roll-wiggle 1.8s ease-in-out 320ms infinite;
+}
+
+dialog[open] .report-illustration-toilet .scene-coin {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: scene-coin-pop 1.7s ease-in-out infinite;
+}
+
+dialog[open] .report-illustration-toilet .scene-coin-two {
+  animation-delay: 260ms;
+}
+
+dialog[open] .report-illustration-toilet .toilet-water {
+  animation: toilet-water-pulse 1.3s ease-in-out infinite;
+}
+
+dialog[open] .report-illustration-meal .meal-bowl {
+  transform-origin: 140px 112px;
+  animation: meal-bowl-arrive 560ms cubic-bezier(0.18, 0.86, 0.38, 1.24) both;
+}
+
+dialog[open] .report-illustration-meal .meal-steam path {
+  animation: meal-steam-rise 1.8s ease-in-out infinite;
+}
+
+dialog[open] .report-illustration-meal .meal-steam path:nth-child(2) {
+  animation-delay: 280ms;
+}
+
+dialog[open] .report-illustration-meal .meal-steam path:nth-child(3) {
+  animation-delay: 560ms;
+}
+
+dialog[open] .report-illustration-meal .meal-chopsticks {
+  transform-origin: 180px 72px;
+  animation: meal-chopsticks 1.6s ease-in-out infinite;
+}
+
+dialog[open] .report-illustration-meal .meal-spark {
+  transform-origin: 46px 59px;
+  animation: meal-spark 1.2s steps(2, end) infinite;
+}
+
+dialog[open] .report-illustration-nap .nap-bed {
+  transform-origin: 140px 128px;
+  animation: nap-breathe 2.6s ease-in-out infinite;
+}
+
+dialog[open] .report-illustration-nap .nap-zzz {
+  animation: nap-zzz-float 2.2s ease-in-out infinite;
+}
+
+dialog[open] .report-illustration-nap .nap-moon {
+  transform-origin: 226px 43px;
+  animation: nap-moon-drift 3.2s ease-in-out infinite;
+}
+
+@keyframes toilet-pop {
+  from {
+    opacity: 0;
+    transform: translateY(24px) rotate(-3deg);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) rotate(0);
+  }
+}
+
+@keyframes toilet-roll-wiggle {
+  0%,
+  100% {
+    transform: rotate(-3deg);
+  }
+
+  50% {
+    transform: rotate(6deg);
+  }
+}
+
+@keyframes scene-coin-pop {
+  0%,
+  100% {
+    opacity: 0.72;
+    transform: translateY(5px) scale(0.9) rotate(-8deg);
+  }
+
+  50% {
+    opacity: 1;
+    transform: translateY(-7px) scale(1.08) rotate(8deg);
+  }
+}
+
+@keyframes toilet-water-pulse {
+  0%,
+  100% {
+    transform: scaleX(0.94);
+    transform-origin: center;
+  }
+
+  50% {
+    transform: scaleX(1.04);
+    transform-origin: center;
+  }
+}
+
+@keyframes meal-bowl-arrive {
+  from {
+    opacity: 0;
+    transform: translateY(26px) scale(0.9);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes meal-steam-rise {
+  0% {
+    opacity: 0;
+    transform: translateY(7px);
+  }
+
+  45% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes meal-chopsticks {
+  0%,
+  100% {
+    transform: rotate(-2deg) translateY(0);
+  }
+
+  50% {
+    transform: rotate(4deg) translateY(-5px);
+  }
+}
+
+@keyframes meal-spark {
+  0%,
+  100% {
+    transform: scale(0.78) rotate(-8deg);
+  }
+
+  50% {
+    transform: scale(1.08) rotate(8deg);
+  }
+}
+
+@keyframes nap-breathe {
+  0%,
+  100% {
+    transform: scaleY(0.98);
+  }
+
+  50% {
+    transform: scaleY(1.025) translateY(-2px);
+  }
+}
+
+@keyframes nap-zzz-float {
+  0%,
+  100% {
+    opacity: 0.68;
+    transform: translateY(5px);
+  }
+
+  50% {
+    opacity: 1;
+    transform: translateY(-7px);
+  }
+}
+
+@keyframes nap-moon-drift {
+  0%,
+  100% {
+    transform: rotate(-4deg);
+  }
+
+  50% {
+    transform: rotate(5deg) translateY(-3px);
+  }
+}
+
+.report-summary {
+  padding-top: 15px;
 }
 
 .report-title {
   display: block;
-  padding-right: 130px;
   color: var(--muted);
   font-size: 13px;
   font-weight: 850;
 }
 
-.report-card > strong {
+.report-summary > strong {
   display: block;
-  margin-top: 11px;
+  margin-top: 8px;
+  overflow-wrap: anywhere;
   color: var(--green);
   font-family: var(--mono);
-  font-size: 45px;
+  font-size: 42px;
   line-height: 1;
   font-weight: 950;
   font-variant-numeric: tabular-nums;
+}
+
+.report-card[data-activity="meal"] .report-summary > strong {
+  color: #da3a32;
+}
+
+.report-card[data-activity="nap"] .report-summary > strong {
+  color: var(--blue-deep);
+}
+
+.report-quote {
+  min-height: 39px;
+  margin: 10px 0 0;
+  padding: 8px 10px;
+  border-left: 4px solid var(--blue);
+  background: #e8f0ff;
+  color: var(--ink-soft);
+  font-size: 12px;
+  line-height: 1.45;
+  font-weight: 800;
+}
+
+.report-card[data-activity="meal"] .report-quote {
+  border-left-color: var(--coral);
+  background: #fff0dc;
+}
+
+.report-card[data-activity="nap"] .report-quote {
+  border-left-color: var(--blue-deep);
+  background: #e7edff;
 }
 
 .report-grid {
@@ -2102,7 +2589,7 @@ dialog[open] .report-card {
 }
 
 .share-poster {
-  min-height: 178px;
+  min-height: 170px;
   margin-top: 16px;
   padding: 18px;
   border: 3px solid var(--ink);
@@ -2116,24 +2603,42 @@ dialog[open] .report-card {
   overflow: hidden;
 }
 
+.share-poster::before {
+  content: "";
+  width: 88px;
+  height: 210px;
+  position: absolute;
+  top: -35px;
+  right: -31px;
+  border-left: 3px solid var(--ink);
+  background:
+    repeating-linear-gradient(
+      -45deg,
+      rgba(255, 255, 255, 0.35) 0 7px,
+      transparent 7px 13px
+    );
+  transform: rotate(12deg);
+}
+
 .report-card[data-activity="meal"] .share-poster {
   background:
-    radial-gradient(circle, rgba(255, 255, 255, 0.28) 0 1.2px, transparent 1.4px) 0 0 / 14px 14px,
-    var(--coral);
+    linear-gradient(rgba(19, 27, 43, 0.07) 2px, transparent 2px) 0 0 / 28px 28px,
+    linear-gradient(90deg, rgba(19, 27, 43, 0.07) 2px, transparent 2px) 0 0 / 28px 28px,
+    var(--yellow);
   color: var(--ink);
 }
 
 .report-card[data-activity="nap"] .share-poster {
   background:
-    radial-gradient(circle, rgba(255, 255, 255, 0.32) 0 1.2px, transparent 1.4px) 0 0 / 14px 14px,
-    var(--sky);
+    radial-gradient(circle, rgba(255, 255, 255, 0.55) 0 1.2px, transparent 1.4px) 0 0 / 16px 16px,
+    #9bbdff;
   color: var(--ink);
 }
 
-.report-card[data-activity="meal"] .share-poster span,
+.report-card[data-activity="meal"] .share-poster #posterTitle,
 .report-card[data-activity="meal"] .share-poster p,
 .report-card[data-activity="meal"] .share-poster small,
-.report-card[data-activity="nap"] .share-poster span,
+.report-card[data-activity="nap"] .share-poster #posterTitle,
 .report-card[data-activity="nap"] .share-poster p,
 .report-card[data-activity="nap"] .share-poster small {
   color: var(--ink);
@@ -2157,7 +2662,19 @@ dialog[open] .report-card {
   transform: rotate(-5deg);
 }
 
-.share-poster span {
+.report-card[data-activity="meal"] .share-poster::after {
+  content: "已光盘!";
+  background: #fff;
+}
+
+.report-card[data-activity="nap"] .share-poster::after {
+  content: "已充满!";
+  background: var(--mint-soft);
+}
+
+#posterTitle {
+  position: relative;
+  z-index: 2;
   color: var(--yellow);
   font-family: var(--mono);
   font-size: 10px;
@@ -2166,6 +2683,8 @@ dialog[open] .report-card {
 
 .share-poster strong {
   display: block;
+  position: relative;
+  z-index: 2;
   margin-top: 12px;
   font-family: var(--display);
   font-size: 35px;
@@ -2174,6 +2693,8 @@ dialog[open] .report-card {
 }
 
 .share-poster p {
+  position: relative;
+  z-index: 2;
   margin: 8px 0 0;
   color: #fff;
   font-family: var(--mono);
@@ -2186,10 +2707,29 @@ dialog[open] .report-card {
   left: 18px;
   right: 105px;
   bottom: 16px;
+  z-index: 2;
   color: rgba(255, 255, 255, 0.82);
   font-size: 10px;
   line-height: 1.4;
   font-weight: 750;
+}
+
+.poster-mark {
+  position: absolute;
+  top: 12px;
+  right: 17px;
+  z-index: 1;
+  color: rgba(255, 255, 255, 0.26);
+  font-family: var(--display);
+  font-size: 62px;
+  line-height: 1;
+  font-weight: 950;
+  transform: rotate(8deg);
+}
+
+.report-card[data-activity="meal"] .poster-mark,
+.report-card[data-activity="nap"] .poster-mark {
+  color: rgba(19, 27, 43, 0.14);
 }
 
 .share-status {
