@@ -1094,119 +1094,80 @@ textarea:focus-visible {
   color: #fff;
 }
 
-.period-table-wrap {
-  border: 2px solid var(--ink);
-  border-radius: 7px;
-  background: #fff;
-  overflow: hidden;
-  box-shadow: 2px 2px 0 var(--ink);
+.timeline {
+  display: grid;
+  gap: 14px;
 }
 
-.period-table {
-  width: 100%;
-  border-collapse: collapse;
-  table-layout: fixed;
-  color: var(--ink-soft);
-}
-
-.period-table caption {
-  width: 1px;
-  height: 1px;
-  position: absolute;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  white-space: nowrap;
-}
-
-.period-table th,
-.period-table td {
-  padding: 9px 7px;
-  border-right: 1px solid rgba(19, 27, 43, 0.22);
-  border-bottom: 1px solid rgba(19, 27, 43, 0.22);
-  overflow: hidden;
+.timeline-row {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr) auto;
+  gap: 9px;
+  align-items: center;
+  color: var(--muted);
+  font-family: var(--mono);
   font-size: 9px;
-  line-height: 1.2;
+  font-weight: 800;
+}
+
+.timeline-label {
+  overflow: hidden;
+  color: var(--muted);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.period-table th:last-child,
-.period-table td:last-child {
-  border-right: 0;
+.timeline-main {
+  min-width: 0;
 }
 
-.period-table thead th {
-  background: var(--ink);
-  color: #fff;
-  font-family: var(--display);
-  font-weight: 900;
-  text-align: right;
-}
-
-.period-table thead th:first-child,
-.period-table tbody th,
-.period-table tfoot th {
-  text-align: left;
-}
-
-.period-table thead th:first-child {
-  width: 24%;
-}
-
-.period-table thead th:nth-child(2) {
-  width: 15%;
-}
-
-.period-table thead th:nth-child(3) {
-  width: 29%;
-}
-
-.period-table thead th:nth-child(4) {
-  width: 32%;
-}
-
-.period-table tbody th {
-  background: #e4efff;
+.timeline-main strong {
+  display: block;
+  overflow: hidden;
   color: var(--ink);
   font-family: var(--body);
+  font-size: 11px;
   font-weight: 900;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.period-table tbody td,
-.period-table tfoot td {
-  font-family: var(--mono);
+.timeline-value {
+  max-width: 82px;
+  overflow: hidden;
+  color: var(--ink-soft);
   font-variant-numeric: tabular-nums;
-  font-weight: 800;
-  text-align: right;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.period-table tbody tr:nth-child(even) td {
-  background: #fffbed;
+.timeline-bar {
+  height: 8px;
+  margin-top: 6px;
+  border: 2px solid var(--ink);
+  border-radius: 3px;
+  background: #fff;
+  overflow: hidden;
 }
 
-.period-table tbody tr:last-child th,
-.period-table tbody tr:last-child td {
-  border-bottom: 2px solid var(--ink);
+.timeline-bar span {
+  display: block;
+  height: 100%;
+  min-width: 4px;
+  background: var(--blue);
 }
 
-.period-table tfoot th,
-.period-table tfoot td {
-  border-bottom: 0;
-  background: var(--yellow);
-  color: var(--ink);
-  font-weight: 950;
-}
-
-.period-table-empty td {
-  padding-block: 19px;
-  border-bottom: 0 !important;
-  background: var(--surface-soft) !important;
+.timeline-empty {
+  padding: 16px;
+  border: 2px dashed var(--ink);
+  border-radius: 7px;
+  background: var(--surface-soft);
   color: var(--muted);
-  font-family: var(--body);
-  font-size: 10px;
+  font-size: 11px;
   line-height: 1.5;
+  font-weight: 800;
   text-align: center;
-  white-space: normal;
 }
 
 .badges-grid {

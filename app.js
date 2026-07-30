@@ -200,27 +200,23 @@ const baseStats = {
 const periodDetailConfig = {
   day: {
     label: "日",
-    granularity: "按单次记录",
-    rowHeader: "时间"
+    granularity: "按单次记录"
   },
   week: {
     label: "周",
     granularity: "按星期汇总",
-    rowHeader: "星期",
     rows: ["周一", "周二", "周三", "周四", "周五", "周六", "周日"],
     weights: [17, 14, 19, 16, 22, 7, 5]
   },
   month: {
     label: "月",
     granularity: "按周汇总",
-    rowHeader: "周次",
     rows: ["第 1 周", "第 2 周", "第 3 周", "第 4 周", "本周"],
     weights: [18, 23, 20, 24, 15]
   },
   career: {
     label: "生涯",
     granularity: "按年度汇总",
-    rowHeader: "年份",
     rows: ["2023", "2024", "2025", "2026"],
     weights: [12, 24, 31, 33]
   }
@@ -306,7 +302,7 @@ const nodes = {
   todayMood: document.querySelector("#todayMood"),
   statsBoard: document.querySelector("#statsBoard"),
   periodDetailSubtitle: document.querySelector("#periodDetailSubtitle"),
-  periodTable: document.querySelector("#periodTable"),
+  periodDetails: document.querySelector("#periodDetails"),
   badgesGrid: document.querySelector("#badgesGrid"),
   reportDialog: document.querySelector("#reportDialog"),
   closeReport: document.querySelector("#closeReport"),
@@ -927,7 +923,7 @@ function renderStats() {
     </article>
   `;
 
-  renderPeriodTable(current);
+  renderPeriodDetails(current);
 }
 
 function combineStats(base, addition) {
@@ -945,7 +941,7 @@ function makeVerdict(money) {
   return "机票级";
 }
 
-function renderPeriodTable(total) {
+function renderPeriodDetails(total) {
   const config = periodDetailConfig[state.activePeriod];
   const rows = state.activePeriod === "day"
     ? state.sessions.map((session, index) => ({
@@ -963,55 +959,42 @@ function renderPeriodTable(total) {
     : makeAggregateRows(total, config);
 
   nodes.periodDetailSubtitle.textContent = `${config.label} · ${config.granularity}`;
-  nodes.periodTable.innerHTML = `
-    <table class="period-table">
-      <caption>${config.label}维度收益明细，${config.granularity}</caption>
-      <thead>
-        <tr>
-          <th scope="col">${config.rowHeader}</th>
-          <th scope="col">次数</th>
-          <th scope="col">时长</th>
-          <th scope="col">收益</th>
-        </tr>
-      </thead>
-      <tbody>
-        ${
-          rows.length
-            ? rows
-                .map(
-                  (row) => `
-                    <tr>
-                      <th scope="row">${row.label}</th>
-                      <td>${row.count}</td>
-                      <td>${formatDuration(row.seconds)}</td>
-                      <td>${formatMoney(row.money)}</td>
-                    </tr>
-                  `
-                )
-                .join("")
-            : `
-                <tr class="period-table-empty">
-                  <td colspan="4">今天暂无记录，完成一次计时后会自动入账。</td>
-                </tr>
-              `
-        }
-      </tbody>
-      ${
-        rows.length
-          ? `
-              <tfoot>
-                <tr>
-                  <th scope="row">合计</th>
-                  <td>${total.count}</td>
-                  <td>${formatDuration(total.seconds)}</td>
-                  <td>${formatMoney(total.money)}</td>
-                </tr>
-              </tfoot>
-            `
-          : ""
-      }
-    </table>
-  `;
+  if (!rows.length) {
+    nodes.periodDetails.innerHTML = `
+      <div class="timeline-empty" role="status">
+        今天暂无记录，完成一次计时后会自动入账。
+      </div>
+    `;
+    return;
+  }
+
+  const maxMoney = Math.max(...rows.map((row) => row.money), 1);
+  nodes.periodDetails.innerHTML = rows
+    .map((row, index) => {
+      const duration = formatDuration(row.seconds);
+      const detail = state.activePeriod === "day"
+        ? `第 ${index + 1} 笔 · ${duration}`
+        : `${row.count} 次 · ${duration}`;
+      const width = Math.max(8, Math.round((row.money / maxMoney) * 100));
+
+      return `
+        <div
+          class="timeline-row"
+          role="listitem"
+          aria-label="${row.label}，${row.count}次，${duration}，收益${formatMoney(row.money)}"
+        >
+          <span class="timeline-label">${row.label}</span>
+          <div class="timeline-main">
+            <strong>${detail}</strong>
+            <div class="timeline-bar" aria-hidden="true">
+              <span style="width: ${width}%"></span>
+            </div>
+          </div>
+          <span class="timeline-value">${formatMoney(row.money)}</span>
+        </div>
+      `;
+    })
+    .join("");
 }
 
 function makeAggregateRows(total, config) {
