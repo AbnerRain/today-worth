@@ -2,6 +2,7 @@ const activityModes = {
   toilet: {
     label: "带薪拉屎",
     shortLabel: "拉屎",
+    stamp: "WC",
     hint: "肠道健康也算现金流",
     meterLabel: "摸鱼计价器 // TOILET",
     idleState: "拉屎模式待开工",
@@ -20,6 +21,7 @@ const activityModes = {
   meal: {
     label: "带薪用膳",
     shortLabel: "用膳",
+    stamp: "饭",
     hint: "午饭不是暂停，是带薪补给",
     meterLabel: "饭点计价器 // DINING",
     idleState: "用膳模式待开饭",
@@ -38,6 +40,7 @@ const activityModes = {
   nap: {
     label: "带薪睡觉",
     shortLabel: "睡觉",
+    stamp: "ZZ",
     hint: "闭眼充电，醒来结算",
     meterLabel: "补觉计价器 // NAP",
     idleState: "睡觉模式待入梦",
@@ -353,6 +356,7 @@ const nodes = {
   todayDuration: document.querySelector("#todayDuration"),
   todayEarning: document.querySelector("#todayEarning"),
   todayMood: document.querySelector("#todayMood"),
+  todayActivityList: document.querySelector("#todayActivityList"),
   statsBoard: document.querySelector("#statsBoard"),
   periodDetailSubtitle: document.querySelector("#periodDetailSubtitle"),
   periodDetails: document.querySelector("#periodDetails"),
@@ -837,6 +841,8 @@ function renderActivityMode() {
     button.setAttribute("aria-checked", String(isActive));
     button.tabIndex = isActive ? 0 : -1;
   });
+
+  renderTodayActivityList();
 }
 
 function setActivityPickerDisabled(disabled) {
@@ -994,11 +1000,64 @@ function getTodayTotals() {
   );
 }
 
+function getTodayActivityTotals() {
+  const totals = Object.fromEntries(
+    Object.keys(activityModes).map((activity) => [
+      activity,
+      { count: 0, seconds: 0, money: 0 }
+    ])
+  );
+
+  state.sessions.forEach((session) => {
+    const activity = activityModes[session.activity] ? session.activity : "toilet";
+    totals[activity].count += 1;
+    totals[activity].seconds += session.seconds;
+    totals[activity].money += session.money;
+  });
+
+  return totals;
+}
+
+function renderTodayActivityList() {
+  const totals = getTodayActivityTotals();
+  nodes.todayActivityList.innerHTML = Object.entries(activityModes)
+    .map(([activityKey, activity]) => {
+      const activityTotal = totals[activityKey];
+      const isActive = activityKey === state.activeActivity;
+      return `
+        <article
+          class="today-activity-item${isActive ? " active" : ""}"
+          data-activity="${activityKey}"
+          aria-label="${activity.label}，${activityTotal.count}次，${formatDuration(activityTotal.seconds)}，收益${formatMoney(activityTotal.money)}"
+          aria-current="${isActive ? "true" : "false"}"
+        >
+          <span class="today-activity-stamp" aria-hidden="true">${activity.stamp}</span>
+          <div class="today-activity-name">
+            <strong>${activity.shortLabel}</strong>
+            <span>${activityTotal.count} 次</span>
+          </div>
+          <div class="today-activity-numbers">
+            <div>
+              <strong>${formatDuration(activityTotal.seconds)}</strong>
+              <span>时长</span>
+            </div>
+            <div>
+              <strong>${formatMoney(activityTotal.money)}</strong>
+              <span>收益</span>
+            </div>
+          </div>
+        </article>
+      `;
+    })
+    .join("");
+}
+
 function renderToday() {
   const totals = getTodayTotals();
   nodes.todayCount.textContent = totals.count;
   nodes.todayDuration.textContent = formatDuration(totals.seconds);
   nodes.todayEarning.textContent = formatMoney(totals.money);
+  renderTodayActivityList();
 
   if (totals.count === 0) {
     nodes.todayMood.textContent = "还没开始，今天很克制";
