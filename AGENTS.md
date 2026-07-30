@@ -6,6 +6,7 @@
 - Inspect and test each change, then create a focused Git commit before finishing the task.
 - Stage only files related to the current task and preserve unrelated user changes.
 - Use concise Conventional Commit prefixes such as `feat:`, `fix:`, `docs:`, `refactor:`, `test:`, or `chore:`.
-- Merge `develop` into `main` only after the changes have been verified and the user confirms they are ready.
+- After a successful commit on `develop`, push `develop` to `origin` before finishing the task.
+- Merge `develop` into `main` only after the changes have been verified and the user confirms they are ready, then push the updated `main` to `origin`.
 - Do not amend, rebase, force-push, or rewrite existing history unless the user explicitly requests it.
-- Do not push branches or commits to a remote unless the user explicitly requests it.
+- Never force-push. If a normal push is rejected, stop and report the conflict instead of rewriting remote history.
