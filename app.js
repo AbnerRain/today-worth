@@ -398,6 +398,21 @@ const badgeData = Object.entries(achievementGroups).flatMap(([activity, group]) 
   }))
 );
 
+const headerTaglines = [
+  "算清每一分钟，摸鱼也要明明白白。",
+  "上班不只挣工资，还要挣回一点自己。",
+  "时间既然卖了，就得知道卖了多少钱。",
+  "工位可以坐牢，时间不能白交。",
+  "摸鱼不是偷懒，是在回收时间成本。",
+  "每一次离开工位，都有它的含金量。",
+  "老板买走八小时，零头也得算清楚。",
+  "今天的班要上，今天的账也要算。",
+  "人在公司坐，工资按秒落。",
+  "认真上班很难，认真计价可以。",
+  "把疲惫折现，让每一分钟都有回声。",
+  "生活偶尔暂停，工资最好别停。"
+];
+
 const defaultProfile = {
   salary: 12000,
   workdays: 22,
@@ -420,11 +435,13 @@ const state = {
   activePeriod: "day",
   activeBadgeFilter: "all",
   activeLedgerKind: "",
+  headerTaglineIndex: Math.floor(Math.random() * headerTaglines.length),
   lastReport: null
 };
 
 const nodes = {
   phone: document.querySelector(".phone"),
+  headerTagline: document.querySelector("#headerTagline"),
   settingsButton: document.querySelector("#settingsButton"),
   settingsDialog: document.querySelector("#settingsDialog"),
   cancelSettings: document.querySelector("#cancelSettings"),
@@ -517,6 +534,7 @@ function init() {
   nodes.salaryInput.value = state.profile.salary;
   nodes.workdaysInput.value = state.profile.workdays;
   nodes.hoursInput.value = state.profile.hours;
+  nodes.headerTagline.textContent = headerTaglines[state.headerTaglineIndex];
 
   bindEvents();
   renderActivityMode();
@@ -581,6 +599,7 @@ function bindEvents() {
       if (state.running) { return; }
       state.activeActivity = button.dataset.activity;
       renderActivityMode();
+      rotateHeaderTagline();
     });
 
     button.addEventListener("keydown", (event) => {
@@ -596,6 +615,7 @@ function bindEvents() {
       const nextIndex = getNextModeIndex(event.key, activeIndex, options.length);
       state.activeActivity = options[nextIndex].dataset.activity;
       renderActivityMode();
+      rotateHeaderTagline();
       options[nextIndex].focus();
     });
   });
@@ -1152,6 +1172,7 @@ function tick() {
 
 function switchTab(tab) {
   nodes.phone.dataset.activeTab = tab;
+  rotateHeaderTagline();
   nodes.tabButtons.forEach((button) => {
     const isActive = button.dataset.tab === tab;
     button.classList.toggle("active", isActive);
@@ -1165,6 +1186,22 @@ function switchTab(tab) {
     screen.classList.toggle("active", screen.id === `${tab}Screen`);
   });
   nodes.contentScroll.scrollTop = 0;
+}
+
+function rotateHeaderTagline() {
+  const offset = 1 + Math.floor(Math.random() * (headerTaglines.length - 1));
+  state.headerTaglineIndex = (state.headerTaglineIndex + offset) % headerTaglines.length;
+  nodes.headerTagline.textContent = headerTaglines[state.headerTaglineIndex];
+
+  if (!prefersReducedMotion && typeof nodes.headerTagline.animate === "function") {
+    nodes.headerTagline.animate(
+      [
+        { opacity: 0, transform: "translateY(4px)" },
+        { opacity: 1, transform: "translateY(0)" }
+      ],
+      { duration: 210, easing: "ease-out" }
+    );
+  }
 }
 
 function getTodayTotals() {

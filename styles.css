@@ -403,6 +403,11 @@ textarea:focus-visible {
   font-weight: 700;
 }
 
+.header-tagline {
+  min-height: 17px;
+  will-change: opacity, transform;
+}
+
 .icon-button {
   width: 44px;
   height: 44px;
