@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>今天值多少钱 Demo</title>
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23ffdc3f'/%3E%3Cpath d='M9 18c0-5 2.5-9 7-9s7 4 7 9c0 3.5-2.5 5.5-7 5.5S9 21.5 9 18z' fill='%23131b2b'/%3E%3Ccircle cx='13.5' cy='16.5' r='1.3' fill='white'/%3E%3Ccircle cx='18.5' cy='16.5' r='1.3' fill='white'/%3E%3C/svg%3E" />
-    <link rel="stylesheet" href="./styles.css?v=office-comic-12" />
+    <link rel="stylesheet" href="./styles.css?v=office-comic-13" />
   </head>
   <body>
     <svg class="icon-sprite" aria-hidden="true">
@@ -208,7 +208,23 @@
           <section class="screen" id="badgesScreen" aria-label="成就">
             <div class="section-title">
               <h2>成就系统</h2>
-              <span>让荒诞变成收藏</span>
+              <span id="badgeSummary">三条摸鱼晋升通道</span>
+            </div>
+            <section class="achievement-pass" aria-label="成就总进度">
+              <div class="achievement-pass-copy">
+                <span>摸鱼履历完成度</span>
+                <strong id="badgeProgressValue">0 / 45</strong>
+              </div>
+              <div class="achievement-pass-track" aria-hidden="true">
+                <span id="badgeProgressBar"></span>
+              </div>
+              <div class="achievement-group-counts" id="badgeGroupCounts"></div>
+            </section>
+            <div class="achievement-tabs" role="tablist" aria-label="筛选成就模块">
+              <button class="achievement-tab active" data-badge-filter="all" type="button" role="tab" aria-selected="true">全部</button>
+              <button class="achievement-tab" data-badge-filter="toilet" type="button" role="tab" aria-selected="false">拉屎</button>
+              <button class="achievement-tab" data-badge-filter="meal" type="button" role="tab" aria-selected="false">吃饭</button>
+              <button class="achievement-tab" data-badge-filter="nap" type="button" role="tab" aria-selected="false">睡觉</button>
             </div>
             <div class="badges-grid" id="badgesGrid"></div>
           </section>
@@ -405,6 +421,14 @@
           <strong id="reportMoney">￥0.00</strong>
           <p class="report-quote" id="reportQuote">肠道清空一格，余额悄悄长了一格。</p>
         </div>
+        <section class="achievement-unlock" id="achievementUnlock" hidden aria-live="polite">
+          <span class="achievement-unlock-mark" aria-hidden="true">章</span>
+          <div>
+            <small>新成就已盖章</small>
+            <strong id="achievementUnlockTitle">屎无前例</strong>
+            <p id="achievementUnlockCopy">完成第一次带薪拉屎</p>
+          </div>
+        </section>
         <div class="report-grid">
           <div>
             <span>时长</span>
@@ -438,6 +462,6 @@
       </section>
     </dialog>
 
-    <script src="./app.js?v=office-comic-12"></script>
+    <script src="./app.js?v=office-comic-13"></script>
   </body>
 </html>

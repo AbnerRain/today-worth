@@ -323,14 +323,80 @@ const periodDetailConfig = {
   }
 };
 
-const badgeData = [
-  { title: "第一泡", desc: "完成第一次带薪拉屎", key: "first" },
-  { title: "连续七天", desc: "连续七天留下时间价值", key: "streak" },
-  { title: "累计100小时", desc: "职业生涯进入耐力局", key: "hundredHours" },
-  { title: "收益破千", desc: "累计收益突破1000元", key: "thousand" },
-  { title: "厕所VIP", desc: "本月累计超过20小时", key: "vip" },
-  { title: "马桶战神", desc: "单次记录超过30分钟", key: "warrior" }
-];
+const achievementGroups = {
+  toilet: {
+    label: "拉屎",
+    stamp: "WC",
+    achievements: [
+      { title: "屎无前例", desc: "完成第一次带薪拉屎，从此开创薪纪元", metric: "count", target: 1 },
+      { title: "三顾茅庐", desc: "累计光顾三次，茅庐终于记住了你", metric: "count", target: 3 },
+      { title: "十蹲九稳", desc: "累计完成十次，蹲感已经相当稳定", metric: "count", target: 10 },
+      { title: "便地开花", desc: "累计完成三十次，工位之外遍地开花", metric: "count", target: 30 },
+      { title: "百厕不殆", desc: "累计完成一百次，知己知厕方能不殆", metric: "count", target: 100 },
+      { title: "坐享其成", desc: "累计坐满十五分钟，真的坐着就有收益", metric: "seconds", target: 15 * 60 },
+      { title: "肠治久安", desc: "累计一小时，肠久才能治安", metric: "seconds", target: 60 * 60 },
+      { title: "蹲峰造极", desc: "累计五小时，登上带薪蹲峰", metric: "seconds", target: 5 * 60 * 60 },
+      { title: "便宜行事", desc: "单次超过五分钟，这件事便宜你来办", metric: "maxSeconds", target: 5 * 60 },
+      { title: "一泻千里", desc: "单次超过十五分钟，气势主打一个连贯", metric: "maxSeconds", target: 15 * 60 },
+      { title: "屎诗级发挥", desc: "单次超过三十分钟，足以写进公司屎册", metric: "maxSeconds", target: 30 * 60 },
+      { title: "薪想屎成", desc: "拉屎收益累计十元，心愿开始有味道", metric: "money", target: 10 },
+      { title: "日进蹲金", desc: "拉屎收益累计一百元，蹲着也能进金", metric: "money", target: 100 },
+      { title: "厕位出道", desc: "在三个不同日期留下记录，正式厕位出道", metric: "days", target: 3 },
+      { title: "屎志不渝", desc: "连续七天坚持记录，对带薪时间矢志不渝", metric: "streak", target: 7 }
+    ]
+  },
+  meal: {
+    label: "吃饭",
+    stamp: "饭",
+    achievements: [
+      { title: "饭来张口", desc: "完成第一次带薪吃饭，这口由公司买单", metric: "count", target: 1 },
+      { title: "再三添饭", desc: "累计吃满三次，添饭这事值得再三", metric: "count", target: 3 },
+      { title: "食全食美", desc: "累计完成十次，十顿都吃得很完整", metric: "count", target: 10 },
+      { title: "饭复一饭", desc: "累计完成三十次，今日饭，明日还复来", metric: "count", target: 30 },
+      { title: "百饭百中", desc: "累计完成一百次，每一口都精准命中饭点", metric: "count", target: 100 },
+      { title: "吃薪不改", desc: "累计吃满十五分钟，吃的是饭也是薪", metric: "seconds", target: 15 * 60 },
+      { title: "细嚼薪咽", desc: "累计一小时，把工资慢慢嚼进午餐", metric: "seconds", target: 60 * 60 },
+      { title: "饱经薪霜", desc: "累计五小时，见过世面也吃过工资", metric: "seconds", target: 5 * 60 * 60 },
+      { title: "快食尚", desc: "单次超过五分钟，快也要快得有食尚", metric: "maxSeconds", target: 5 * 60 },
+      { title: "慢工出细饭", desc: "单次超过十五分钟，好饭值得慢慢磨", metric: "maxSeconds", target: 15 * 60 },
+      { title: "一饭封神", desc: "单次超过三十分钟，一顿吃出封神时长", metric: "maxSeconds", target: 30 * 60 },
+      { title: "薪满意足", desc: "吃饭收益累计十元，饱腹和薪情同时满足", metric: "money", target: 10 },
+      { title: "饭富自由", desc: "吃饭收益累计一百元，离饭富自由更近一步", metric: "money", target: 100 },
+      { title: "胃来可期", desc: "在三个不同日期吃饭，未来和胃来都可期", metric: "days", target: 3 },
+      { title: "食来运转", desc: "连续七天记录，饭点一到时来运转", metric: "streak", target: 7 }
+    ]
+  },
+  nap: {
+    label: "睡觉",
+    stamp: "ZZ",
+    achievements: [
+      { title: "一睡成名", desc: "完成第一次带薪睡觉，闭眼就是出道", metric: "count", target: 1 },
+      { title: "三眠两觉", desc: "累计睡满三次，三眠里总有两觉是香的", metric: "count", target: 3 },
+      { title: "十觉全能", desc: "累计完成十次，十项全能不如十觉全能", metric: "count", target: 10 },
+      { title: "觉非等闲", desc: "累计完成三十次，能睡到这份上绝非等闲", metric: "count", target: 30 },
+      { title: "百梦成真", desc: "累计完成一百次，一百场梦都有工资作证", metric: "count", target: 100 },
+      { title: "闭目养薪", desc: "累计睡满十五分钟，闭目养神顺便养薪", metric: "seconds", target: 15 * 60 },
+      { title: "梦里生财", desc: "累计一小时，梦还没醒钱已经来了", metric: "seconds", target: 60 * 60 },
+      { title: "躺赢专家", desc: "累计五小时，躺着赢也需要长期主义", metric: "seconds", target: 5 * 60 * 60 },
+      { title: "五分好评", desc: "单次超过五分钟，这一觉值得五星好评", metric: "maxSeconds", target: 5 * 60 },
+      { title: "午觉天成", desc: "单次超过十五分钟，好觉不靠雕琢", metric: "maxSeconds", target: 15 * 60 },
+      { title: "不醒人事", desc: "单次超过三十分钟，人事在忙，你先不醒", metric: "maxSeconds", target: 30 * 60 },
+      { title: "薪安理得", desc: "睡觉收益累计十元，这份安心有工资托底", metric: "money", target: 10 },
+      { title: "卧薪尝胆", desc: "睡觉收益累计一百元，卧着把薪尝明白", metric: "money", target: 100 },
+      { title: "觉后余薪", desc: "在三个不同日期睡觉，醒后还有余薪", metric: "days", target: 3 },
+      { title: "梦薪成真", desc: "连续七天记录，让每场梦都薪想事成", metric: "streak", target: 7 }
+    ]
+  }
+};
+
+const badgeData = Object.entries(achievementGroups).flatMap(([activity, group]) =>
+  group.achievements.map((achievement, index) => ({
+    ...achievement,
+    activity,
+    key: `${activity}-${achievement.metric}-${achievement.target}`,
+    order: index + 1
+  }))
+);
 
 const defaultProfile = {
   salary: 12000,
@@ -343,7 +409,7 @@ const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)
 const state = {
   profile: loadProfile(),
   ledgerEntries: loadLedgerEntries(),
-  sessions: [],
+  sessions: loadSessions(),
   running: false,
   startTime: 0,
   elapsedMs: 0,
@@ -352,6 +418,7 @@ const state = {
   activeActivity: "toilet",
   runningActivity: "",
   activePeriod: "day",
+  activeBadgeFilter: "all",
   activeLedgerKind: "",
   lastReport: null
 };
@@ -413,6 +480,11 @@ const nodes = {
   periodDetailSubtitle: document.querySelector("#periodDetailSubtitle"),
   periodDetails: document.querySelector("#periodDetails"),
   badgesGrid: document.querySelector("#badgesGrid"),
+  badgeSummary: document.querySelector("#badgeSummary"),
+  badgeProgressValue: document.querySelector("#badgeProgressValue"),
+  badgeProgressBar: document.querySelector("#badgeProgressBar"),
+  badgeGroupCounts: document.querySelector("#badgeGroupCounts"),
+  badgeTabs: document.querySelectorAll(".achievement-tab"),
   reportDialog: document.querySelector("#reportDialog"),
   reportCard: document.querySelector(".report-card"),
   reportScene: document.querySelector("#reportScene"),
@@ -421,6 +493,9 @@ const nodes = {
   reportTitle: document.querySelector("#reportTitle"),
   reportMoney: document.querySelector("#reportMoney"),
   reportQuote: document.querySelector("#reportQuote"),
+  achievementUnlock: document.querySelector("#achievementUnlock"),
+  achievementUnlockTitle: document.querySelector("#achievementUnlockTitle"),
+  achievementUnlockCopy: document.querySelector("#achievementUnlockCopy"),
   reportDuration: document.querySelector("#reportDuration"),
   reportCount: document.querySelector("#reportCount"),
   reportTotalDuration: document.querySelector("#reportTotalDuration"),
@@ -485,6 +560,18 @@ function bindEvents() {
       state.activePeriod = button.dataset.period;
       nodes.periodButtons.forEach((item) => item.classList.toggle("active", item === button));
       renderStats();
+    });
+  });
+
+  nodes.badgeTabs.forEach((button) => {
+    button.addEventListener("click", () => {
+      state.activeBadgeFilter = button.dataset.badgeFilter;
+      nodes.badgeTabs.forEach((item) => {
+        const isActive = item === button;
+        item.classList.toggle("active", isActive);
+        item.setAttribute("aria-selected", String(isActive));
+      });
+      renderBadges();
     });
   });
 
@@ -594,6 +681,32 @@ function loadProfile() {
   } catch {
     return { ...defaultProfile };
   }
+}
+
+function loadSessions() {
+  try {
+    const saved = JSON.parse(localStorage.getItem("today-worth-sessions"));
+    if (!Array.isArray(saved)) { return []; }
+
+    return saved
+      .map((session) => ({
+        seconds: Math.max(1, Math.round(Number(session.seconds) || 0)),
+        money: Math.max(0, Number(session.money) || 0),
+        activity: activityModes[session.activity] ? session.activity : "toilet",
+        at: new Date(session.at)
+      }))
+      .filter((session) => Number.isFinite(session.at.getTime()) && session.seconds > 0)
+      .slice(-5000);
+  } catch {
+    return [];
+  }
+}
+
+function saveSessions() {
+  localStorage.setItem(
+    "today-worth-sessions",
+    JSON.stringify(state.sessions.slice(-5000))
+  );
 }
 
 function loadLedgerEntries() {
@@ -940,7 +1053,14 @@ function stopSession() {
     at: new Date()
   };
 
+  const unlockedBefore = new Set(
+    getAchievementProgress().filter((item) => item.unlocked).map((item) => item.key)
+  );
   state.sessions.push(session);
+  saveSessions();
+  const newlyUnlocked = getAchievementProgress().filter(
+    (item) => item.unlocked && !unlockedBefore.has(item.key)
+  );
   state.running = false;
   state.runningActivity = "";
   state.elapsedMs = 0;
@@ -956,7 +1076,7 @@ function stopSession() {
   renderToday();
   renderStats();
   renderBadges();
-  renderReport(session);
+  renderReport(session, newlyUnlocked);
   if (typeof nodes.reportDialog.showModal === "function") {
     nodes.reportDialog.showModal();
   }
@@ -1046,7 +1166,7 @@ function switchTab(tab) {
 }
 
 function getTodayTotals() {
-  return state.sessions.reduce(
+  return getTodaySessions().reduce(
     (totals, session) => {
       totals.count += 1;
       totals.seconds += session.seconds;
@@ -1057,6 +1177,19 @@ function getTodayTotals() {
   );
 }
 
+function getTodaySessions() {
+  const todayKey = getDateKey(new Date());
+  return state.sessions.filter((session) => getDateKey(session.at) === todayKey);
+}
+
+function getDateKey(value) {
+  const date = value instanceof Date ? value : new Date(value);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
 function getTodayActivityTotals() {
   const totals = Object.fromEntries(
     Object.keys(activityModes).map((activity) => [
@@ -1065,7 +1198,7 @@ function getTodayActivityTotals() {
     ])
   );
 
-  state.sessions.forEach((session) => {
+  getTodaySessions().forEach((session) => {
     const activity = activityModes[session.activity] ? session.activity : "toilet";
     totals[activity].count += 1;
     totals[activity].seconds += session.seconds;
@@ -1210,7 +1343,7 @@ function makeVerdict(money) {
 function renderPeriodDetails(total) {
   const config = periodDetailConfig[state.activePeriod];
   const rows = state.activePeriod === "day"
-    ? state.sessions.map((session, index) => ({
+    ? getTodaySessions().map((session, index) => ({
         label: session.at instanceof Date
           ? session.at.toLocaleTimeString("zh-CN", {
               hour: "2-digit",
@@ -1293,32 +1426,114 @@ function allocateByWeight(total, weights) {
   return values;
 }
 
-function renderBadges() {
-  const today = getTodayTotals();
-  const unlocked = {
-    first: today.count > 0,
-    streak: false,
-    hundredHours: false,
-    thousand: baseStats.career.money + today.money >= 1000,
-    vip: baseStats.month.seconds + today.seconds >= 20 * 3600,
-    warrior: state.sessions.some((session) => session.seconds >= 30 * 60)
-  };
+function getAchievementMetrics(activity) {
+  const sessions = state.sessions.filter((session) => session.activity === activity);
+  const dayKeys = [...new Set(sessions.map((session) => getDateKey(session.at)))].sort();
 
-  nodes.badgesGrid.innerHTML = badgeData
+  return {
+    count: sessions.length,
+    seconds: sessions.reduce((total, session) => total + session.seconds, 0),
+    maxSeconds: sessions.reduce((maximum, session) => Math.max(maximum, session.seconds), 0),
+    money: sessions.reduce((total, session) => total + session.money, 0),
+    days: dayKeys.length,
+    streak: getLongestDayStreak(dayKeys)
+  };
+}
+
+function getLongestDayStreak(dayKeys) {
+  let longest = 0;
+  let current = 0;
+  let previousDay = null;
+
+  dayKeys.forEach((key) => {
+    const [year, month, day] = key.split("-").map(Number);
+    const utcDay = Date.UTC(year, month - 1, day) / 86400000;
+    current = previousDay !== null && utcDay === previousDay + 1 ? current + 1 : 1;
+    longest = Math.max(longest, current);
+    previousDay = utcDay;
+  });
+
+  return longest;
+}
+
+function getAchievementProgress() {
+  const metrics = Object.fromEntries(
+    Object.keys(achievementGroups).map((activity) => [activity, getAchievementMetrics(activity)])
+  );
+
+  return badgeData.map((badge) => {
+    const current = metrics[badge.activity][badge.metric];
+    return {
+      ...badge,
+      current,
+      unlocked: current >= badge.target,
+      progress: Math.min(100, Math.round((current / badge.target) * 100))
+    };
+  });
+}
+
+function formatAchievementMetric(metric, value) {
+  if (metric === "seconds" || metric === "maxSeconds") {
+    return formatDuration(value);
+  }
+  if (metric === "money") {
+    return formatMoney(value);
+  }
+  if (metric === "days" || metric === "streak") {
+    return `${Math.round(value)}天`;
+  }
+  return `${Math.round(value)}次`;
+}
+
+function renderBadges() {
+  const progress = getAchievementProgress();
+  const unlockedCount = progress.filter((badge) => badge.unlocked).length;
+  const completion = Math.round((unlockedCount / progress.length) * 100);
+  const groupCounts = Object.keys(achievementGroups).map((activity) => {
+    const group = achievementGroups[activity];
+    const items = progress.filter((badge) => badge.activity === activity);
+    const count = items.filter((badge) => badge.unlocked).length;
+    return `<span data-activity="${activity}"><b>${group.stamp}</b>${count}/${items.length}</span>`;
+  });
+
+  nodes.badgeSummary.textContent = `已解锁 ${unlockedCount} 枚 · 共 ${progress.length} 枚`;
+  nodes.badgeProgressValue.textContent = `${unlockedCount} / ${progress.length}`;
+  nodes.badgeProgressBar.style.width = `${completion}%`;
+  nodes.badgeGroupCounts.innerHTML = groupCounts.join("");
+
+  const visibleBadges = state.activeBadgeFilter === "all"
+    ? progress
+    : progress.filter((badge) => badge.activity === state.activeBadgeFilter);
+
+  nodes.badgesGrid.innerHTML = visibleBadges
     .map((badge) => {
-      const isUnlocked = unlocked[badge.key];
+      const group = achievementGroups[badge.activity];
+      const level = badge.order <= 5 ? "初级章" : badge.order <= 10 ? "进阶章" : "传说章";
+      const currentValue = Math.min(badge.current, badge.target);
+      const progressCopy = badge.unlocked
+        ? "已收入摸鱼履历"
+        : `${formatAchievementMetric(badge.metric, currentValue)} / ${formatAchievementMetric(badge.metric, badge.target)}`;
+
       return `
-        <article class="badge-card ${isUnlocked ? "" : "locked"}">
-          <span class="badge-mark ${isUnlocked ? "" : "locked-mark"}" aria-hidden="true"></span>
+        <article class="badge-card ${badge.unlocked ? "unlocked" : "locked"}" data-activity="${badge.activity}">
+          <div class="badge-card-meta">
+            <span class="badge-module">${group.label}线</span>
+            <span>${level} · ${String(badge.order).padStart(2, "0")}</span>
+          </div>
+          <span class="badge-mark ${badge.unlocked ? "" : "locked-mark"}" aria-hidden="true"></span>
           <strong>${badge.title}</strong>
           <small>${badge.desc}</small>
+          <div class="badge-progress" aria-label="${progressCopy}">
+            <span style="width: ${badge.progress}%"></span>
+          </div>
+          <span class="badge-progress-copy">${progressCopy}</span>
         </article>
       `;
     })
     .join("");
 }
 
-function renderReport(session) {
+function renderReport(session, newlyUnlocked = []) {
   const activityKey = activityModes[session.activity] ? session.activity : "toilet";
   const totals = getTodayActivityTotals()[activityKey];
   const activity = getActivityMode(activityKey);
@@ -1336,6 +1551,18 @@ function renderReport(session) {
   nodes.shareStatus.textContent = "";
   nodes.reportMoney.textContent = formatMoney(session.money);
   nodes.reportQuote.textContent = message;
+  if (newlyUnlocked.length) {
+    const firstAchievement = newlyUnlocked[0];
+    nodes.achievementUnlock.hidden = false;
+    nodes.achievementUnlock.dataset.activity = firstAchievement.activity;
+    nodes.achievementUnlockTitle.textContent = firstAchievement.title;
+    nodes.achievementUnlockCopy.textContent = newlyUnlocked.length > 1
+      ? `${firstAchievement.desc}，另有 ${newlyUnlocked.length - 1} 枚成就同时解锁`
+      : firstAchievement.desc;
+  } else {
+    nodes.achievementUnlock.hidden = true;
+    nodes.achievementUnlock.removeAttribute("data-activity");
+  }
   nodes.reportDuration.textContent = formatDuration(session.seconds);
   nodes.reportCount.textContent = `${totals.count}次`;
   nodes.reportTotalDuration.textContent = formatDuration(totals.seconds);
