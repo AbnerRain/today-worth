@@ -449,6 +449,11 @@ textarea:focus-visible {
   overflow: hidden;
 }
 
+.phone[data-active-tab="stats"] .rate-panel,
+.phone[data-active-tab="badges"] .rate-panel {
+  display: none;
+}
+
 .rate-cell {
   min-width: 0;
   min-height: 68px;

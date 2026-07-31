@@ -424,6 +424,7 @@ const state = {
 };
 
 const nodes = {
+  phone: document.querySelector(".phone"),
   settingsButton: document.querySelector("#settingsButton"),
   settingsDialog: document.querySelector("#settingsDialog"),
   cancelSettings: document.querySelector("#cancelSettings"),
@@ -1150,6 +1151,7 @@ function tick() {
 }
 
 function switchTab(tab) {
+  nodes.phone.dataset.activeTab = tab;
   nodes.tabButtons.forEach((button) => {
     const isActive = button.dataset.tab === tab;
     button.classList.toggle("active", isActive);
