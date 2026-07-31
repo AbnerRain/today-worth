@@ -269,12 +269,6 @@ const ledgerModeText = {
   "waste-money": "浪费"
 };
 
-const baseStats = {
-  week: { count: 19, seconds: 4 * 3600 + 23 * 60, money: 286 },
-  month: { count: 70, seconds: 20 * 3600 + 23 * 60, money: 1288 },
-  career: { count: 512, seconds: 216 * 3600, money: 16237 }
-};
-
 const valueBenchmarks = [
   { price: 0.5, label: "购物袋有着落" },
   { price: 1, label: "打印店单页王" },
@@ -305,21 +299,15 @@ const periodDetailConfig = {
   },
   week: {
     label: "周",
-    granularity: "按星期汇总",
-    rows: ["周一", "周二", "周三", "周四", "周五", "周六", "周日"],
-    weights: [17, 14, 19, 16, 22, 7, 5]
+    granularity: "按星期汇总"
   },
   month: {
     label: "月",
-    granularity: "按周汇总",
-    rows: ["第 1 周", "第 2 周", "第 3 周", "第 4 周", "本周"],
-    weights: [18, 23, 20, 24, 15]
+    granularity: "按周汇总"
   },
   career: {
     label: "生涯",
-    granularity: "按年度汇总",
-    rows: ["2023", "2024", "2025", "2026"],
-    weights: [12, 24, 31, 33]
+    granularity: "按年度汇总"
   }
 };
 
@@ -499,6 +487,11 @@ const nodes = {
   todayMood: document.querySelector("#todayMood"),
   todayActivityList: document.querySelector("#todayActivityList"),
   statsBoard: document.querySelector("#statsBoard"),
+  contributionSubtitle: document.querySelector("#contributionSubtitle"),
+  contributionContent: document.querySelector("#contributionContent"),
+  comparisonSubtitle: document.querySelector("#comparisonSubtitle"),
+  comparisonGrid: document.querySelector("#comparisonGrid"),
+  recordsGrid: document.querySelector("#recordsGrid"),
   periodDetailSubtitle: document.querySelector("#periodDetailSubtitle"),
   periodDetails: document.querySelector("#periodDetails"),
   badgesGrid: document.querySelector("#badgesGrid"),
@@ -1338,14 +1331,8 @@ function renderToday() {
 }
 
 function renderStats() {
-  const today = getTodayTotals();
-  const stats = {
-    day: today,
-    week: combineStats(baseStats.week, today),
-    month: combineStats(baseStats.month, today),
-    career: combineStats(baseStats.career, today)
-  };
-  const current = stats[state.activePeriod];
+  const currentSessions = getPeriodSessions(state.activePeriod);
+  const current = aggregateSessions(currentSessions);
   const verdict = makeVerdict(current.money);
   const labels = {
     day: "今天",
@@ -1374,15 +1361,285 @@ function renderStats() {
     </article>
   `;
 
-  renderPeriodDetails(current);
+  renderContribution(currentSessions, current);
+  renderComparison();
+  renderPeriodDetails(currentSessions);
+  renderPersonalRecords();
 }
 
-function combineStats(base, addition) {
-  return {
-    count: base.count + addition.count,
-    seconds: base.seconds + addition.seconds,
-    money: base.money + addition.money
+function aggregateSessions(sessions) {
+  return sessions.reduce(
+    (totals, session) => {
+      totals.count += 1;
+      totals.seconds += session.seconds;
+      totals.money += session.money;
+      return totals;
+    },
+    { count: 0, seconds: 0, money: 0 }
+  );
+}
+
+function getPeriodRange(period, offset = 0, now = new Date()) {
+  if (period === "career") {
+    return { start: null, end: null };
+  }
+
+  if (period === "day") {
+    const start = new Date(now.getFullYear(), now.getMonth(), now.getDate() + offset);
+    const end = new Date(start.getFullYear(), start.getMonth(), start.getDate() + 1);
+    return { start, end };
+  }
+
+  if (period === "week") {
+    const mondayOffset = (now.getDay() + 6) % 7;
+    const start = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate() - mondayOffset + offset * 7
+    );
+    const end = new Date(start.getFullYear(), start.getMonth(), start.getDate() + 7);
+    return { start, end };
+  }
+
+  const start = new Date(now.getFullYear(), now.getMonth() + offset, 1);
+  const end = new Date(start.getFullYear(), start.getMonth() + 1, 1);
+  return { start, end };
+}
+
+function getPeriodSessions(period, offset = 0) {
+  if (period === "career") {
+    return [...state.sessions];
+  }
+
+  const { start, end } = getPeriodRange(period, offset);
+  return state.sessions.filter((session) => session.at >= start && session.at < end);
+}
+
+function getYearSessions(yearOffset = 0) {
+  const year = new Date().getFullYear() + yearOffset;
+  const start = new Date(year, 0, 1);
+  const end = new Date(year + 1, 0, 1);
+  return state.sessions.filter((session) => session.at >= start && session.at < end);
+}
+
+function getActivityTotalsForSessions(sessions) {
+  const totals = Object.fromEntries(
+    Object.keys(activityModes).map((activity) => [
+      activity,
+      { count: 0, seconds: 0, money: 0 }
+    ])
+  );
+
+  sessions.forEach((session) => {
+    const activity = activityModes[session.activity] ? session.activity : "toilet";
+    totals[activity].count += 1;
+    totals[activity].seconds += session.seconds;
+    totals[activity].money += session.money;
+  });
+
+  return totals;
+}
+
+function renderContribution(sessions, total) {
+  const periodLabels = { day: "今日", week: "本周", month: "本月", career: "生涯" };
+  nodes.contributionSubtitle.textContent = `${periodLabels[state.activePeriod]} · 三类贡献`;
+
+  if (!sessions.length) {
+    nodes.contributionContent.innerHTML = `
+      <div class="timeline-empty" role="status">
+        当前周期还没有记录，完成一次计时后会出现贡献占比。
+      </div>
+    `;
+    return;
+  }
+
+  const activityTotals = getActivityTotalsForSessions(sessions);
+  const basis = total.money > 0 ? "money" : total.seconds > 0 ? "seconds" : "count";
+  const basisTotal = Object.values(activityTotals).reduce((sum, item) => sum + item[basis], 0) || 1;
+  const contributions = Object.entries(activityModes).map(([activityKey, activity]) => {
+    const activityTotal = activityTotals[activityKey];
+    return {
+      activityKey,
+      activity,
+      ...activityTotal,
+      percentage: Math.round((activityTotal[basis] / basisTotal) * 100)
+    };
+  });
+
+  nodes.contributionContent.innerHTML = `
+    <div class="contribution-track" aria-label="三类活动收益占比">
+      ${contributions.map((item) => `
+        <span
+          data-activity="${item.activityKey}"
+          style="width: ${item.percentage}%"
+          title="${item.activity.shortLabel} ${item.percentage}%"
+        ></span>
+      `).join("")}
+    </div>
+    <div class="contribution-list">
+      ${contributions.map((item) => `
+        <article class="contribution-row" data-activity="${item.activityKey}">
+          <span class="contribution-stamp" aria-hidden="true">${item.activity.stamp}</span>
+          <div>
+            <strong>${item.activity.shortLabel}</strong>
+            <small>${item.count} 次 · ${formatDuration(item.seconds)}</small>
+          </div>
+          <div class="contribution-value">
+            <strong>${item.percentage}%</strong>
+            <small>${formatMoney(item.money)}</small>
+          </div>
+        </article>
+      `).join("")}
+    </div>
+  `;
+}
+
+function getComparisonData() {
+  const labels = {
+    day: "今天对昨天",
+    week: "本周对上周",
+    month: "本月对上月",
+    career: "今年对去年"
   };
+  const currentSessions = state.activePeriod === "career"
+    ? getYearSessions(0)
+    : getPeriodSessions(state.activePeriod, 0);
+  const previousSessions = state.activePeriod === "career"
+    ? getYearSessions(-1)
+    : getPeriodSessions(state.activePeriod, -1);
+
+  return {
+    label: labels[state.activePeriod],
+    current: aggregateSessions(currentSessions),
+    previous: aggregateSessions(previousSessions)
+  };
+}
+
+function makeTrend(current, previous) {
+  const difference = current - previous;
+  if (current === 0 && previous === 0) {
+    return { difference, direction: "flat", rate: "暂无变化" };
+  }
+  if (previous === 0) {
+    return { difference, direction: "up", rate: "新开张" };
+  }
+
+  const percentage = Math.round((Math.abs(difference) / previous) * 100);
+  return {
+    difference,
+    direction: difference > 0 ? "up" : difference < 0 ? "down" : "flat",
+    rate: difference > 0 ? `↑ ${percentage}%` : difference < 0 ? `↓ ${percentage}%` : "持平"
+  };
+}
+
+function formatTrendDifference(metric, difference) {
+  const sign = difference > 0 ? "+" : difference < 0 ? "−" : "";
+  const absolute = Math.abs(difference);
+  if (metric === "seconds") {
+    return `${sign}${formatDuration(absolute)}`;
+  }
+  if (metric === "money") {
+    return `${sign}${formatMoney(absolute)}`;
+  }
+  return `${sign}${Math.round(absolute)}次`;
+}
+
+function renderComparison() {
+  const comparison = getComparisonData();
+  const metrics = [
+    { key: "count", label: "次数" },
+    { key: "seconds", label: "带薪时长" },
+    { key: "money", label: "收益" }
+  ];
+
+  nodes.comparisonSubtitle.textContent = comparison.label;
+  nodes.comparisonGrid.innerHTML = metrics.map((metric) => {
+    const trend = makeTrend(comparison.current[metric.key], comparison.previous[metric.key]);
+    return `
+      <article class="comparison-item ${trend.direction}">
+        <span class="trend-chip">${trend.rate}</span>
+        <strong>${formatTrendDifference(metric.key, trend.difference)}</strong>
+        <small>${metric.label}</small>
+      </article>
+    `;
+  }).join("");
+}
+
+function renderPersonalRecords() {
+  if (!state.sessions.length) {
+    nodes.recordsGrid.innerHTML = `
+      <div class="timeline-empty records-empty" role="status">
+        还没有个人纪录。第一笔完成后，这里会开始记住你的高光时刻。
+      </div>
+    `;
+    return;
+  }
+
+  const longest = state.sessions.reduce(
+    (record, session) => session.seconds > record.seconds ? session : record,
+    state.sessions[0]
+  );
+  const richest = state.sessions.reduce(
+    (record, session) => session.money > record.money ? session : record,
+    state.sessions[0]
+  );
+  const dayTotals = new Map();
+  state.sessions.forEach((session) => {
+    const dayKey = getDateKey(session.at);
+    const current = dayTotals.get(dayKey) || { money: 0, seconds: 0, count: 0 };
+    current.money += session.money;
+    current.seconds += session.seconds;
+    current.count += 1;
+    dayTotals.set(dayKey, current);
+  });
+  const bestDay = [...dayTotals.entries()].reduce(
+    (record, entry) => entry[1].money > record[1].money ? entry : record
+  );
+  const dayKeys = [...dayTotals.keys()].sort();
+  const longestStreak = getLongestDayStreak(dayKeys);
+  const [year, month, day] = bestDay[0].split("-").map(Number);
+  const bestDayLabel = new Date(year, month - 1, day).toLocaleDateString("zh-CN", {
+    month: "numeric",
+    day: "numeric"
+  });
+
+  const records = [
+    {
+      mark: "久",
+      title: "坐得最久",
+      value: formatDuration(longest.seconds),
+      detail: `${getActivityMode(longest.activity).shortLabel} · 单次纪录`
+    },
+    {
+      mark: "￥",
+      title: "单笔之王",
+      value: formatMoney(richest.money),
+      detail: `${getActivityMode(richest.activity).shortLabel} · 最高收益`
+    },
+    {
+      mark: "日",
+      title: "最高产的一天",
+      value: formatMoney(bestDay[1].money),
+      detail: `${bestDayLabel} · ${bestDay[1].count} 次`
+    },
+    {
+      mark: "连",
+      title: "在编天数",
+      value: `${dayKeys.length}天`,
+      detail: `最长连续 ${longestStreak} 天`
+    }
+  ];
+
+  nodes.recordsGrid.innerHTML = records.map((record) => `
+    <article class="record-item">
+      <span class="record-mark" aria-hidden="true">${record.mark}</span>
+      <div>
+        <small>${record.title}</small>
+        <strong>${record.value}</strong>
+        <span>${record.detail}</span>
+      </div>
+    </article>
+  `).join("");
 }
 
 function makeVerdict(money) {
@@ -1415,46 +1672,35 @@ function makeVerdict(money) {
   };
 }
 
-function renderPeriodDetails(total) {
+function renderPeriodDetails(sessions) {
   const config = periodDetailConfig[state.activePeriod];
-  const rows = state.activePeriod === "day"
-    ? getTodaySessions().map((session, index) => ({
-        label: session.at instanceof Date
-          ? session.at.toLocaleTimeString("zh-CN", {
-              hour: "2-digit",
-              minute: "2-digit",
-              hour12: false
-            })
-          : `第 ${index + 1} 笔`,
-        count: 1,
-        seconds: session.seconds,
-        money: session.money,
-        activity: session.activity || "toilet"
-      }))
-    : makeAggregateRows(total, config);
+  const rows = makePeriodRows(sessions, state.activePeriod);
 
   nodes.periodDetailSubtitle.textContent = `${config.label} · ${config.granularity}`;
-  if (!rows.length) {
+  if (!sessions.length) {
+    const emptyLabels = { day: "今天", week: "本周", month: "本月", career: "生涯" };
     nodes.periodDetails.innerHTML = `
       <div class="timeline-empty" role="status">
-        今天暂无记录，完成一次计时后会自动入账。
+        ${emptyLabels[state.activePeriod]}暂无记录，完成一次计时后会自动入账。
       </div>
     `;
     return;
   }
 
-  const maxMoney = Math.max(...rows.map((row) => row.money), 1);
+  const maxValue = Math.max(...rows.map((row) => row.money || row.seconds), 1);
   nodes.periodDetails.innerHTML = rows
-    .map((row, index) => {
+    .map((row) => {
       const duration = formatDuration(row.seconds);
       const detail = state.activePeriod === "day"
         ? `${getActivityMode(row.activity).shortLabel} · ${duration}`
         : `${row.count} 次 · ${duration}`;
-      const width = Math.max(8, Math.round((row.money / maxMoney) * 100));
+      const width = row.count === 0
+        ? 0
+        : Math.max(8, Math.round(((row.money || row.seconds) / maxValue) * 100));
 
       return `
         <div
-          class="timeline-row"
+          class="timeline-row${row.count === 0 ? " empty-row" : ""}"
           role="listitem"
           aria-label="${row.label}，${row.count}次，${duration}，收益${formatMoney(row.money)}"
         >
@@ -1472,33 +1718,63 @@ function renderPeriodDetails(total) {
     .join("");
 }
 
-function makeAggregateRows(total, config) {
-  const counts = allocateByWeight(total.count, config.weights);
-  const seconds = allocateByWeight(total.seconds, config.weights);
-  const moneyInCents = allocateByWeight(Math.round(total.money * 100), config.weights);
-
-  return config.rows.map((label, index) => ({
-    label,
-    count: counts[index],
-    seconds: seconds[index],
-    money: moneyInCents[index] / 100
-  }));
-}
-
-function allocateByWeight(total, weights) {
-  const weightTotal = weights.reduce((sum, weight) => sum + weight, 0);
-  const rawValues = weights.map((weight) => (total * weight) / weightTotal);
-  const values = rawValues.map((value) => Math.floor(value));
-  const allocated = values.reduce((sum, value) => sum + value, 0);
-  const remainderOrder = rawValues
-    .map((value, index) => ({ index, fraction: value - values[index] }))
-    .sort((a, b) => b.fraction - a.fraction);
-
-  for (let index = 0; index < total - allocated; index += 1) {
-    values[remainderOrder[index % remainderOrder.length].index] += 1;
+function makePeriodRows(sessions, period) {
+  if (period === "day") {
+    return sessions.map((session, index) => ({
+        label: session.at instanceof Date
+          ? session.at.toLocaleTimeString("zh-CN", {
+              hour: "2-digit",
+              minute: "2-digit",
+              hour12: false
+            })
+          : `第 ${index + 1} 笔`,
+        count: 1,
+        seconds: session.seconds,
+        money: session.money,
+        activity: session.activity || "toilet"
+      }));
   }
 
-  return values;
+  if (period === "week") {
+    const labels = ["周一", "周二", "周三", "周四", "周五", "周六", "周日"];
+    const rows = labels.map((label) => ({ label, count: 0, seconds: 0, money: 0 }));
+    sessions.forEach((session) => {
+      const index = (session.at.getDay() + 6) % 7;
+      rows[index].count += 1;
+      rows[index].seconds += session.seconds;
+      rows[index].money += session.money;
+    });
+    return rows;
+  }
+
+  if (period === "month") {
+    const { start, end } = getPeriodRange("month");
+    const numberOfWeeks = Math.ceil((end.getTime() - start.getTime()) / 86400000 / 7);
+    const rows = Array.from({ length: numberOfWeeks }, (_, index) => ({
+      label: `第 ${index + 1} 周`,
+      count: 0,
+      seconds: 0,
+      money: 0
+    }));
+    sessions.forEach((session) => {
+      const index = Math.floor((session.at.getDate() - 1) / 7);
+      rows[index].count += 1;
+      rows[index].seconds += session.seconds;
+      rows[index].money += session.money;
+    });
+    return rows;
+  }
+
+  const rowsByYear = new Map();
+  sessions.forEach((session) => {
+    const year = String(session.at.getFullYear());
+    const row = rowsByYear.get(year) || { label: year, count: 0, seconds: 0, money: 0 };
+    row.count += 1;
+    row.seconds += session.seconds;
+    row.money += session.money;
+    rowsByYear.set(year, row);
+  });
+  return [...rowsByYear.values()].sort((left, right) => Number(left.label) - Number(right.label));
 }
 
 function getAchievementMetrics(activity) {
