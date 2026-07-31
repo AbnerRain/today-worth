@@ -361,6 +361,13 @@ textarea:focus-visible {
   box-shadow: 2px 2px 0 var(--ink);
 }
 
+.phone[data-active-tab="stats"] .app-header::after,
+.phone[data-active-tab="badges"] .app-header::after,
+.phone[data-active-tab="stats"] #settingsButton,
+.phone[data-active-tab="badges"] #settingsButton {
+  display: none;
+}
+
 .header-copy {
   min-width: 0;
 }
