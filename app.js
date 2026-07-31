@@ -442,6 +442,10 @@ const state = {
 const nodes = {
   phone: document.querySelector(".phone"),
   headerTagline: document.querySelector("#headerTagline"),
+  headerContextCard: document.querySelector("#headerContextCard"),
+  headerContextMark: document.querySelector("#headerContextMark"),
+  headerContextTitle: document.querySelector("#headerContextTitle"),
+  headerContextDetail: document.querySelector("#headerContextDetail"),
   settingsButton: document.querySelector("#settingsButton"),
   settingsDialog: document.querySelector("#settingsDialog"),
   cancelSettings: document.querySelector("#cancelSettings"),
@@ -579,6 +583,7 @@ function bindEvents() {
       state.activePeriod = button.dataset.period;
       nodes.periodButtons.forEach((item) => item.classList.toggle("active", item === button));
       renderStats();
+      renderHeaderContext();
     });
   });
 
@@ -1173,6 +1178,7 @@ function tick() {
 function switchTab(tab) {
   nodes.phone.dataset.activeTab = tab;
   rotateHeaderTagline();
+  renderHeaderContext();
   nodes.tabButtons.forEach((button) => {
     const isActive = button.dataset.tab === tab;
     button.classList.toggle("active", isActive);
@@ -1186,6 +1192,36 @@ function switchTab(tab) {
     screen.classList.toggle("active", screen.id === `${tab}Screen`);
   });
   nodes.contentScroll.scrollTop = 0;
+}
+
+function renderHeaderContext() {
+  const activeTab = nodes.phone.dataset.activeTab;
+
+  if (activeTab === "stats") {
+    const periodLabels = {
+      day: "今日账本",
+      week: "本周账本",
+      month: "本月账本",
+      career: "生涯总账"
+    };
+    nodes.headerContextMark.textContent = "账";
+    nodes.headerContextTitle.textContent = "数据档案";
+    nodes.headerContextDetail.textContent = periodLabels[state.activePeriod];
+    nodes.headerContextCard.setAttribute("aria-label", `数据档案，${periodLabels[state.activePeriod]}`);
+    return;
+  }
+
+  if (activeTab === "badges") {
+    const progress = getAchievementProgress();
+    const unlockedCount = progress.filter((badge) => badge.unlocked).length;
+    nodes.headerContextMark.textContent = "章";
+    nodes.headerContextTitle.textContent = "荣誉在编";
+    nodes.headerContextDetail.textContent = `${unlockedCount}/${progress.length} 已解锁`;
+    nodes.headerContextCard.setAttribute(
+      "aria-label",
+      `荣誉在编，已解锁${unlockedCount}枚，共${progress.length}枚`
+    );
+  }
 }
 
 function rotateHeaderTagline() {
