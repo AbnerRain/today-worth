@@ -292,6 +292,16 @@ const valueBenchmarks = [
   { price: 15000, label: "电脑换新基金" }
 ];
 
+const goalPresets = [
+  { id: "water", label: "矿泉水", target: 3, mark: "水" },
+  { id: "coffee", label: "冰美式", target: 18, mark: "咖" },
+  { id: "meal", label: "工作餐", target: 25, mark: "饭" },
+  { id: "tea", label: "奶茶自由", target: 35, mark: "茶" },
+  { id: "hotpot", label: "一顿火锅", target: 120, mark: "锅" }
+];
+
+const defaultGoal = { ...goalPresets[1] };
+
 const periodDetailConfig = {
   day: {
     label: "日",
@@ -411,6 +421,7 @@ const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)
 
 const state = {
   profile: loadProfile(),
+  goal: loadGoal(),
   ledgerEntries: loadLedgerEntries(),
   sessions: loadSessions(),
   running: false,
@@ -461,6 +472,19 @@ const nodes = {
   liveEarning: document.querySelector("#liveEarning"),
   ledgerFeedback: document.querySelector("#ledgerFeedback"),
   ledgerGrid: document.querySelector("#ledgerGrid"),
+  goalCard: document.querySelector("#goalCard"),
+  goalStamp: document.querySelector("#goalStamp"),
+  goalTitle: document.querySelector("#goalTitle"),
+  goalCurrent: document.querySelector("#goalCurrent"),
+  goalProgress: document.querySelector("#goalProgress"),
+  goalProgressBar: document.querySelector("#goalProgressBar"),
+  goalStatus: document.querySelector("#goalStatus"),
+  goalOptions: document.querySelector("#goalOptions"),
+  goalDialog: document.querySelector("#goalDialog"),
+  goalForm: document.querySelector("#goalForm"),
+  goalNameInput: document.querySelector("#goalNameInput"),
+  goalAmountInput: document.querySelector("#goalAmountInput"),
+  cancelGoal: document.querySelector("#cancelGoal"),
   ledgerDialog: document.querySelector("#ledgerDialog"),
   ledgerForm: document.querySelector("#ledgerForm"),
   ledgerDialogTitle: document.querySelector("#ledgerDialogTitle"),
@@ -536,6 +560,7 @@ function init() {
   bindEvents();
   renderActivityMode();
   renderRates();
+  renderGoal();
   renderLedger();
   renderToday();
   renderStats();
@@ -562,6 +587,7 @@ function bindEvents() {
     };
     localStorage.setItem("today-worth-profile", JSON.stringify(state.profile));
     renderRates();
+    renderGoalProgress();
     renderToday();
     renderStats();
     nodes.settingsDialog.close();
@@ -616,6 +642,36 @@ function bindEvents() {
       rotateHeaderTagline();
       options[nextIndex].focus();
     });
+  });
+
+  nodes.goalOptions.addEventListener("click", (event) => {
+    const button = event.target.closest(".goal-option");
+    if (!button) { return; }
+
+    if (button.dataset.goalId === "custom") {
+      openGoalEditor();
+      return;
+    }
+
+    const preset = goalPresets.find((goal) => goal.id === button.dataset.goalId);
+    if (!preset) { return; }
+    state.goal = { ...preset };
+    saveGoal();
+    renderGoal();
+  });
+
+  nodes.cancelGoal.addEventListener("click", () => {
+    nodes.goalDialog.close();
+  });
+
+  nodes.goalForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const label = nodes.goalNameInput.value.trim().slice(0, 8) || "自定义目标";
+    const target = Math.max(0.5, Number(nodes.goalAmountInput.value) || 50);
+    state.goal = { id: "custom", label, target, mark: "定" };
+    saveGoal();
+    renderGoal();
+    nodes.goalDialog.close();
   });
 
   nodes.mainAction.addEventListener("click", () => {
@@ -700,6 +756,103 @@ function loadProfile() {
   } catch {
     return { ...defaultProfile };
   }
+}
+
+function loadGoal() {
+  try {
+    const saved = JSON.parse(localStorage.getItem("today-worth-goal"));
+    if (saved?.id === "custom") {
+      const label = typeof saved.label === "string" && saved.label.trim()
+        ? saved.label.trim().slice(0, 8)
+        : "自定义目标";
+      const target = Math.max(0.5, Number(saved.target) || 50);
+      return { id: "custom", label, target, mark: "定" };
+    }
+
+    const preset = goalPresets.find((goal) => goal.id === saved?.id);
+    return preset ? { ...preset } : { ...defaultGoal };
+  } catch {
+    return { ...defaultGoal };
+  }
+}
+
+function saveGoal() {
+  localStorage.setItem("today-worth-goal", JSON.stringify(state.goal));
+}
+
+function openGoalEditor() {
+  nodes.goalNameInput.value = state.goal.id === "custom" ? state.goal.label : "";
+  nodes.goalAmountInput.value = state.goal.id === "custom" ? state.goal.target : 50;
+  if (typeof nodes.goalDialog.showModal === "function") {
+    nodes.goalDialog.showModal();
+  }
+}
+
+function renderGoal() {
+  nodes.goalOptions.innerHTML = `
+    ${goalPresets.map((goal) => `
+      <button
+        class="goal-option${state.goal.id === goal.id ? " active" : ""}"
+        data-goal-id="${goal.id}"
+        type="button"
+        aria-pressed="${state.goal.id === goal.id}"
+      >
+        <span aria-hidden="true">${goal.mark}</span>
+        <strong>${goal.label}</strong>
+        <small>${formatMoney(goal.target)}</small>
+      </button>
+    `).join("")}
+    <button
+      class="goal-option custom${state.goal.id === "custom" ? " active" : ""}"
+      data-goal-id="custom"
+      type="button"
+      aria-pressed="${state.goal.id === "custom"}"
+    >
+      <span aria-hidden="true">定</span>
+      <strong>自定义</strong>
+      <small>${state.goal.id === "custom" ? formatMoney(state.goal.target) : "自己定价"}</small>
+    </button>
+  `;
+  renderGoalProgress();
+}
+
+function renderGoalProgress(liveMoney = 0) {
+  const todayMoney = getTodayTotals().money + Math.max(0, liveMoney);
+  const target = Math.max(0.5, Number(state.goal.target) || defaultGoal.target);
+  const percentage = Math.min(100, Math.round((todayMoney / target) * 100));
+  const remaining = Math.max(0, target - todayMoney);
+  const isComplete = remaining < 0.005;
+
+  nodes.goalCard.dataset.complete = String(isComplete);
+  nodes.goalCard.dataset.goal = state.goal.id;
+  nodes.goalStamp.textContent = state.goal.mark || "定";
+  nodes.goalTitle.textContent = state.goal.label;
+  nodes.goalCurrent.textContent = `${formatMoney(todayMoney)} / ${formatMoney(target)}`;
+  nodes.goalProgressBar.style.width = `${percentage}%`;
+  nodes.goalProgress.setAttribute("aria-valuenow", String(percentage));
+  nodes.goalProgress.setAttribute(
+    "aria-label",
+    `${state.goal.label}目标，已完成${percentage}%`
+  );
+
+  if (isComplete) {
+    const surplus = Math.max(0, todayMoney - target);
+    nodes.goalStatus.textContent = surplus >= 0.01
+      ? `今天的${state.goal.label}由老板买单，还多薅了 ${formatMoney(surplus)}。`
+      : `恭喜，今天的${state.goal.label}由老板买单。`;
+    return;
+  }
+
+  if (todayMoney < 0.01) {
+    nodes.goalStatus.textContent = `开始一次带薪活动，向${state.goal.label}发起冲击。`;
+    return;
+  }
+
+  const secondRate = getRates().second;
+  const remainingSeconds = secondRate > 0 ? Math.ceil(remaining / secondRate) : 0;
+  nodes.goalStatus.textContent = secondRate > 0
+    ? `还差 ${formatMoney(remaining)}，再带薪 ${formatDuration(remainingSeconds)} 即可拿下。`
+    : `还差 ${formatMoney(remaining)}，继续积累带薪收益即可拿下。`;
 }
 
 function loadSessions() {
@@ -1093,6 +1246,7 @@ function stopSession() {
   setActivityPickerDisabled(false);
 
   renderToday();
+  renderGoal();
   renderStats();
   renderBadges();
   renderReport(session, newlyUnlocked);
@@ -1163,6 +1317,7 @@ function tick() {
   const money = seconds * getRates().second;
   nodes.timer.textContent = formatClock(seconds);
   nodes.liveEarning.textContent = formatMoney(money);
+  renderGoalProgress(money);
   nodes.liveLine.textContent = activity.encouragements[
     Math.floor(seconds / 5) % activity.encouragements.length
   ];
