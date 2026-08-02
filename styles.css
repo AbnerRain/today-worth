@@ -2785,6 +2785,57 @@ dialog[open] .report-card {
   font-weight: 850;
 }
 
+.moyu-pass {
+  min-height: 68px;
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  margin-top: 15px;
+  padding: 10px 12px;
+  border: 2px solid var(--ink);
+  border-radius: 7px;
+  background: var(--mint-soft);
+  box-shadow: 3px 3px 0 var(--ink);
+  transform: rotate(-1deg);
+}
+
+.moyu-pass > span {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border: 2px solid var(--ink);
+  border-radius: 50%;
+  background: var(--yellow);
+  font-family: var(--display);
+  font-size: 17px;
+  font-weight: 950;
+  box-shadow: 2px 2px 0 var(--ink);
+}
+
+.moyu-pass small,
+.moyu-pass strong {
+  display: block;
+}
+
+.moyu-pass small {
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 8px;
+  font-weight: 850;
+}
+
+.moyu-pass strong {
+  margin-top: 5px;
+  overflow: hidden;
+  font-family: var(--display);
+  font-size: 16px;
+  font-weight: 950;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .mode-segmented {
   min-height: 48px;
   display: grid;
@@ -3654,6 +3705,27 @@ dialog[open] .report-illustration-nap .nap-moon {
   font-family: var(--mono);
   font-size: 10px;
   font-weight: 900;
+}
+
+.share-poster .poster-alias {
+  display: block;
+  width: fit-content;
+  max-width: calc(100% - 74px);
+  position: relative;
+  z-index: 2;
+  margin-top: 6px;
+  overflow: hidden;
+  color: rgba(255, 255, 255, 0.82);
+  font-family: var(--mono);
+  font-size: 8px;
+  font-weight: 850;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.report-card[data-activity="meal"] .share-poster .poster-alias,
+.report-card[data-activity="nap"] .share-poster .poster-alias {
+  color: var(--ink);
 }
 
 .share-poster strong {

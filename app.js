@@ -412,6 +412,7 @@ const headerTaglines = [
 ];
 
 const defaultProfile = {
+  alias: "",
   salary: 12000,
   workdays: 22,
   hours: 8
@@ -449,6 +450,8 @@ const nodes = {
   settingsDialog: document.querySelector("#settingsDialog"),
   cancelSettings: document.querySelector("#cancelSettings"),
   salaryForm: document.querySelector("#salaryForm"),
+  aliasPreview: document.querySelector("#aliasPreview"),
+  aliasInput: document.querySelector("#aliasInput"),
   salaryInput: document.querySelector("#salaryInput"),
   workdaysInput: document.querySelector("#workdaysInput"),
   hoursInput: document.querySelector("#hoursInput"),
@@ -540,6 +543,7 @@ const nodes = {
   reportTotalDuration: document.querySelector("#reportTotalDuration"),
   reportTotalMoney: document.querySelector("#reportTotalMoney"),
   posterTitle: document.querySelector("#posterTitle"),
+  posterAlias: document.querySelector("#posterAlias"),
   posterDuration: document.querySelector("#posterDuration"),
   posterMoney: document.querySelector("#posterMoney"),
   posterMark: document.querySelector("#posterMark"),
@@ -552,9 +556,7 @@ const nodes = {
 init();
 
 function init() {
-  nodes.salaryInput.value = state.profile.salary;
-  nodes.workdaysInput.value = state.profile.workdays;
-  nodes.hoursInput.value = state.profile.hours;
+  renderSettingsForm();
   nodes.headerTagline.textContent = headerTaglines[state.headerTaglineIndex];
 
   bindEvents();
@@ -569,6 +571,7 @@ function init() {
 
 function bindEvents() {
   nodes.settingsButton.addEventListener("click", () => {
+    renderSettingsForm();
     if (typeof nodes.settingsDialog.showModal === "function") {
       nodes.settingsDialog.showModal();
     }
@@ -578,14 +581,20 @@ function bindEvents() {
     nodes.settingsDialog.close();
   });
 
+  nodes.aliasInput.addEventListener("input", () => {
+    nodes.aliasPreview.textContent = normalizeAlias(nodes.aliasInput.value, state.profile.alias);
+  });
+
   nodes.salaryForm.addEventListener("submit", (event) => {
     event.preventDefault();
     state.profile = {
+      alias: normalizeAlias(nodes.aliasInput.value, state.profile.alias),
       salary: normalizeNumber(nodes.salaryInput.value, defaultProfile.salary),
       workdays: normalizeNumber(nodes.workdaysInput.value, defaultProfile.workdays),
       hours: normalizeNumber(nodes.hoursInput.value, defaultProfile.hours)
     };
     localStorage.setItem("today-worth-profile", JSON.stringify(state.profile));
+    renderSettingsForm();
     renderRates();
     renderGoalProgress();
     renderToday();
@@ -752,10 +761,34 @@ function bindEvents() {
 function loadProfile() {
   try {
     const saved = JSON.parse(localStorage.getItem("today-worth-profile"));
-    return { ...defaultProfile, ...saved };
+    const profile = { ...defaultProfile, ...saved };
+    profile.alias = normalizeAlias(saved?.alias);
+    if (!saved?.alias || saved.alias !== profile.alias) {
+      localStorage.setItem("today-worth-profile", JSON.stringify(profile));
+    }
+    return profile;
   } catch {
-    return { ...defaultProfile };
+    const profile = { ...defaultProfile, alias: makeMoyuAlias() };
+    localStorage.setItem("today-worth-profile", JSON.stringify(profile));
+    return profile;
   }
+}
+
+function makeMoyuAlias() {
+  return `摸鱼群众 ${Math.floor(1000 + Math.random() * 9000)}`;
+}
+
+function normalizeAlias(value, fallback = "") {
+  const alias = typeof value === "string" ? value.trim().slice(0, 12) : "";
+  return alias || fallback || makeMoyuAlias();
+}
+
+function renderSettingsForm() {
+  nodes.aliasInput.value = state.profile.alias;
+  nodes.aliasPreview.textContent = state.profile.alias;
+  nodes.salaryInput.value = state.profile.salary;
+  nodes.workdaysInput.value = state.profile.workdays;
+  nodes.hoursInput.value = state.profile.hours;
 }
 
 function loadGoal() {
@@ -2054,6 +2087,7 @@ function renderReport(session, newlyUnlocked = []) {
   nodes.reportSceneTag.textContent = activity.reportTag;
   nodes.reportTitle.textContent = `本次${activity.label}`;
   nodes.posterTitle.textContent = `今日${activity.label}`;
+  nodes.posterAlias.textContent = `摸鱼代号 · ${state.profile.alias}`;
   nodes.shareStatus.textContent = "";
   nodes.reportMoney.textContent = formatMoney(session.money);
   nodes.reportQuote.textContent = message;
@@ -2134,7 +2168,7 @@ function makeShareData(report) {
   const { session, totals, message } = report;
   const activity = getActivityMode(session.activity);
   const text = [
-    `我刚完成一次${activity.label}：`,
+    `摸鱼代号「${state.profile.alias}」刚完成一次${activity.label}：`,
     `本次 ${formatDuration(session.seconds)}，赚了 ${formatMoney(session.money)}。`,
     `今日累计 ${formatDuration(totals.seconds)}，共 ${formatMoney(totals.money)}。`,
     message,
