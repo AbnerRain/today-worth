@@ -76,13 +76,29 @@ const defaultProfile = {
   hours: 8
 };
 
+function normalizeProfile(profile = {}) {
+  return {
+    alias: String(profile.alias || defaultProfile.alias).trim().slice(0, 12) || defaultProfile.alias,
+    salary: Math.max(1, Number(profile.salary) || defaultProfile.salary),
+    workdays: Math.max(1, Number(profile.workdays) || defaultProfile.workdays),
+    hours: Math.max(1, Number(profile.hours) || defaultProfile.hours)
+  };
+}
+
+function hasProfile() {
+  const saved = wx.getStorageSync(PROFILE_KEY);
+  return Boolean(saved && typeof saved === "object");
+}
+
 function getProfile() {
   const saved = wx.getStorageSync(PROFILE_KEY);
-  return Object.assign({}, defaultProfile, saved || {});
+  return normalizeProfile(Object.assign({}, defaultProfile, saved || {}));
 }
 
 function saveProfile(profile) {
-  wx.setStorageSync(PROFILE_KEY, Object.assign({}, defaultProfile, profile));
+  const normalized = normalizeProfile(profile);
+  wx.setStorageSync(PROFILE_KEY, normalized);
+  return normalized;
 }
 
 function getSessions() {
@@ -193,6 +209,8 @@ module.exports = {
   goalPresets,
   achievements,
   defaultProfile,
+  normalizeProfile,
+  hasProfile,
   getProfile,
   saveProfile,
   getSessions,

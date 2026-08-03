@@ -6,8 +6,8 @@
 .pass-track { height: 24rpx; margin: 20rpx 0 12rpx; overflow: hidden; border: 3rpx solid #131b2b; border-radius: 999rpx; background: #fff; }
 .pass-fill { height: 100%; background: #2f6bff; }
 .pass-foot { color: #596377; font-size: 21rpx; font-weight: 700; }
-.filter-tabs { margin: 32rpx 0 20rpx; white-space: nowrap; }
-.filter-button { display: inline-flex; width: auto; height: 64rpx; margin: 0 14rpx 0 0; padding: 0 26rpx; align-items: center; border: 3rpx solid #131b2b; border-radius: 10rpx; background: #fff; color: #131b2b; font-size: 23rpx; font-weight: 900; line-height: 58rpx; }
+.filter-tabs { display: flex; width: 100%; margin: 32rpx 0 20rpx; padding: 6rpx; overflow: hidden; border: 3rpx solid #131b2b; border-radius: 14rpx; background: #e7ebf1; box-sizing: border-box; }
+.filter-button { display: flex; flex: 1 1 0; width: 0; min-width: 0; height: 64rpx; margin: 0; padding: 0; align-items: center; justify-content: center; overflow: hidden; border-radius: 10rpx; background: transparent; color: #687186; font-size: 22rpx; font-weight: 900; line-height: 58rpx; text-overflow: ellipsis; white-space: nowrap; box-sizing: border-box; }
 .filter-button.is-active { background: #2f6bff; box-shadow: 4rpx 4rpx 0 #131b2b; color: #fff; }
 .badge-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20rpx; }
 .badge-card { display: flex; min-height: 318rpx; padding: 20rpx; flex-direction: column; box-sizing: border-box; }

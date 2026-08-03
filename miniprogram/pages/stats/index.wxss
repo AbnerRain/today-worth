@@ -1,8 +1,8 @@
 .page-header { display: flex; flex-direction: column; gap: 8rpx; margin: 6rpx 0 26rpx; }
 .page-title { font-size: 52rpx; font-weight: 900; }
 .page-subtitle { color: #596377; font-size: 24rpx; font-weight: 700; }
-.period-tabs { display: grid; grid-template-columns: repeat(4,1fr); padding: 6rpx; border: 3rpx solid #131b2b; border-radius: 14rpx; background: #e7ebf1; }
-.period-button { width: 100%; min-width: 0; height: 66rpx; margin: 0; padding: 0; border-radius: 10rpx; background: transparent; color: #687186; font-size: 25rpx; font-weight: 900; line-height: 66rpx; box-sizing: border-box; }
+.period-tabs { display: flex; width: 100%; padding: 6rpx; overflow: hidden; border: 3rpx solid #131b2b; border-radius: 14rpx; background: #e7ebf1; box-sizing: border-box; }
+.period-button { flex: 1 1 0; width: 0; min-width: 0; height: 66rpx; margin: 0; padding: 0; overflow: hidden; border-radius: 10rpx; background: transparent; color: #687186; font-size: 24rpx; font-weight: 900; line-height: 66rpx; text-overflow: ellipsis; white-space: nowrap; box-sizing: border-box; }
 .period-button.is-active { border: 3rpx solid #131b2b; background: #fff; box-shadow: 3rpx 3rpx 0 #131b2b; color: #131b2b; }
 .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18rpx; margin-top: 26rpx; }
 .summary-card { display: flex; min-height: 150rpx; padding: 22rpx; flex-direction: column; justify-content: space-between; box-sizing: border-box; }

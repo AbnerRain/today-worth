@@ -31,13 +31,8 @@ Page({
   },
 
   save() {
-    const profile = {
-      alias: String(this.data.profile.alias || "摸鱼群众").trim().slice(0, 12) || "摸鱼群众",
-      salary: Math.max(1, Number(this.data.profile.salary) || 12000),
-      workdays: Math.max(1, Number(this.data.profile.workdays) || 22),
-      hours: Math.max(1, Number(this.data.profile.hours) || 8)
-    };
-    store.saveProfile(profile);
+    const profile = store.saveProfile(this.data.profile);
+    this.setData({ profile });
     wx.showToast({ title: "工资条已更新", icon: "success" });
     setTimeout(() => wx.navigateBack(), 600);
   },

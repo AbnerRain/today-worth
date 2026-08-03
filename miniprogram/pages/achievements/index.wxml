@@ -5,9 +5,9 @@
     <view class="pass-track"><view class="pass-fill" style="width: {{completion}}%;"></view></view>
     <text class="pass-foot">已解锁 {{completion}}%</text>
   </view>
-  <scroll-view class="filter-tabs" scroll-x="{{true}}" enhanced="{{true}}" show-scrollbar="{{false}}">
+  <view class="filter-tabs">
     <button wx:for="{{filters}}" wx:key="key" class="filter-button {{activeFilter === item.key ? 'is-active' : ''}}" data-filter="{{item.key}}" bindtap="selectFilter">{{item.label}}</button>
-  </scroll-view>
+  </view>
   <view class="badge-grid">
     <view wx:for="{{badges}}" wx:key="id" class="badge-card comic-card {{item.unlocked ? 'is-unlocked' : 'is-locked'}}">
       <view class="badge-meta"><text>{{item.activityLabel}}线</text><text>NO.{{item.index}}</text></view>

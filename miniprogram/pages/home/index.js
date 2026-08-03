@@ -19,12 +19,22 @@ Page({
     goalStatus: "开始一次带薪活动，向冰美式发起冲击。",
     showReport: false,
     report: {},
-    moneyBills: []
+    moneyBills: [],
+    profileMeta: {},
+    showOnboarding: false,
+    onboardingProfile: store.defaultProfile,
+    onboardingPreview: {}
   },
 
   onLoad() {
     this.startedAt = 0;
     this.timerId = null;
+    const profile = store.getProfile();
+    this.setData({
+      showOnboarding: !store.hasProfile(),
+      onboardingProfile: profile,
+      onboardingPreview: this.makeRatePreview(profile)
+    });
   },
 
   onShow() {
@@ -39,14 +49,22 @@ Page({
   refreshData() {
     const profile = store.getProfile();
     const rates = store.getRates(profile);
+    const showOnboarding = !store.hasProfile();
     this.profile = profile;
     this.rates = rates;
+    if (showOnboarding) wx.hideTabBar({ animation: false });
+    else wx.showTabBar({ animation: false });
     this.setData({
       rates: {
         hour: store.formatMoney(rates.hour),
         minute: store.formatMoney(rates.minute),
         second: `￥${rates.second.toFixed(3)}`
       },
+      profileMeta: {
+        alias: profile.alias,
+        detail: `月薪 ${store.formatMoney(profile.salary)} · ${profile.workdays}天 × ${profile.hours}小时`
+      },
+      showOnboarding,
       goal: store.getGoal()
     });
     this.renderTotals();
@@ -72,11 +90,10 @@ Page({
 
   startTimer() {
     this.startedAt = Date.now();
-    const bills = Array.from({ length: 18 }, (_, index) => ({
+    const bills = Array.from({ length: 24 }, (_, index) => ({
       id: `${this.startedAt}-${index}`,
-      left: (index * 37) % 92,
-      delay: (index % 7) * 0.22,
-      duration: 2.8 + (index % 5) * 0.35
+      tone: (index % 3) + 1,
+      serial: ((this.startedAt + index * 7919) % 1000000).toString().padStart(6, "0")
     }));
     this.setData({
       running: true,
@@ -170,6 +187,37 @@ Page({
 
   openSettings() {
     wx.navigateTo({ url: "/pages/settings/index" });
+  },
+
+  onOnboardingInput(event) {
+    const field = event.currentTarget.dataset.field;
+    const profile = Object.assign({}, this.data.onboardingProfile, {
+      [field]: event.detail.value
+    });
+    this.setData({
+      onboardingProfile: profile,
+      onboardingPreview: this.makeRatePreview(profile)
+    });
+  },
+
+  makeRatePreview(profile) {
+    const rates = store.getRates(profile);
+    return {
+      hour: store.formatMoney(rates.hour),
+      minute: store.formatMoney(rates.minute),
+      second: `￥${rates.second.toFixed(3)}`
+    };
+  },
+
+  saveOnboarding() {
+    const profile = store.saveProfile(this.data.onboardingProfile);
+    this.setData({
+      onboardingProfile: profile,
+      showOnboarding: false
+    });
+    wx.showTabBar({ animation: false });
+    this.refreshData();
+    wx.showToast({ title: "工资条已生成", icon: "success" });
   },
 
   closeReport() {
