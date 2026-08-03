@@ -313,7 +313,8 @@ const goalPresets = [
   { id: "coffee", label: "冰美式", target: 18, mark: "咖" },
   { id: "meal", label: "工作餐", target: 25, mark: "饭" },
   { id: "tea", label: "奶茶自由", target: 35, mark: "茶" },
-  { id: "hotpot", label: "一顿火锅", target: 120, mark: "锅" }
+  { id: "hotpot", label: "一顿火锅", target: 120, mark: "锅" },
+  { id: "movie", label: "周末电影", target: 45, mark: "影" }
 ];
 
 const defaultGoal = { ...goalPresets[1] };

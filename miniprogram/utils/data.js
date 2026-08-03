@@ -204,7 +204,8 @@ const goalPresets = [
   { id: "coffee", label: "冰美式", target: 18, stamp: "咖" },
   { id: "meal", label: "工作餐", target: 25, stamp: "饭" },
   { id: "tea", label: "奶茶自由", target: 35, stamp: "茶" },
-  { id: "hotpot", label: "一顿火锅", target: 120, stamp: "锅" }
+  { id: "hotpot", label: "一顿火锅", target: 120, stamp: "锅" },
+  { id: "movie", label: "周末电影", target: 45, stamp: "影" }
 ];
 
 const achievements = [
