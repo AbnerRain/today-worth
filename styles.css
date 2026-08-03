@@ -345,20 +345,7 @@ textarea:focus-visible {
 }
 
 .app-header::after {
-  content: "摸鱼基金";
-  position: absolute;
-  right: 67px;
-  top: 14px;
-  padding: 3px 7px;
-  border: 2px solid var(--ink);
-  border-radius: 4px;
-  background: var(--yellow);
-  color: var(--ink);
-  font-family: var(--display);
-  font-size: 10px;
-  line-height: 1;
-  transform: rotate(4deg);
-  box-shadow: 2px 2px 0 var(--ink);
+  display: none;
 }
 
 .phone[data-active-tab="stats"] .app-header::after,
@@ -488,12 +475,39 @@ textarea:focus-visible {
   will-change: opacity, transform;
 }
 
-.icon-button {
-  width: 44px;
-  height: 44px;
-  flex: 0 0 44px;
+.brand-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.brand-stamp {
+  width: 25px;
+  height: 25px;
   display: grid;
   place-items: center;
+  border: 2px solid var(--ink);
+  border-radius: 5px;
+  background: var(--yellow);
+  color: var(--ink);
+  font-family: var(--display);
+  font-size: 14px;
+  line-height: 1;
+  font-weight: 950;
+  transform: rotate(5deg);
+  box-shadow: 2px 2px 0 var(--ink);
+}
+
+.icon-button {
+  width: auto;
+  min-width: 92px;
+  height: 44px;
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 0 9px;
   border: 2px solid var(--ink);
   border-radius: 8px;
   background: var(--surface);
@@ -511,8 +525,15 @@ textarea:focus-visible {
 }
 
 .icon-button svg {
-  width: 21px;
-  height: 21px;
+  width: 18px;
+  height: 18px;
+}
+
+.button-label {
+  font-size: 10px;
+  line-height: 1;
+  font-weight: 900;
+  white-space: nowrap;
 }
 
 .icon-button path {
@@ -556,7 +577,13 @@ textarea:focus-visible {
 }
 
 .rate-cell.primary {
-  background: var(--yellow);
+  background: var(--blue);
+  color: #fff;
+}
+
+.rate-cell.primary .label,
+.rate-cell.primary strong {
+  color: #fff;
 }
 
 .label,
@@ -640,56 +667,19 @@ textarea:focus-visible {
 }
 
 .hero-meter::before {
-  content: attr(data-label);
-  position: absolute;
-  top: 15px;
-  left: 16px;
-  z-index: 2;
-  padding: 5px 8px;
-  border: 2px solid var(--ink);
-  border-radius: 4px;
-  background: var(--surface);
-  color: var(--ink);
-  font-family: var(--mono);
-  font-size: 9px;
-  line-height: 1;
-  font-weight: 900;
-  box-shadow: 2px 2px 0 var(--ink);
+  content: none;
 }
 
 .hero-meter::after {
-  content: "￥";
-  width: 60px;
-  height: 60px;
+  content: "";
+  width: 150px;
+  height: 150px;
   position: absolute;
-  top: 10px;
-  right: 12px;
-  display: grid;
-  place-items: center;
-  background: var(--yellow);
-  color: var(--ink);
-  clip-path: polygon(
-    50% 0%,
-    61% 20%,
-    82% 8%,
-    79% 32%,
-    100% 42%,
-    78% 52%,
-    92% 74%,
-    68% 70%,
-    60% 100%,
-    46% 77%,
-    24% 92%,
-    29% 66%,
-    0% 58%,
-    23% 44%,
-    8% 22%,
-    35% 28%
-  );
-  font-family: var(--display);
-  font-size: 25px;
-  font-weight: 900;
-  transform: rotate(8deg);
+  right: -38px;
+  bottom: -48px;
+  border: 4px solid var(--ink);
+  border-radius: 50%;
+  opacity: .12;
 }
 
 .hero-meter[data-activity="meal"] {
@@ -705,13 +695,11 @@ textarea:focus-visible {
 }
 
 .hero-meter[data-activity="meal"]::after {
-  content: "饭";
-  background: var(--coral);
+  content: "";
 }
 
 .hero-meter[data-activity="nap"]::after {
-  content: "Z";
-  background: var(--mint);
+  content: "";
 }
 
 .hero-meter[data-activity="meal"] .earnings-orbit {
@@ -894,22 +882,21 @@ textarea:focus-visible {
 }
 
 .meter-copy span {
-  display: inline-block;
-  max-width: calc(100% - 52px);
-  padding: 6px 10px;
-  border: 2px solid var(--ink);
-  border-radius: 6px;
-  background: var(--surface);
-  color: var(--ink-soft);
-  font-size: 12px;
+  display: block;
+  max-width: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--ink);
+  font-size: 16px;
   line-height: 1.2;
   font-weight: 900;
-  box-shadow: 2px 2px 0 var(--ink);
 }
 
 .meter-copy strong {
   display: block;
-  margin-top: 20px;
+  margin-top: 9px;
   color: var(--ink);
   font-family: var(--mono);
   font-size: 49px;
@@ -962,6 +949,30 @@ textarea:focus-visible {
   white-space: nowrap;
 }
 
+.hero-kicker {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--ink-soft);
+  font-family: var(--mono);
+  font-size: 10px;
+  line-height: 1;
+  font-weight: 900;
+}
+
+.hero-kicker .live-dot {
+  width: 10px;
+  height: 10px;
+  border: 2px solid var(--ink);
+  border-radius: 50%;
+  background: var(--surface);
+}
+
+.hero-kicker .live-dot.is-running {
+  background: var(--coral);
+  animation: pulse 1s ease-in-out infinite;
+}
+
 .activity-picker {
   margin-top: 18px;
 }
@@ -1000,10 +1011,10 @@ textarea:focus-visible {
 
 .activity-option {
   min-width: 0;
-  min-height: 80px;
+  min-height: 78px;
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-rows: 38px auto auto;
+  grid-template-rows: 30px auto auto;
   align-items: center;
   justify-items: center;
   row-gap: 2px;
@@ -1039,6 +1050,33 @@ textarea:focus-visible {
 
 .activity-option:focus-visible {
   outline-offset: 4px;
+}
+
+.activity-stamp {
+  width: 30px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border: 2px solid var(--ink);
+  border-radius: 5px;
+  background: var(--surface);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 10px;
+  line-height: 1;
+  font-weight: 950;
+}
+
+.activity-option:nth-child(1) .activity-stamp {
+  background: var(--mint-soft);
+}
+
+.activity-option:nth-child(2) .activity-stamp {
+  background: var(--yellow-soft);
+}
+
+.activity-option:nth-child(3) .activity-stamp {
+  background: #d8efff;
 }
 
 .activity-action {

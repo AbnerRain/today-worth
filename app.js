@@ -468,6 +468,8 @@ const nodes = {
   activityButtons: document.querySelectorAll(".activity-option"),
   activityHint: document.querySelector("#activityHint"),
   heroMeter: document.querySelector("#heroMeter"),
+  heroModeLabel: document.querySelector("#heroModeLabel"),
+  liveDot: document.querySelector("#liveDot"),
   activityScene: document.querySelector("#activityScene"),
   activityMascot: document.querySelector("#activityMascot"),
   sceneBadge: document.querySelector("#sceneBadge"),
@@ -1211,6 +1213,8 @@ function renderActivityMode() {
   const activity = getActivityMode();
   nodes.heroMeter.dataset.activity = state.activeActivity;
   nodes.heroMeter.dataset.label = activity.meterLabel;
+  nodes.heroModeLabel.textContent = `${activity.shortLabel.toUpperCase()} MODE`;
+  nodes.liveDot.classList.toggle("is-running", state.running);
   nodes.heroMeter.setAttribute("aria-label", `${activity.label}实时计时和收益`);
   nodes.mainAction.dataset.activity = state.activeActivity;
   nodes.activityHint.textContent = activity.hint;
@@ -1251,6 +1255,7 @@ function startSession() {
   nodes.mainAction.classList.add("running");
   nodes.actionIcon.classList.add("active");
   nodes.heroMeter.classList.add("running");
+  nodes.liveDot.classList.add("is-running");
   nodes.activityScene.setAttribute("aria-hidden", "false");
   nodes.actionText.textContent = activity.stopAction;
   nodes.sessionState.textContent = activity.runningState;
@@ -1292,6 +1297,7 @@ function stopSession() {
   nodes.mainAction.classList.remove("running");
   nodes.actionIcon.classList.remove("active");
   nodes.heroMeter.classList.remove("running");
+  nodes.liveDot.classList.remove("is-running");
   nodes.activityScene.setAttribute("aria-hidden", "true");
   nodes.actionText.textContent = `开始${activity.label}`;
   nodes.sessionState.textContent = activity.doneState;
