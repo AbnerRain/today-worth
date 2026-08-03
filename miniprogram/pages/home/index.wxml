@@ -1,10 +1,7 @@
 <view class="page-shell home-page">
   <view wx:if="{{running}}" class="money-rain">
-    <view wx:for="{{moneyBills}}" wx:key="id" class="money-bill tone-{{item.tone}}">
-      <text class="bill-corner">￥</text>
-      <view class="bill-portrait"><view class="bill-head"></view><view class="bill-body"></view></view>
-      <text class="bill-value">100</text>
-      <text class="bill-serial">TP{{item.serial}}</text>
+    <view wx:for="{{moneyBills}}" wx:key="id" class="money-bill">
+      <image class="money-bill-image" src="{{item.src}}" mode="aspectFit" />
     </view>
   </view>
 

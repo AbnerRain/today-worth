@@ -73,11 +73,8 @@
 .ledger-values { align-items: flex-end; }
 
 .money-rain { position: fixed; inset: 0; z-index: 80; pointer-events: none; overflow: hidden; }
-.money-bill { position: absolute; top: -120rpx; width: 132rpx; height: 76rpx; overflow: hidden; border: 3rpx solid rgba(19,80,42,.58); border-radius: 9rpx; background: linear-gradient(135deg,#effbea 0%,#bceabf 46%,#79ce8e 100%); box-shadow: 6rpx 8rpx 0 rgba(19,27,43,.68),0 18rpx 32rpx rgba(20,122,53,.18),inset 0 0 0 4rpx rgba(255,255,255,.3); color: #126b31; filter: saturate(.94) contrast(1.06); animation: money-fall linear infinite; transform-origin: center; box-sizing: border-box; }
-.money-bill::before { content: ""; position: absolute; inset: 8rpx; border: 2rpx solid currentColor; border-radius: 6rpx; opacity: .28; }
-.money-bill::after { content: ""; position: absolute; right: 15rpx; top: 13rpx; width: 24rpx; height: 24rpx; border: 2rpx solid currentColor; border-radius: 50%; opacity: .22; }
-.money-bill.tone-2 { border-color: rgba(29,103,150,.58); background: linear-gradient(135deg,#eef8ff 0%,#bddff2 46%,#80bddc 100%); color: #17658f; }
-.money-bill.tone-3 { border-color: rgba(137,101,23,.58); background: linear-gradient(135deg,#fff8df 0%,#f0d890 46%,#dbb157 100%); color: #875d0f; }
+.money-bill { position: absolute; top: -140rpx; width: 184rpx; height: 92rpx; overflow: hidden; border-radius: 5rpx; box-shadow: 5rpx 7rpx 0 rgba(19,27,43,.42); animation: money-fall linear infinite; transform-origin: center; }
+.money-bill-image { display: block; width: 100%; height: 100%; }
 .money-bill:nth-child(12n+1) { left: 3%; animation-delay: -.2s; animation-duration: 3.08s; --bill-drift: 54rpx; --bill-spin: 430deg; --bill-scale: .86; }
 .money-bill:nth-child(12n+2) { left: 14%; animation-delay: -1.9s; animation-duration: 3.54s; --bill-drift: -72rpx; --bill-spin: -360deg; --bill-scale: .96; }
 .money-bill:nth-child(12n+3) { left: 27%; animation-delay: -.8s; animation-duration: 2.86s; --bill-drift: 84rpx; --bill-spin: 510deg; --bill-scale: 1.08; }
@@ -90,14 +87,6 @@
 .money-bill:nth-child(12n+10) { left: 49%; animation-delay: -1.6s; animation-duration: 3.18s; --bill-drift: 76rpx; --bill-spin: -500deg; --bill-scale: .94; }
 .money-bill:nth-child(12n+11) { left: 66%; animation-delay: -2.1s; animation-duration: 3.66s; --bill-drift: -52rpx; --bill-spin: 420deg; --bill-scale: 1.1; }
 .money-bill:nth-child(12n+12) { left: 82%; animation-delay: -3.3s; animation-duration: 3.84s; --bill-drift: 62rpx; --bill-spin: -390deg; --bill-scale: .92; }
-.bill-corner, .bill-value, .bill-serial, .bill-portrait { position: absolute; z-index: 2; }
-.bill-corner { left: 12rpx; top: 10rpx; font-size: 20rpx; font-weight: 900; }
-.bill-value { right: 12rpx; bottom: 10rpx; font-size: 19rpx; font-weight: 900; }
-.bill-serial { left: 12rpx; bottom: 10rpx; font-family: "SF Mono", Menlo, monospace; font-size: 10rpx; font-weight: 800; opacity: .68; }
-.bill-portrait { left: 50%; top: 12rpx; width: 34rpx; height: 48rpx; transform: translateX(-50%); opacity: .22; }
-.bill-head { width: 17rpx; height: 17rpx; margin: 0 auto; border-radius: 50%; background: currentColor; }
-.bill-body { width: 34rpx; height: 27rpx; margin-top: 3rpx; border-radius: 50% 50% 8rpx 8rpx; background: currentColor; }
-
 .onboarding-mask { position: fixed; inset: 0; z-index: 120; background: #f5f7fb; }
 .onboarding-scroll { width: 100%; height: 100%; }
 .onboarding-sheet { min-height: 100vh; padding: calc(52rpx + env(safe-area-inset-top)) 38rpx calc(42rpx + env(safe-area-inset-bottom)); background-image: radial-gradient(circle at 1px 1px,rgba(19,27,43,.08) 1px,transparent 1.5px); background-size: 22rpx 22rpx; box-sizing: border-box; }

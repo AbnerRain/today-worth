@@ -1,5 +1,12 @@
 const store = require("../../utils/data");
 
+const moneyBillAssets = [
+  "/assets/money-rain/time-100.png",
+  "/assets/money-rain/break-50.png",
+  "/assets/money-rain/desk-20.png",
+  "/assets/money-rain/off-10.png"
+];
+
 Page({
   data: {
     activities: store.activityList,
@@ -90,10 +97,9 @@ Page({
 
   startTimer() {
     this.startedAt = Date.now();
-    const bills = Array.from({ length: 24 }, (_, index) => ({
+    const bills = Array.from({ length: 20 }, (_, index) => ({
       id: `${this.startedAt}-${index}`,
-      tone: (index % 3) + 1,
-      serial: ((this.startedAt + index * 7919) % 1000000).toString().padStart(6, "0")
+      src: moneyBillAssets[index % moneyBillAssets.length]
     }));
     this.setData({
       running: true,
