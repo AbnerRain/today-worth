@@ -32,12 +32,7 @@
     <text class="live-line">{{liveLine}}</text>
     <view wx:if="{{running}}" class="activity-scene scene-{{activeActivity}}">
       <view class="mascot-stage">
-        <image class="activity-mascot" src="{{activity.mascot}}" mode="aspectFit" />
-        <view class="motion-mark mark-one"></view>
-        <view class="motion-mark mark-two"></view>
-        <view class="action-prop prop-toilet"><view class="prop-puff puff-one"></view><view class="prop-puff puff-two"></view><view class="prop-flush"></view></view>
-        <view class="meal-bite"></view>
-        <view class="action-prop prop-nap"><text class="prop-zzz z-one">Z</text><text class="prop-zzz z-two">Z</text><view class="prop-breathe"></view></view>
+        <view class="activity-sprite" aria-hidden="true"><image class="activity-sprite-sheet" src="{{activity.mascot}}" mode="scaleToFill" /></view>
       </view>
       <view class="scene-copy">
         <text class="scene-badge">{{activity.label}}计价中</text>
