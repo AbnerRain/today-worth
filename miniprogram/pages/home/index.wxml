@@ -15,7 +15,7 @@
 
   <view class="profile-bar">
     <view class="profile-copy"><text class="profile-name">{{profileMeta.alias}}的时间单价</text><text class="profile-detail">{{profileMeta.detail}}</text></view>
-    <button class="settings-button" aria-label="打开工资设置" bindtap="openSettings"><text class="settings-icon">⚙</text><text>工资设置</text></button>
+    <button class="settings-button" aria-label="打开工资设置" bindtap="openSettings"><text class="settings-icon" aria-hidden="true">⚙</text><text class="settings-label">工资设置</text></button>
   </view>
 
   <view class="rate-strip comic-card">

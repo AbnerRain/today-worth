@@ -546,14 +546,14 @@ textarea:focus-visible {
 
 .icon-button {
   width: auto;
-  min-width: 96px;
-  height: 40px;
+  min-width: 116px;
+  height: 48px;
   flex: 0 0 auto;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 5px;
-  padding: 0 8px;
+  gap: 7px;
+  padding: 0 9px;
   border: 2px solid var(--ink);
   border-radius: 8px;
   background: var(--surface);
@@ -571,12 +571,24 @@ textarea:focus-visible {
 }
 
 .icon-button svg {
-  width: 18px;
-  height: 18px;
+  width: 21px;
+  height: 21px;
+}
+
+.settings-icon-shell {
+  width: 30px;
+  height: 30px;
+  flex: 0 0 30px;
+  display: grid;
+  place-items: center;
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+  background: var(--yellow);
+  box-sizing: border-box;
 }
 
 .button-label {
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1;
   font-weight: 900;
   white-space: nowrap;
