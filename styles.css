@@ -800,7 +800,7 @@ textarea:focus-visible {
   align-self: end;
 }
 
-.activity-sprite {
+.activity-figure {
   display: block;
   width: 164px;
   height: 164px;
@@ -810,20 +810,39 @@ textarea:focus-visible {
   overflow: hidden;
 }
 
-.activity-sprite-sheet {
+.activity-mascot-image {
   position: absolute;
-  left: 0;
-  top: 0;
+  inset: 0;
+  z-index: 1;
   display: block;
-  width: 328px;
-  height: 328px;
+  width: 100%;
+  height: 100%;
   max-width: none;
-  will-change: transform;
 }
 
-.scene-toilet .activity-sprite-sheet { animation: scene-toilet-sprite 1.4s steps(1,end) infinite; }
-.scene-meal .activity-sprite-sheet { animation: scene-meal-sprite 1.2s steps(1,end) infinite; }
-.scene-nap .activity-sprite-sheet { animation: scene-nap-sprite 2s steps(1,end) infinite; }
+.activity-motion { position: absolute; inset: 0; z-index: 2; display: none; pointer-events: none; }
+.scene-toilet .motion-toilet, .scene-meal .motion-meal, .scene-nap .motion-nap { display: block; }
+.toilet-strain { position: absolute; left: 78%; width: 12%; height: 4px; border-radius: 99px; background: #ff6259; transform-origin: left center; animation: toilet-strain-pulse .72s steps(2,end) infinite; }
+.toilet-strain-one { top: 28%; transform: rotate(-22deg); }
+.toilet-strain-two { top: 36%; animation-delay: .18s; transform: rotate(14deg); }
+.toilet-puff { position: absolute; right: 2%; top: 48%; width: 28px; height: 23px; transform-origin: left center; animation: toilet-puff-pulse 1.1s ease-out infinite; }
+.toilet-puff i { position: absolute; border: 2px solid var(--ink); border-radius: 50%; background: #fff; }
+.toilet-puff i:nth-child(1) { left: 0; bottom: 1px; width: 12px; height: 12px; }
+.toilet-puff i:nth-child(2) { left: 8px; top: 0; width: 15px; height: 15px; }
+.toilet-puff i:nth-child(3) { right: 0; bottom: 2px; width: 11px; height: 11px; }
+.meal-steam { position: absolute; bottom: 33%; width: 10px; height: 25px; border-left: 3px solid #11a66a; border-radius: 50%; transform-origin: center bottom; animation: meal-steam-breathe 1s ease-in-out infinite; }
+.meal-steam-one { left: 35%; }
+.meal-steam-two { left: 44%; animation-delay: .3s; }
+.meal-spark { position: absolute; left: 73%; top: 28%; color: #ff9f1c; font-size: 22px; font-style: normal; font-weight: 900; line-height: 1; transform-origin: center; animation: meal-spark-pop .9s steps(2,end) infinite; }
+.meal-slurp { position: absolute; left: 48%; top: 31%; width: 20px; height: 28px; border: 3px solid transparent; border-left-color: #ff9f1c; border-radius: 50%; transform-origin: center bottom; animation: meal-slurp-pulse .68s ease-in-out infinite; }
+.nap-z { position: absolute; color: var(--blue); font-family: var(--mono); font-style: normal; font-weight: 900; line-height: 1; opacity: 0; animation: nap-z-cycle 2.1s steps(1,end) infinite; }
+.nap-z-one { left: 70%; top: 12%; font-size: 15px; }
+.nap-z-two { left: 78%; top: 5%; font-size: 20px; animation-delay: .7s; }
+.nap-z-three { left: 88%; top: 0; font-size: 25px; animation-delay: 1.4s; }
+.nap-breath { position: absolute; left: 39%; top: 57%; width: 28px; height: 6px; border-radius: 99px; background: rgba(47,107,255,.28); transform-origin: left center; animation: nap-breath-pulse 1.8s ease-in-out infinite; }
+.nap-ring { position: absolute; top: 46%; width: 3px; height: 16px; border-radius: 99px; background: #ff6259; transform-origin: center bottom; animation: nap-ring-pulse 1.2s steps(2,end) infinite; }
+.nap-ring-one { left: 82%; transform: rotate(-28deg); }
+.nap-ring-two { left: 91%; animation-delay: .2s; transform: rotate(28deg); }
 
 .scene-copy {
   display: flex;
@@ -4191,15 +4210,10 @@ dialog[open] .report-illustration-nap .nap-moon {
     height: 154px;
   }
 
-  .activity-sprite {
+  .activity-figure {
     width: 150px;
     height: 150px;
     left: -18px;
-  }
-
-  .activity-sprite-sheet {
-    width: 300px;
-    height: 300px;
   }
 
   .scene-money {
@@ -4272,15 +4286,10 @@ dialog[open] .report-illustration-nap .nap-moon {
     height: 140px;
   }
 
-  .activity-sprite {
+  .activity-figure {
     width: 132px;
     height: 132px;
     left: -17px;
-  }
-
-  .activity-sprite-sheet {
-    width: 264px;
-    height: 264px;
   }
 
   .scene-badge {
@@ -4359,6 +4368,11 @@ dialog[open] .report-illustration-nap .nap-moon {
   }
 }
 
-@keyframes scene-toilet-sprite { 0%,24.99% { transform: translate3d(0,0,0); } 25%,49.99% { transform: translate3d(-50%,0,0); } 50%,74.99% { transform: translate3d(0,-50%,0); } 75%,100% { transform: translate3d(-50%,-50%,0); } }
-@keyframes scene-meal-sprite { 0%,24.99% { transform: translate3d(0,0,0); } 25%,49.99% { transform: translate3d(-50%,0,0); } 50%,74.99% { transform: translate3d(0,-50%,0); } 75%,100% { transform: translate3d(-50%,-50%,0); } }
-@keyframes scene-nap-sprite { 0%,24.99% { transform: translate3d(0,0,0); } 25%,49.99% { transform: translate3d(-50%,0,0); } 50%,74.99% { transform: translate3d(0,-50%,0); } 75%,100% { transform: translate3d(-50%,-50%,0); } }
+@keyframes toilet-strain-pulse { 0%,100% { width: 7%; opacity: .2; } 50% { width: 12%; opacity: 1; } }
+@keyframes toilet-puff-pulse { 0%,100% { opacity: .18; transform: scale(.72); } 45% { opacity: 1; transform: scale(1); } }
+@keyframes meal-steam-breathe { 0%,100% { opacity: .18; transform: scaleY(.55); } 50% { opacity: .9; transform: scaleY(1); } }
+@keyframes meal-spark-pop { 0%,100% { opacity: .25; transform: scale(.7); } 50% { opacity: 1; transform: scale(1); } }
+@keyframes meal-slurp-pulse { 0%,100% { opacity: .25; transform: scaleY(.72); } 50% { opacity: .9; transform: scaleY(1); } }
+@keyframes nap-z-cycle { 0%,32% { opacity: 0; transform: scale(.75); } 33%,66% { opacity: 1; transform: scale(1); } 67%,100% { opacity: .28; transform: scale(.86); } }
+@keyframes nap-breath-pulse { 0%,100% { width: 18px; opacity: .22; } 50% { width: 28px; opacity: .8; } }
+@keyframes nap-ring-pulse { 0%,100% { height: 9px; opacity: .15; } 50% { height: 16px; opacity: 1; } }
