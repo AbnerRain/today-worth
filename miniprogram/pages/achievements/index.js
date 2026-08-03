@@ -37,6 +37,7 @@ Page({
         activityLabel: activity.label,
         stamp: activity.stamp,
         color: activity.color,
+        image: `/assets/achievement-badges/${badge.activity}-${String(index + 1).padStart(2, "0")}.png`,
         title: badge.title,
         desc: badge.desc,
         unlocked,

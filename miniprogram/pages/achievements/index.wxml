@@ -11,7 +11,7 @@
   <view class="badge-grid">
     <view wx:for="{{badges}}" wx:key="id" class="badge-card comic-card {{item.unlocked ? 'is-unlocked' : 'is-locked'}}">
       <view class="badge-meta"><text>{{item.activityLabel}}线</text><text>NO.{{item.index}}</text></view>
-      <text class="badge-stamp" style="background: {{item.unlocked ? item.color : '#e4e7ec'}};">{{item.unlocked ? item.stamp : '锁'}}</text>
+      <image class="badge-stamp {{item.unlocked ? 'is-unlocked' : 'is-locked'}}" src="{{item.image}}" mode="aspectFit" />
       <text class="badge-title">{{item.title}}</text>
       <text class="badge-desc">{{item.desc}}</text>
       <view class="badge-track"><view class="badge-fill" style="width: {{item.progress}}%; background: {{item.color}};"></view></view>
