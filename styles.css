@@ -835,13 +835,14 @@ textarea:focus-visible {
 
 .activity-option {
   min-width: 0;
-  min-height: 72px;
+  min-height: 80px;
   display: grid;
-  grid-template-columns: 28px minmax(0, 1fr);
-  grid-template-rows: auto auto;
+  grid-template-columns: 1fr;
+  grid-template-rows: 38px auto auto;
   align-items: center;
-  column-gap: 7px;
-  padding: 9px 7px;
+  justify-items: center;
+  row-gap: 2px;
+  padding: 7px 4px;
   border: 2px solid var(--ink);
   border-radius: 7px;
   background: var(--mint-soft);
@@ -875,23 +876,46 @@ textarea:focus-visible {
   outline-offset: 4px;
 }
 
-.activity-stamp {
-  width: 28px;
-  height: 28px;
-  grid-row: 1 / span 2;
-  display: grid;
-  place-items: center;
+.activity-action {
+  width: 38px;
+  height: 38px;
+  grid-row: 1;
+  display: block;
+  align-self: center;
+  object-fit: cover;
   border: 2px solid var(--ink);
   border-radius: 50%;
   background: var(--surface);
-  font-family: var(--mono);
-  font-size: 9px;
-  line-height: 1;
-  font-weight: 950;
+  box-shadow: 2px 2px 0 var(--ink);
+  transform-origin: 50% 88%;
+}
+
+.activity-option[data-activity="toilet"] .activity-action {
+  background: var(--mint-soft);
+}
+
+.activity-option[data-activity="meal"] .activity-action {
+  background: var(--yellow-soft);
+}
+
+.activity-option[data-activity="nap"] .activity-action {
+  background: #d8efff;
+}
+
+.activity-option.active[data-activity="toilet"] .activity-action {
+  animation: option-toilet-bob 1.25s steps(2, end) infinite;
+}
+
+.activity-option.active[data-activity="meal"] .activity-action {
+  animation: option-meal-munch 720ms ease-in-out infinite;
+}
+
+.activity-option.active[data-activity="nap"] .activity-action {
+  animation: option-nap-breathe 2.2s ease-in-out infinite;
 }
 
 .activity-option strong {
-  align-self: end;
+  align-self: center;
   overflow: hidden;
   font-family: var(--display);
   font-size: 14px;
@@ -902,7 +926,7 @@ textarea:focus-visible {
 }
 
 .activity-option small {
-  align-self: start;
+  align-self: center;
   color: var(--muted);
   font-family: var(--mono);
   font-size: 7px;
@@ -3906,6 +3930,30 @@ dialog[open] .report-illustration-nap .nap-moon {
     grid-template-columns: 1fr 1fr;
   }
 
+  .activity-options {
+    gap: 6px;
+  }
+
+  .activity-option {
+    grid-template-columns: 1fr;
+    grid-template-rows: 32px auto auto;
+    min-height: 74px;
+    padding: 6px 4px;
+  }
+
+  .activity-action {
+    width: 32px;
+    height: 32px;
+  }
+
+  .activity-option strong {
+    font-size: 13px;
+  }
+
+  .activity-option small {
+    font-size: 6.5px;
+  }
+
   .rate-cell.primary {
     grid-column: span 2;
     min-height: 56px;
@@ -3971,6 +4019,26 @@ dialog[open] .report-illustration-nap .nap-moon {
     padding-inline: 16px;
   }
 
+  .activity-option {
+    grid-template-columns: 1fr;
+    grid-template-rows: 28px auto auto;
+    min-height: 68px;
+    padding-inline: 3px;
+  }
+
+  .activity-action {
+    width: 28px;
+    height: 28px;
+  }
+
+  .activity-option strong {
+    font-size: 12px;
+  }
+
+  .activity-option small {
+    font-size: 6px;
+  }
+
   .meter-copy strong {
     font-size: 41px;
   }
@@ -4012,4 +4080,19 @@ dialog[open] .report-illustration-nap .nap-moon {
   .tabbar {
     gap: 9px;
   }
+}
+
+@keyframes option-toilet-bob {
+  0%, 100% { transform: translateY(0) rotate(-1deg); }
+  50% { transform: translateY(-2px) rotate(1deg); }
+}
+
+@keyframes option-meal-munch {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-2px) rotate(-2deg); }
+}
+
+@keyframes option-nap-breathe {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(1px) scale(.97); }
 }
