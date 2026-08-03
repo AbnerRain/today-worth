@@ -391,7 +391,15 @@ const headerTaglines = [
   "人在公司坐，工资按秒落。",
   "认真上班很难，认真计价可以。",
   "把疲惫折现，让每一分钟都有回声。",
-  "生活偶尔暂停，工资最好别停。"
+  "生活偶尔暂停，工资最好别停。",
+  "工位是固定资产，时间是流动现金。",
+  "不求今天升职，先把今天的工时结算。",
+  "会议可以开长，收益不能漏算。",
+  "午休不是空白页，是带薪的缓冲区。",
+  "班可以慢慢上，账必须一笔一笔清。",
+  "今天少摸一会儿鱼，明天多一点底气。",
+  "每一秒都在上班，每一秒都值得记账。",
+  "老板看报表，我看自己的时间回款。"
 ];
 
 const defaultProfile = {
@@ -419,6 +427,7 @@ const state = {
   activeBadgeFilter: "all",
   activeLedgerKind: "",
   headerTaglineIndex: Math.floor(Math.random() * headerTaglines.length),
+  headerTaglineTimer: null,
   lastReport: null
 };
 
@@ -548,6 +557,7 @@ init();
 function init() {
   renderSettingsForm();
   nodes.headerTagline.textContent = headerTaglines[state.headerTaglineIndex];
+  state.headerTaglineTimer = window.setInterval(() => rotateHeaderTagline(), 9000);
 
   bindEvents();
   renderActivityMode();
@@ -602,6 +612,7 @@ function bindEvents() {
       nodes.periodButtons.forEach((item) => item.classList.toggle("active", item === button));
       renderStats();
       renderHeaderContext();
+      rotateHeaderTagline();
     });
   });
 
@@ -614,6 +625,7 @@ function bindEvents() {
         item.setAttribute("aria-selected", String(isActive));
       });
       renderBadges();
+      rotateHeaderTagline();
     });
   });
 
