@@ -129,7 +129,13 @@ Page({
     const seconds = Math.max(1, Math.round((Date.now() - this.startedAt) / 1000));
     const money = seconds * this.rates.second;
     const activity = this.data.activity;
-    store.addSession({ activity: activity.key, seconds, money, at: Date.now() });
+    const finishedAt = Date.now();
+    store.addSession({ activity: activity.key, seconds, money, at: finishedAt });
+    const todayKey = store.getDateKey(finishedAt);
+    const todayActivitySessions = store.getSessions().filter((session) => (
+      session.activity === activity.key && store.getDateKey(session.at) === todayKey
+    ));
+    const todayActivityTotal = store.aggregate(todayActivitySessions);
     this.clearTimer();
     this.startedAt = 0;
     this.setData({
@@ -140,11 +146,18 @@ Page({
       rewardItems: [],
       showReport: true,
       report: {
+        activityKey: activity.key,
         stamp: activity.stamp,
         title: `本次${activity.fullLabel}`,
         secondsText: store.formatDuration(seconds),
         moneyText: store.formatMoney(money),
-        quote: activity.done
+        quote: activity.done,
+        reportKicker: activity.reportKicker,
+        reportTag: activity.reportTag,
+        reportSfx: activity.reportSfx,
+        reportCaption: activity.reportCaption,
+        todayCountText: `${todayActivityTotal.count}次`,
+        todaySecondsText: store.formatDuration(todayActivityTotal.seconds)
       }
     });
     this.renderTotals();

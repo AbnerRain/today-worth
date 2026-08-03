@@ -17,6 +17,10 @@ const activities = {
     coin: "/assets/reward-rain/toilet-coin.png",
     stopText: "冲水结算",
     done: "冲水完成，这笔钱很有味道。",
+    reportKicker: "肠道项目 · 已结算",
+    reportTag: "冲水到账",
+    reportSfx: "FLUSH!",
+    reportCaption: "冲水完成，今天的松弛时间已经入账。",
     color: "#bff5df"
   },
   meal: {
@@ -33,6 +37,10 @@ const activities = {
     coin: "/assets/reward-rain/meal-coin.png",
     stopText: "吃饱结算",
     done: "光盘入账，午休终于有了回报。",
+    reportKicker: "能量补给 · 已结算",
+    reportTag: "光盘到账",
+    reportSfx: "YUM!",
+    reportCaption: "饭点不打折，每一口都已经记进时间工资条。",
     color: "#fff0a6"
   },
   nap: {
@@ -49,6 +57,10 @@ const activities = {
     coin: "/assets/reward-rain/nap-coin.png",
     stopText: "睡醒结算",
     done: "充电完成，精神和余额一起回血。",
+    reportKicker: "精神充电 · 已结算",
+    reportTag: "醒来到账",
+    reportSfx: "Zzz...",
+    reportCaption: "这一觉没有白睡，精神和余额一起回血。",
     color: "#cbe8ff"
   }
 };
@@ -68,14 +80,20 @@ const achievements = [
   { activity: "toilet", title: "三顾茅庐", desc: "累计完成三次带薪拉屎", metric: "count", target: 3 },
   { activity: "toilet", title: "坐享其成", desc: "累计坐满十五分钟", metric: "seconds", target: 900 },
   { activity: "toilet", title: "薪想屎成", desc: "累计收益达到十元", metric: "money", target: 10 },
+  { activity: "toilet", title: "五蹲俱全", desc: "累计完成五次带薪拉屎", metric: "count", target: 5 },
+  { activity: "toilet", title: "日进蹲金", desc: "拉屎收益累计达到五十元", metric: "money", target: 50 },
   { activity: "meal", title: "饭来张口", desc: "完成第一次带薪吃饭", metric: "count", target: 1 },
   { activity: "meal", title: "再三添饭", desc: "累计完成三次带薪吃饭", metric: "count", target: 3 },
   { activity: "meal", title: "细嚼薪咽", desc: "累计吃满一小时", metric: "seconds", target: 3600 },
   { activity: "meal", title: "薪安理得", desc: "吃饭收益累计达到十元", metric: "money", target: 10 },
+  { activity: "meal", title: "十全十美", desc: "累计完成十次带薪吃饭", metric: "count", target: 10 },
+  { activity: "meal", title: "饭富自由", desc: "吃饭收益累计达到五十元", metric: "money", target: 50 },
   { activity: "nap", title: "一觉值千金", desc: "完成第一次带薪睡觉", metric: "count", target: 1 },
   { activity: "nap", title: "睡到薪来", desc: "累计完成三次带薪睡觉", metric: "count", target: 3 },
   { activity: "nap", title: "卧薪尝胆", desc: "累计睡满一小时", metric: "seconds", target: 3600 },
-  { activity: "nap", title: "觉后余薪", desc: "睡觉收益累计达到十元", metric: "money", target: 10 }
+  { activity: "nap", title: "觉后余薪", desc: "睡觉收益累计达到十元", metric: "money", target: 10 },
+  { activity: "nap", title: "十觉全能", desc: "累计完成十次带薪睡觉", metric: "count", target: 10 },
+  { activity: "nap", title: "梦里生财", desc: "睡觉收益累计达到五十元", metric: "money", target: 50 }
 ];
 
 const defaultProfile = {

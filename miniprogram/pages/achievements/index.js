@@ -12,6 +12,7 @@ Page({
     unlockedCount: 0,
     totalCount: store.achievements.length,
     completion: 0,
+    activityProgress: [],
     badges: []
   },
 
@@ -51,10 +52,27 @@ Page({
     const badges = this.data.activeFilter === "all"
       ? allBadges
       : allBadges.filter((badge) => badge.activity === this.data.activeFilter);
+    const activityProgress = this.data.filters.filter((filter) => filter.key !== "all").map((filter) => {
+      const activity = store.activities[filter.key];
+      const items = allBadges.filter((badge) => badge.activity === filter.key);
+      const unlocked = items.filter((badge) => badge.unlocked).length;
+      const metrics = grouped[filter.key];
+      return {
+        key: filter.key,
+        label: activity.label,
+        stamp: activity.stamp,
+        color: activity.color,
+        unlocked,
+        total: items.length,
+        percent: Math.round((unlocked / items.length) * 100),
+        detail: `${metrics.count}次 · ${store.formatDuration(metrics.seconds)}`
+      };
+    });
     this.setData({
       badges,
       unlockedCount,
-      completion: Math.round((unlockedCount / allBadges.length) * 100)
+      completion: Math.round((unlockedCount / allBadges.length) * 100),
+      activityProgress
     });
   },
 

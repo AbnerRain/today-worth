@@ -345,7 +345,9 @@ const achievementGroups = {
       { title: "屎无前例", desc: "完成第一次带薪拉屎", metric: "count", target: 1 },
       { title: "三顾茅庐", desc: "累计完成三次带薪拉屎", metric: "count", target: 3 },
       { title: "坐享其成", desc: "累计坐满十五分钟", metric: "seconds", target: 15 * 60 },
-      { title: "薪想屎成", desc: "累计收益达到十元", metric: "money", target: 10 }
+      { title: "薪想屎成", desc: "累计收益达到十元", metric: "money", target: 10 },
+      { title: "五蹲俱全", desc: "累计完成五次带薪拉屎", metric: "count", target: 5 },
+      { title: "日进蹲金", desc: "拉屎收益累计达到五十元", metric: "money", target: 50 }
     ]
   },
   meal: {
@@ -355,7 +357,9 @@ const achievementGroups = {
       { title: "饭来张口", desc: "完成第一次带薪吃饭", metric: "count", target: 1 },
       { title: "再三添饭", desc: "累计完成三次带薪吃饭", metric: "count", target: 3 },
       { title: "细嚼薪咽", desc: "累计吃满一小时", metric: "seconds", target: 60 * 60 },
-      { title: "薪安理得", desc: "吃饭收益累计达到十元", metric: "money", target: 10 }
+      { title: "薪安理得", desc: "吃饭收益累计达到十元", metric: "money", target: 10 },
+      { title: "十全十美", desc: "累计完成十次带薪吃饭", metric: "count", target: 10 },
+      { title: "饭富自由", desc: "吃饭收益累计达到五十元", metric: "money", target: 50 }
     ]
   },
   nap: {
@@ -365,7 +369,9 @@ const achievementGroups = {
       { title: "一觉值千金", desc: "完成第一次带薪睡觉", metric: "count", target: 1 },
       { title: "睡到薪来", desc: "累计完成三次带薪睡觉", metric: "count", target: 3 },
       { title: "卧薪尝胆", desc: "累计睡满一小时", metric: "seconds", target: 60 * 60 },
-      { title: "觉后余薪", desc: "睡觉收益累计达到十元", metric: "money", target: 10 }
+      { title: "觉后余薪", desc: "睡觉收益累计达到十元", metric: "money", target: 10 },
+      { title: "十觉全能", desc: "累计完成十次带薪睡觉", metric: "count", target: 10 },
+      { title: "梦里生财", desc: "睡觉收益累计达到五十元", metric: "money", target: 50 }
     ]
   }
 };

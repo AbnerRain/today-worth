@@ -35,6 +35,9 @@
         <image class="activity-mascot" src="{{activity.mascot}}" mode="aspectFit" />
         <view class="motion-mark mark-one"></view>
         <view class="motion-mark mark-two"></view>
+        <view class="action-prop prop-toilet"><view class="prop-puff puff-one"></view><view class="prop-puff puff-two"></view><view class="prop-flush"></view></view>
+        <view class="action-prop prop-meal"><view class="prop-plate"></view><view class="prop-chopstick chopstick-one"></view><view class="prop-chopstick chopstick-two"></view></view>
+        <view class="action-prop prop-nap"><text class="prop-zzz z-one">Z</text><text class="prop-zzz z-two">Z</text><view class="prop-breathe"></view></view>
       </view>
       <view class="scene-copy">
         <text class="scene-badge">{{activity.label}}计价中</text>
@@ -115,11 +118,24 @@
 
 <view wx:if="{{showReport}}" class="report-mask" bindtap="closeReport">
   <view class="report-card comic-card" catchtap="blockBubble">
-    <view class="report-scene"><text class="report-stamp">{{report.stamp}}</text><text class="report-pop">到账!</text></view>
+    <view class="report-scene report-{{report.activityKey}}">
+      <text class="report-scene-tag">{{report.reportTag}}</text>
+      <view class="report-visual report-visual-toilet"><view class="visual-toilet-lid"></view><view class="visual-toilet-bowl"><view class="visual-water"></view></view><view class="visual-roll"></view><view class="visual-coin coin-one">￥</view><view class="visual-coin coin-two">￥</view></view>
+      <view class="report-visual report-visual-meal"><view class="visual-bowl"><view class="visual-rice"></view></view><view class="visual-steam steam-one"></view><view class="visual-steam steam-two"></view><view class="visual-chopsticks"></view><view class="visual-spark">✦</view></view>
+      <view class="report-visual report-visual-nap"><view class="visual-moon"></view><view class="visual-bed"><view class="visual-pillow"></view><view class="visual-blanket"></view></view><text class="visual-zzz zzz-one">Z</text><text class="visual-zzz zzz-two">Z</text></view>
+      <text class="report-stamp">{{report.stamp}}</text><text class="report-pop">{{report.reportSfx}}</text>
+    </view>
+    <text class="report-kicker">{{report.reportKicker}}</text>
     <text class="report-title">{{report.title}}</text>
     <text class="report-money">{{report.moneyText}}</text>
     <text class="report-quote">{{report.quote}}</text>
-    <view class="report-meta"><text>本次时长</text><text>{{report.secondsText}}</text></view>
+    <view class="report-breakdown">
+      <view><text>本次时长</text><text>{{report.secondsText}}</text></view>
+      <view><text>今日第几次</text><text>{{report.todayCountText}}</text></view>
+      <view><text>今日累计</text><text>{{report.todaySecondsText}}</text></view>
+      <view><text>本次入账</text><text>{{report.moneyText}}</text></view>
+    </view>
+    <text class="report-caption">{{report.reportCaption}}</text>
     <button class="share-button" open-type="share">分享给微信好友</button>
     <button class="close-button" bindtap="closeReport">先自己乐会儿</button>
   </view>

@@ -6,6 +6,17 @@
 .pass-track { height: 24rpx; margin: 20rpx 0 12rpx; overflow: hidden; border: 3rpx solid #131b2b; border-radius: 999rpx; background: #fff; }
 .pass-fill { height: 100%; background: #2f6bff; }
 .pass-foot { color: #596377; font-size: 21rpx; font-weight: 700; }
+.activity-progress-list { display: grid; gap: 14rpx; margin-top: 24rpx; padding-top: 20rpx; border-top: 3rpx dashed rgba(19,27,43,.35); }
+.activity-progress-row { min-width: 0; }
+.activity-progress-head { display: flex; align-items: center; justify-content: space-between; color: #303b50; font-size: 21rpx; font-weight: 900; }
+.activity-progress-name { display: flex; align-items: center; gap: 9rpx; }
+.activity-progress-stamp { display: inline-flex; width: 38rpx; height: 30rpx; align-items: center; justify-content: center; border: 2rpx solid #131b2b; border-radius: 6rpx; background: #fff; font-size: 16rpx; line-height: 1; }
+.activity-progress-stamp.activity-toilet { background: #bff5df; }
+.activity-progress-stamp.activity-meal { background: #fff0a6; }
+.activity-progress-stamp.activity-nap { background: #cbe8ff; }
+.activity-progress-track { height: 12rpx; margin-top: 8rpx; overflow: hidden; border: 2rpx solid #131b2b; border-radius: 999rpx; background: rgba(255,255,255,.72); }
+.activity-progress-fill { height: 100%; min-width: 0; }
+.activity-progress-detail { display: block; margin-top: 5rpx; color: #687186; font-size: 17rpx; font-weight: 700; }
 .filter-tabs { display: flex; width: 100%; margin: 32rpx 0 20rpx; padding: 6rpx; overflow: hidden; border: 3rpx solid #131b2b; border-radius: 14rpx; background: #e7ebf1; box-sizing: border-box; }
 .filter-button { display: flex; flex: 1 1 0; width: 0; min-width: 0; height: 64rpx; margin: 0; padding: 0; align-items: center; justify-content: center; overflow: hidden; border-radius: 10rpx; background: transparent; color: #687186; font-size: 22rpx; font-weight: 900; line-height: 58rpx; text-overflow: ellipsis; white-space: nowrap; box-sizing: border-box; }
 .filter-button.is-active { background: #2f6bff; box-shadow: 4rpx 4rpx 0 #131b2b; color: #fff; }
