@@ -1,13 +1,42 @@
 {
   "pages": [
-    "pages/webview/index"
+    "pages/home/index",
+    "pages/stats/index",
+    "pages/achievements/index",
+    "pages/settings/index"
   ],
   "window": {
-    "navigationBarTitleText": "今天值多少钱",
-    "navigationBarBackgroundColor": "#ffdc3f",
+    "navigationBarTitleText": "时间工资条",
+    "navigationBarBackgroundColor": "#fffdf7",
     "navigationBarTextStyle": "black",
-    "backgroundColor": "#fff7d6",
+    "backgroundColor": "#f5f7fb",
     "backgroundTextStyle": "dark"
+  },
+  "tabBar": {
+    "color": "#778096",
+    "selectedColor": "#131b2b",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/home/index",
+        "text": "首页",
+        "iconPath": "assets/tab-home.png",
+        "selectedIconPath": "assets/tab-home-active.png"
+      },
+      {
+        "pagePath": "pages/stats/index",
+        "text": "统计",
+        "iconPath": "assets/tab-stats.png",
+        "selectedIconPath": "assets/tab-stats-active.png"
+      },
+      {
+        "pagePath": "pages/achievements/index",
+        "text": "成就",
+        "iconPath": "assets/tab-achievements.png",
+        "selectedIconPath": "assets/tab-achievements-active.png"
+      }
+    ]
   },
   "style": "v2",
   "sitemapLocation": "sitemap.json"

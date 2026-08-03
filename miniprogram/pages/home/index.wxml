@@ -1,0 +1,81 @@
+<view class="page-shell home-page">
+  <view wx:if="{{running}}" class="money-rain">
+    <view wx:for="{{moneyBills}}" wx:key="id" class="money-bill" style="left: {{item.left}}%; animation-delay: {{item.delay}}s; animation-duration: {{item.duration}}s;">
+      <text>TIME</text><text>¥</text>
+    </view>
+  </view>
+
+  <view class="masthead">
+    <view>
+      <text class="eyebrow">OFFICE PAYSLIP · 01</text>
+      <view class="brand-row"><text class="brand">时间工资条</text><text class="brand-stamp">值</text></view>
+      <text class="tagline">时间既然卖了，就得知道卖了多少钱。</text>
+    </view>
+    <button class="settings-button" aria-label="打开工资设置" bindtap="openSettings">⚙</button>
+  </view>
+
+  <view class="rate-strip comic-card">
+    <view><text>当前时薪</text><text>{{rates.hour}}</text></view>
+    <view><text>每分钟</text><text>{{rates.minute}}</text></view>
+    <view><text>每秒</text><text>{{rates.second}}</text></view>
+  </view>
+
+  <view class="meter comic-card" style="background: {{activity.color}};">
+    <view class="meter-kicker"><text>{{activity.english}} MODE</text><text class="live-dot {{running ? 'is-running' : ''}}"></text></view>
+    <text class="meter-state">{{running ? activity.fullLabel + '进行中' : activity.fullLabel + '待开始'}}</text>
+    <text class="timer">{{timerText}}</text>
+    <view class="earning-ticket"><text>本次已赚</text><text>{{liveMoney}}</text></view>
+    <text class="live-line">{{liveLine}}</text>
+  </view>
+
+  <view class="section-heading"><text>带薪模式</text><text>{{activity.hint}}</text></view>
+  <view class="activity-grid">
+    <button wx:for="{{activities}}" wx:key="key" class="activity-button {{activeActivity === item.key ? 'is-active' : ''}}" data-key="{{item.key}}" disabled="{{running}}" bindtap="selectActivity">
+      <text class="activity-stamp">{{item.stamp}}</text><text>{{item.label}}</text><text>{{item.english}}</text>
+    </button>
+  </view>
+
+  <button class="main-action {{running ? 'is-running' : ''}}" bindtap="toggleTimer">
+    <text>{{running ? '■' : '▶'}}</text><text>{{running ? activity.stopText : '开始' + activity.fullLabel}}</text>
+  </button>
+
+  <view class="section-heading"><text>带薪愿望单</text><text>今日回本目标</text></view>
+  <view class="goal-card comic-card">
+    <view class="goal-main">
+      <text class="goal-stamp">{{goal.stamp}}</text>
+      <view><text>老板赞助进度</text><text>{{goal.label}}</text></view>
+      <text>{{goalMoneyText}}</text>
+    </view>
+    <view class="progress-track"><view style="width: {{goalProgress}}%;"></view></view>
+    <text class="goal-status">{{goalStatus}}</text>
+    <scroll-view class="goal-list" scroll-x="{{true}}" enhanced="{{true}}" show-scrollbar="{{false}}">
+      <button wx:for="{{goalPresets}}" wx:key="id" class="goal-chip {{goal.id === item.id ? 'is-active' : ''}}" data-id="{{item.id}}" bindtap="selectGoal">{{item.label}}</button>
+    </scroll-view>
+  </view>
+
+  <view class="section-heading"><text>今日{{activity.label}}累计</text><text>只算当前模式</text></view>
+  <view class="today-card comic-card">
+    <view class="today-summary">
+      <view><text>{{today.count}}</text><text>次数</text></view>
+      <view><text>{{today.secondsText}}</text><text>时长</text></view>
+      <view><text>{{today.moneyText}}</text><text>收入</text></view>
+    </view>
+    <view class="activity-ledger">
+      <view wx:for="{{todayActivities}}" wx:key="key" class="ledger-row {{item.active ? 'is-active' : ''}}">
+        <text>{{item.stamp}}</text><view><text>{{item.label}}</text><text>{{item.countText}}</text></view><view><text>{{item.secondsText}}</text><text>{{item.moneyText}}</text></view>
+      </view>
+    </view>
+  </view>
+</view>
+
+<view wx:if="{{showReport}}" class="report-mask" bindtap="closeReport">
+  <view class="report-card comic-card" catchtap="blockBubble">
+    <view class="report-scene"><text class="report-stamp">{{report.stamp}}</text><text class="report-pop">到账!</text></view>
+    <text class="report-title">{{report.title}}</text>
+    <text class="report-money">{{report.moneyText}}</text>
+    <text class="report-quote">{{report.quote}}</text>
+    <view class="report-meta"><text>本次时长</text><text>{{report.secondsText}}</text></view>
+    <button class="share-button" open-type="share">分享给微信好友</button>
+    <button class="close-button" bindtap="closeReport">先自己乐会儿</button>
+  </view>
+</view>

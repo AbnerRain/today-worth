@@ -1,0 +1,17 @@
+<view class="page-shell settings-page">
+  <view class="page-header"><text>摸鱼基金</text><text>先填工资，再算每一秒。</text></view>
+  <view class="preview comic-card">
+    <view><text>时薪</text><text>{{preview.hour}}</text></view>
+    <view><text>分钟</text><text>{{preview.minute}}</text></view>
+    <view><text>每秒</text><text>{{preview.second}}</text></view>
+  </view>
+  <view class="form-card comic-card">
+    <label><text>摸鱼代号</text><input value="{{profile.alias}}" maxlength="12" data-field="alias" bindinput="onInput" placeholder="例：工位隐士" /></label>
+    <label><text>月薪</text><view><input type="digit" value="{{profile.salary}}" data-field="salary" bindinput="onInput" /><text>元</text></view></label>
+    <label><text>每月工作天数</text><view><input type="number" value="{{profile.workdays}}" data-field="workdays" bindinput="onInput" /><text>天</text></view></label>
+    <label><text>每天工作时长</text><view><input type="digit" value="{{profile.hours}}" data-field="hours" bindinput="onInput" /><text>小时</text></view></label>
+  </view>
+  <button class="save-button" bindtap="save">保存工资条</button>
+  <button class="clear-button" bindtap="clearData">清空本机数据</button>
+  <text class="privacy-note">所有数据只保存在你的手机里，当前版本不会上传工资与计时记录。</text>
+</view>

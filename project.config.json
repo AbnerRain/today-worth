@@ -1,7 +1,7 @@
 {
-  "description": "今天值多少钱微信小程序接入配置",
-  "projectname": "今天值多少钱",
-  "appid": "touristappid",
+  "description": "时间工资条微信小程序原生项目",
+  "projectname": "时间工资条",
+  "appid": "wx2eb22fe5dbb782d9",
   "compileType": "miniprogram",
   "miniprogramRoot": "miniprogram/",
   "setting": {

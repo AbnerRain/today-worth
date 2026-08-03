@@ -1,0 +1,21 @@
+.page-header { display: flex; flex-direction: column; gap: 8rpx; margin: 6rpx 0 26rpx; }
+.page-header text:first-child { font-size: 52rpx; font-weight: 900; }
+.page-header text:last-child { color: #596377; font-size: 24rpx; font-weight: 700; }
+.pass { padding: 26rpx; background: #ffdc3f; }
+.pass > view:first-child { display: flex; justify-content: space-between; font-size: 27rpx; font-weight: 900; }
+.pass-track { height: 24rpx; margin: 20rpx 0 12rpx; overflow: hidden; border: 3rpx solid #131b2b; border-radius: 999rpx; background: #fff; }
+.pass-track view { height: 100%; background: #2f6bff; }
+.pass > text { color: #596377; font-size: 21rpx; font-weight: 700; }
+.filter-tabs { margin: 32rpx 0 20rpx; white-space: nowrap; }
+.filter-tabs button { display: inline-flex; width: auto; height: 64rpx; margin: 0 14rpx 0 0; padding: 0 26rpx; align-items: center; border: 3rpx solid #131b2b; border-radius: 10rpx; background: #fff; color: #131b2b; font-size: 23rpx; font-weight: 900; line-height: 58rpx; }
+.filter-tabs button.is-active { background: #2f6bff; box-shadow: 4rpx 4rpx 0 #131b2b; color: #fff; }
+.badge-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 20rpx; }
+.badge-card { display: flex; min-height: 318rpx; padding: 20rpx; flex-direction: column; box-sizing: border-box; }
+.badge-card.is-locked { color: #697286; box-shadow: 5rpx 5rpx 0 #939cab; }
+.badge-meta { display: flex; justify-content: space-between; color: #687186; font-size: 18rpx; font-weight: 800; }
+.badge-stamp { display: flex; width: 64rpx; height: 64rpx; margin: 20rpx 0 14rpx; align-items: center; justify-content: center; border: 3rpx solid #131b2b; border-radius: 50%; font-size: 20rpx; font-weight: 900; }
+.badge-title { font-size: 28rpx; font-weight: 900; }
+.badge-desc { min-height: 66rpx; margin: 8rpx 0 16rpx; color: #687186; font-size: 20rpx; line-height: 1.5; }
+.badge-track { height: 14rpx; margin-top: auto; overflow: hidden; border: 2rpx solid #131b2b; border-radius: 999rpx; background: #edf0f4; }
+.badge-track view { height: 100%; }
+.badge-progress { margin-top: 8rpx; color: #687186; font-size: 18rpx; }

@@ -1,5 +1,5 @@
 App({
   globalData: {
-    h5Url: ""
+    appName: "时间工资条"
   }
 });

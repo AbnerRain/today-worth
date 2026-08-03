@@ -1,0 +1,21 @@
+<view class="page-shell achievements-page">
+  <view class="page-header"><text>摸鱼履历</text><text>上班没有白上，章也不能白盖。</text></view>
+  <view class="pass comic-card">
+    <view><text>履历完成度</text><text>{{unlockedCount}} / {{totalCount}}</text></view>
+    <view class="pass-track"><view style="width: {{completion}}%;"></view></view>
+    <text>已解锁 {{completion}}%</text>
+  </view>
+  <scroll-view class="filter-tabs" scroll-x="{{true}}" enhanced="{{true}}" show-scrollbar="{{false}}">
+    <button wx:for="{{filters}}" wx:key="key" class="{{activeFilter === item.key ? 'is-active' : ''}}" data-filter="{{item.key}}" bindtap="selectFilter">{{item.label}}</button>
+  </scroll-view>
+  <view class="badge-grid">
+    <view wx:for="{{badges}}" wx:key="id" class="badge-card comic-card {{item.unlocked ? 'is-unlocked' : 'is-locked'}}">
+      <view class="badge-meta"><text>{{item.activityLabel}}线</text><text>NO.{{item.index}}</text></view>
+      <text class="badge-stamp" style="background: {{item.unlocked ? item.color : '#e4e7ec'}};">{{item.unlocked ? item.stamp : '锁'}}</text>
+      <text class="badge-title">{{item.title}}</text>
+      <text class="badge-desc">{{item.desc}}</text>
+      <view class="badge-track"><view style="width: {{item.progress}}%; background: {{item.color}};"></view></view>
+      <text class="badge-progress">{{item.progressText}}</text>
+    </view>
+  </view>
+</view>
