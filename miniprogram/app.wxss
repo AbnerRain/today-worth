@@ -32,12 +32,12 @@ button::after {
   margin: 40rpx 0 20rpx;
 }
 
-.section-heading text:first-child {
+.section-title {
   font-size: 34rpx;
   font-weight: 900;
 }
 
-.section-heading text:last-child {
+.section-note {
   color: #687186;
   font-size: 22rpx;
   font-weight: 700;

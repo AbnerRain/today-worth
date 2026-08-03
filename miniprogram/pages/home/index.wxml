@@ -15,23 +15,23 @@
   </view>
 
   <view class="rate-strip comic-card">
-    <view><text>当前时薪</text><text>{{rates.hour}}</text></view>
-    <view><text>每分钟</text><text>{{rates.minute}}</text></view>
-    <view><text>每秒</text><text>{{rates.second}}</text></view>
+    <view class="rate-cell rate-primary"><text class="rate-label">当前时薪</text><text class="rate-value">{{rates.hour}}</text></view>
+    <view class="rate-cell"><text class="rate-label">每分钟</text><text class="rate-value">{{rates.minute}}</text></view>
+    <view class="rate-cell"><text class="rate-label">每秒</text><text class="rate-value">{{rates.second}}</text></view>
   </view>
 
   <view class="meter comic-card" style="background: {{activity.color}};">
     <view class="meter-kicker"><text>{{activity.english}} MODE</text><text class="live-dot {{running ? 'is-running' : ''}}"></text></view>
     <text class="meter-state">{{running ? activity.fullLabel + '进行中' : activity.fullLabel + '待开始'}}</text>
     <text class="timer">{{timerText}}</text>
-    <view class="earning-ticket"><text>本次已赚</text><text>{{liveMoney}}</text></view>
+    <view class="earning-ticket"><text class="earning-label">本次已赚</text><text class="earning-value">{{liveMoney}}</text></view>
     <text class="live-line">{{liveLine}}</text>
   </view>
 
-  <view class="section-heading"><text>带薪模式</text><text>{{activity.hint}}</text></view>
+  <view class="section-heading"><text class="section-title">带薪模式</text><text class="section-note">{{activity.hint}}</text></view>
   <view class="activity-grid">
     <button wx:for="{{activities}}" wx:key="key" class="activity-button {{activeActivity === item.key ? 'is-active' : ''}}" data-key="{{item.key}}" disabled="{{running}}" bindtap="selectActivity">
-      <text class="activity-stamp">{{item.stamp}}</text><text>{{item.label}}</text><text>{{item.english}}</text>
+      <text class="activity-stamp">{{item.stamp}}</text><text class="activity-label">{{item.label}}</text><text class="activity-english">{{item.english}}</text>
     </button>
   </view>
 
@@ -39,30 +39,30 @@
     <text>{{running ? '■' : '▶'}}</text><text>{{running ? activity.stopText : '开始' + activity.fullLabel}}</text>
   </button>
 
-  <view class="section-heading"><text>带薪愿望单</text><text>今日回本目标</text></view>
+  <view class="section-heading"><text class="section-title">带薪愿望单</text><text class="section-note">今日回本目标</text></view>
   <view class="goal-card comic-card">
     <view class="goal-main">
       <text class="goal-stamp">{{goal.stamp}}</text>
-      <view><text>老板赞助进度</text><text>{{goal.label}}</text></view>
-      <text>{{goalMoneyText}}</text>
+      <view class="goal-copy"><text class="goal-label">老板赞助进度</text><text class="goal-title">{{goal.label}}</text></view>
+      <text class="goal-amount">{{goalMoneyText}}</text>
     </view>
-    <view class="progress-track"><view style="width: {{goalProgress}}%;"></view></view>
+    <view class="progress-track"><view class="progress-fill" style="width: {{goalProgress}}%;"></view></view>
     <text class="goal-status">{{goalStatus}}</text>
     <scroll-view class="goal-list" scroll-x="{{true}}" enhanced="{{true}}" show-scrollbar="{{false}}">
       <button wx:for="{{goalPresets}}" wx:key="id" class="goal-chip {{goal.id === item.id ? 'is-active' : ''}}" data-id="{{item.id}}" bindtap="selectGoal">{{item.label}}</button>
     </scroll-view>
   </view>
 
-  <view class="section-heading"><text>今日{{activity.label}}累计</text><text>只算当前模式</text></view>
+  <view class="section-heading"><text class="section-title">今日{{activity.label}}累计</text><text class="section-note">只算当前模式</text></view>
   <view class="today-card comic-card">
     <view class="today-summary">
-      <view><text>{{today.count}}</text><text>次数</text></view>
-      <view><text>{{today.secondsText}}</text><text>时长</text></view>
-      <view><text>{{today.moneyText}}</text><text>收入</text></view>
+      <view class="today-stat is-first"><text class="today-value">{{today.count}}</text><text class="today-label">次数</text></view>
+      <view class="today-stat"><text class="today-value">{{today.secondsText}}</text><text class="today-label">时长</text></view>
+      <view class="today-stat"><text class="today-value">{{today.moneyText}}</text><text class="today-label">收入</text></view>
     </view>
     <view class="activity-ledger">
       <view wx:for="{{todayActivities}}" wx:key="key" class="ledger-row {{item.active ? 'is-active' : ''}}">
-        <text>{{item.stamp}}</text><view><text>{{item.label}}</text><text>{{item.countText}}</text></view><view><text>{{item.secondsText}}</text><text>{{item.moneyText}}</text></view>
+        <text class="ledger-stamp">{{item.stamp}}</text><view class="ledger-copy"><text class="ledger-title">{{item.label}}</text><text class="ledger-detail">{{item.countText}}</text></view><view class="ledger-copy ledger-values"><text class="ledger-title">{{item.secondsText}}</text><text class="ledger-detail">{{item.moneyText}}</text></view>
       </view>
     </view>
   </view>
