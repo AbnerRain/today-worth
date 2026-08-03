@@ -88,6 +88,19 @@ const activityModes = {
   }
 };
 
+const moneyBillAssets = [
+  "./miniprogram/assets/money-rain/time-100.png",
+  "./miniprogram/assets/money-rain/break-50.png",
+  "./miniprogram/assets/money-rain/desk-20.png",
+  "./miniprogram/assets/money-rain/off-10.png"
+];
+
+const rewardCoinAssets = {
+  toilet: "./miniprogram/assets/reward-rain/toilet-coin.png",
+  meal: "./miniprogram/assets/reward-rain/meal-coin.png",
+  nap: "./miniprogram/assets/reward-rain/nap-coin.png"
+};
+
 const defaultLedgerEntries = [
   {
     kind: "commute",
@@ -329,63 +342,30 @@ const achievementGroups = {
     label: "拉屎",
     stamp: "WC",
     achievements: [
-      { title: "屎无前例", desc: "完成第一次带薪拉屎，从此开创薪纪元", metric: "count", target: 1 },
-      { title: "三顾茅庐", desc: "累计光顾三次，茅庐终于记住了你", metric: "count", target: 3 },
-      { title: "十蹲九稳", desc: "累计完成十次，蹲感已经相当稳定", metric: "count", target: 10 },
-      { title: "便地开花", desc: "累计完成三十次，工位之外遍地开花", metric: "count", target: 30 },
-      { title: "百厕不殆", desc: "累计完成一百次，知己知厕方能不殆", metric: "count", target: 100 },
-      { title: "坐享其成", desc: "累计坐满十五分钟，真的坐着就有收益", metric: "seconds", target: 15 * 60 },
-      { title: "肠治久安", desc: "累计一小时，肠久才能治安", metric: "seconds", target: 60 * 60 },
-      { title: "蹲峰造极", desc: "累计五小时，登上带薪蹲峰", metric: "seconds", target: 5 * 60 * 60 },
-      { title: "便宜行事", desc: "单次超过五分钟，这件事便宜你来办", metric: "maxSeconds", target: 5 * 60 },
-      { title: "一泻千里", desc: "单次超过十五分钟，气势主打一个连贯", metric: "maxSeconds", target: 15 * 60 },
-      { title: "屎诗级发挥", desc: "单次超过三十分钟，足以写进公司屎册", metric: "maxSeconds", target: 30 * 60 },
-      { title: "薪想屎成", desc: "拉屎收益累计十元，心愿开始有味道", metric: "money", target: 10 },
-      { title: "日进蹲金", desc: "拉屎收益累计一百元，蹲着也能进金", metric: "money", target: 100 },
-      { title: "厕位出道", desc: "在三个不同日期留下记录，正式厕位出道", metric: "days", target: 3 },
-      { title: "屎志不渝", desc: "连续七天坚持记录，对带薪时间矢志不渝", metric: "streak", target: 7 }
+      { title: "屎无前例", desc: "完成第一次带薪拉屎", metric: "count", target: 1 },
+      { title: "三顾茅庐", desc: "累计完成三次带薪拉屎", metric: "count", target: 3 },
+      { title: "坐享其成", desc: "累计坐满十五分钟", metric: "seconds", target: 15 * 60 },
+      { title: "薪想屎成", desc: "累计收益达到十元", metric: "money", target: 10 }
     ]
   },
   meal: {
     label: "吃饭",
     stamp: "饭",
     achievements: [
-      { title: "饭来张口", desc: "完成第一次带薪吃饭，这口由公司买单", metric: "count", target: 1 },
-      { title: "再三添饭", desc: "累计吃满三次，添饭这事值得再三", metric: "count", target: 3 },
-      { title: "食全食美", desc: "累计完成十次，十顿都吃得很完整", metric: "count", target: 10 },
-      { title: "饭复一饭", desc: "累计完成三十次，今日饭，明日还复来", metric: "count", target: 30 },
-      { title: "百饭百中", desc: "累计完成一百次，每一口都精准命中饭点", metric: "count", target: 100 },
-      { title: "吃薪不改", desc: "累计吃满十五分钟，吃的是饭也是薪", metric: "seconds", target: 15 * 60 },
-      { title: "细嚼薪咽", desc: "累计一小时，把工资慢慢嚼进午餐", metric: "seconds", target: 60 * 60 },
-      { title: "饱经薪霜", desc: "累计五小时，见过世面也吃过工资", metric: "seconds", target: 5 * 60 * 60 },
-      { title: "快食尚", desc: "单次超过五分钟，快也要快得有食尚", metric: "maxSeconds", target: 5 * 60 },
-      { title: "慢工出细饭", desc: "单次超过十五分钟，好饭值得慢慢磨", metric: "maxSeconds", target: 15 * 60 },
-      { title: "一饭封神", desc: "单次超过三十分钟，一顿吃出封神时长", metric: "maxSeconds", target: 30 * 60 },
-      { title: "薪满意足", desc: "吃饭收益累计十元，饱腹和薪情同时满足", metric: "money", target: 10 },
-      { title: "饭富自由", desc: "吃饭收益累计一百元，离饭富自由更近一步", metric: "money", target: 100 },
-      { title: "胃来可期", desc: "在三个不同日期吃饭，未来和胃来都可期", metric: "days", target: 3 },
-      { title: "食来运转", desc: "连续七天记录，饭点一到时来运转", metric: "streak", target: 7 }
+      { title: "饭来张口", desc: "完成第一次带薪吃饭", metric: "count", target: 1 },
+      { title: "再三添饭", desc: "累计完成三次带薪吃饭", metric: "count", target: 3 },
+      { title: "细嚼薪咽", desc: "累计吃满一小时", metric: "seconds", target: 60 * 60 },
+      { title: "薪安理得", desc: "吃饭收益累计达到十元", metric: "money", target: 10 }
     ]
   },
   nap: {
     label: "睡觉",
     stamp: "ZZ",
     achievements: [
-      { title: "一睡成名", desc: "完成第一次带薪睡觉，闭眼就是出道", metric: "count", target: 1 },
-      { title: "三眠两觉", desc: "累计睡满三次，三眠里总有两觉是香的", metric: "count", target: 3 },
-      { title: "十觉全能", desc: "累计完成十次，十项全能不如十觉全能", metric: "count", target: 10 },
-      { title: "觉非等闲", desc: "累计完成三十次，能睡到这份上绝非等闲", metric: "count", target: 30 },
-      { title: "百梦成真", desc: "累计完成一百次，一百场梦都有工资作证", metric: "count", target: 100 },
-      { title: "闭目养薪", desc: "累计睡满十五分钟，闭目养神顺便养薪", metric: "seconds", target: 15 * 60 },
-      { title: "梦里生财", desc: "累计一小时，梦还没醒钱已经来了", metric: "seconds", target: 60 * 60 },
-      { title: "躺赢专家", desc: "累计五小时，躺着赢也需要长期主义", metric: "seconds", target: 5 * 60 * 60 },
-      { title: "五分好评", desc: "单次超过五分钟，这一觉值得五星好评", metric: "maxSeconds", target: 5 * 60 },
-      { title: "午觉天成", desc: "单次超过十五分钟，好觉不靠雕琢", metric: "maxSeconds", target: 15 * 60 },
-      { title: "不醒人事", desc: "单次超过三十分钟，人事在忙，你先不醒", metric: "maxSeconds", target: 30 * 60 },
-      { title: "薪安理得", desc: "睡觉收益累计十元，这份安心有工资托底", metric: "money", target: 10 },
-      { title: "卧薪尝胆", desc: "睡觉收益累计一百元，卧着把薪尝明白", metric: "money", target: 100 },
-      { title: "觉后余薪", desc: "在三个不同日期睡觉，醒后还有余薪", metric: "days", target: 3 },
-      { title: "梦薪成真", desc: "连续七天记录，让每场梦都薪想事成", metric: "streak", target: 7 }
+      { title: "一觉值千金", desc: "完成第一次带薪睡觉", metric: "count", target: 1 },
+      { title: "睡到薪来", desc: "累计完成三次带薪睡觉", metric: "count", target: 3 },
+      { title: "卧薪尝胆", desc: "累计睡满一小时", metric: "seconds", target: 60 * 60 },
+      { title: "觉后余薪", desc: "睡觉收益累计达到十元", metric: "money", target: 10 }
     ]
   }
 };
@@ -1346,26 +1326,29 @@ function stopMoneyRain(options = {}) {
 
 function spawnMoneyBills(count) {
   const fragment = document.createDocumentFragment();
+  const activityKey = state.runningActivity || state.activeActivity;
 
-  Array.from({ length: count }).forEach(() => {
-    const bill = document.createElement("span");
+  Array.from({ length: count }).forEach((_, index) => {
+    const reward = document.createElement("span");
     const duration = 2.4 + Math.random() * 1.7;
-    const serial = Math.random().toString(36).slice(2, 8).toUpperCase();
-    bill.className = "money-bill";
-    bill.dataset.tone = String(Math.ceil(Math.random() * 3));
-    bill.innerHTML = `
-      <span class="bill-corner">￥</span>
-      <span class="bill-portrait" aria-hidden="true"></span>
-      <span class="bill-value">100</span>
-      <span class="bill-serial">${serial}</span>
-    `;
-    bill.style.left = `${Math.random() * 100}%`;
-    bill.style.setProperty("--drift", `${Math.round((Math.random() - 0.5) * 120)}px`);
-    bill.style.setProperty("--fall-duration", `${duration}s`);
-    bill.style.setProperty("--spin", `${Math.round((Math.random() - 0.5) * 520)}deg`);
-    bill.style.animationDelay = `${Math.random() * 0.28}s`;
-    bill.addEventListener("animationend", () => bill.remove());
-    fragment.append(bill);
+    const isCoin = index % 3 === 1;
+    reward.className = `reward-item is-${isCoin ? "coin" : "bill"}`;
+    const image = document.createElement("img");
+    image.className = "reward-image";
+    image.alt = "";
+    image.draggable = false;
+    image.src = isCoin
+      ? rewardCoinAssets[activityKey]
+      : moneyBillAssets[index % moneyBillAssets.length];
+    reward.append(image);
+    reward.style.left = `${Math.random() * 100}%`;
+    reward.style.setProperty("--drift", `${Math.round((Math.random() - 0.5) * 120)}px`);
+    reward.style.setProperty("--fall-duration", `${duration}s`);
+    reward.style.setProperty("--spin", `${Math.round((Math.random() - 0.5) * 520)}deg`);
+    reward.style.setProperty("--reward-scale", `${0.84 + Math.random() * 0.24}`);
+    reward.style.animationDelay = `${Math.random() * 0.28}s`;
+    reward.addEventListener("animationend", () => reward.remove());
+    fragment.append(reward);
   });
 
   nodes.moneyRain.append(fragment);
@@ -2088,7 +2071,11 @@ function renderBadges() {
             <span class="badge-module">${group.label}线</span>
             <span>${level} · ${String(badge.order).padStart(2, "0")}</span>
           </div>
-          <span class="badge-mark ${badge.unlocked ? "" : "locked-mark"}" aria-hidden="true"></span>
+          <img
+            class="badge-stamp ${badge.unlocked ? "" : "is-locked"}"
+            src="./miniprogram/assets/achievement-badges/${badge.activity}-${String(badge.order).padStart(2, "0")}.png"
+            alt="${badge.title}成就图章"
+          />
           <strong>${badge.title}</strong>
           <small>${badge.desc}</small>
           <div class="badge-progress" aria-label="${progressCopy}">
