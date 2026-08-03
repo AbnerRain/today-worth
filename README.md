@@ -22,6 +22,12 @@ python3 -m http.server 4173 --bind 127.0.0.1
 http://127.0.0.1:4173/
 ```
 
+## 微信小程序接入
+
+仓库已准备微信小程序外壳，目录为 `miniprogram/`，根目录 `project.config.json` 可直接用于微信开发者工具导入。
+
+当前外壳采用 `web-view` 承载 H5。上线前需要先拿到真实 AppID、HTTPS 业务域名，并把 `miniprogram/app.js` 里的 `h5Url` 改为正式 H5 地址。完整步骤见 [微信小程序接入准备清单](docs/WECHAT_MINIPROGRAM_ONBOARDING.md)。
+
 ## 当前覆盖
 
 - 工资设置：月薪、工作天数、每日工时，可保存并重算时薪。

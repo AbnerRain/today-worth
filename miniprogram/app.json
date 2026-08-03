@@ -1,0 +1,14 @@
+{
+  "pages": [
+    "pages/webview/index"
+  ],
+  "window": {
+    "navigationBarTitleText": "今天值多少钱",
+    "navigationBarBackgroundColor": "#ffdc3f",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#fff7d6",
+    "backgroundTextStyle": "dark"
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}
