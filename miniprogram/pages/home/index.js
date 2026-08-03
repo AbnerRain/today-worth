@@ -180,6 +180,7 @@ Page({
         reportKicker: activity.reportKicker,
         reportTag: activity.reportTag,
         reportSfx: activity.reportSfx,
+        mascot: `/assets/activity-mascots/${activity.key}-report-v1.png`,
         reportCaption,
         todayCountText: `${todayActivityTotal.count}次`,
         todaySecondsText: store.formatDuration(todayActivityTotal.seconds)

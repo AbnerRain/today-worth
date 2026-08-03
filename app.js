@@ -537,6 +537,9 @@ const nodes = {
   reportCard: document.querySelector(".report-card"),
   reportScene: document.querySelector("#reportScene"),
   reportSceneTag: document.querySelector("#reportSceneTag"),
+  reportSceneMascot: document.querySelector("#reportSceneMascot"),
+  reportSceneMoney: document.querySelector("#reportSceneMoney"),
+  reportSceneDuration: document.querySelector("#reportSceneDuration"),
   closeReport: document.querySelector("#closeReport"),
   reportTitle: document.querySelector("#reportTitle"),
   reportMoney: document.querySelector("#reportMoney"),
@@ -2120,6 +2123,9 @@ function renderReport(session, newlyUnlocked = []) {
     `${activity.shortLabel}结算动画：${activity.reportSceneLabel}`
   );
   nodes.reportSceneTag.textContent = activity.reportTag;
+  nodes.reportSceneMascot.src = `./miniprogram/assets/activity-mascots/${activityKey}-report-v1.png`;
+  nodes.reportSceneMoney.textContent = formatMoney(session.money);
+  nodes.reportSceneDuration.textContent = `用时 ${formatDuration(session.seconds)}`;
   nodes.reportTitle.textContent = `本次${activity.label}`;
   nodes.posterTitle.textContent = `今日${activity.label}`;
   nodes.posterAlias.textContent = `摸鱼代号 · ${state.profile.alias}`;

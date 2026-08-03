@@ -64,7 +64,7 @@
   </view>
 
   <button class="main-action {{running ? 'is-running' : ''}}" bindtap="toggleTimer">
-    <text>{{running ? '■' : '▶'}}</text><text>{{running ? activity.stopText : '开始' + activity.fullLabel}}</text>
+    <view class="main-action-icon"><text>{{running ? '■' : '▶'}}</text></view><text class="main-action-label">{{running ? activity.stopText : '开始' + activity.fullLabel}}</text>
   </button>
 
   <view class="section-heading"><text class="section-title">带薪愿望单</text><text class="section-note">{{goalNote}}</text></view>
@@ -126,14 +126,13 @@
 </view>
 
 <view wx:if="{{showReport}}" class="report-mask" bindtap="closeReport">
-  <view class="report-card comic-card" catchtap="blockBubble">
-    <view class="report-scene report-{{report.activityKey}}">
-      <text class="report-scene-tag">{{report.reportTag}}</text>
-      <view class="report-visual report-visual-toilet"><view class="visual-toilet-lid"></view><view class="visual-toilet-bowl"><view class="visual-water"></view></view><view class="visual-roll"></view><view class="visual-coin coin-one">￥</view><view class="visual-coin coin-two">￥</view></view>
-      <view class="report-visual report-visual-meal"><view class="visual-bowl"><view class="visual-rice"></view></view><view class="visual-steam steam-one"></view><view class="visual-steam steam-two"></view><view class="visual-chopsticks"></view><view class="visual-spark">✦</view></view>
-      <view class="report-visual report-visual-nap"><view class="visual-moon"></view><view class="visual-bed"><view class="visual-pillow"></view><view class="visual-blanket"></view></view><text class="visual-zzz zzz-one">Z</text><text class="visual-zzz zzz-two">Z</text></view>
-      <text class="report-stamp">{{report.stamp}}</text><text class="report-pop">{{report.reportSfx}}</text>
-    </view>
+    <view class="report-card comic-card" catchtap="blockBubble">
+      <view class="report-scene report-{{report.activityKey}}">
+        <text class="report-scene-tag">{{report.reportTag}}</text>
+        <image class="report-scene-mascot" src="{{report.mascot}}" mode="aspectFit" fade-show="{{false}}" />
+        <view class="report-scene-ticket"><text class="report-ticket-label">本次入账</text><text class="report-ticket-money">{{report.moneyText}}</text><text class="report-ticket-time">用时 {{report.secondsText}}</text></view>
+        <text class="report-stamp">{{report.stamp}}</text><text class="report-pop">{{report.reportSfx}}</text>
+      </view>
     <text class="report-kicker">{{report.reportKicker}}</text>
     <text class="report-title">{{report.title}}</text>
     <text class="report-money">{{report.moneyText}}</text>
