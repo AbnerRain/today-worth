@@ -32,12 +32,7 @@
     <text class="live-line">{{liveLine}}</text>
     <view wx:if="{{running}}" class="activity-scene scene-{{activeActivity}}">
       <view class="mascot-stage">
-        <view class="activity-sprite" aria-hidden="true">
-          <view class="activity-frame sprite-frame-one"><image class="activity-sprite-sheet" src="{{activity.mascot}}" mode="scaleToFill" /></view>
-          <view class="activity-frame sprite-frame-two"><image class="activity-sprite-sheet" src="{{activity.mascot}}" mode="scaleToFill" /></view>
-          <view class="activity-frame sprite-frame-three"><image class="activity-sprite-sheet" src="{{activity.mascot}}" mode="scaleToFill" /></view>
-          <view class="activity-frame sprite-frame-four"><image class="activity-sprite-sheet" src="{{activity.mascot}}" mode="scaleToFill" /></view>
-        </view>
+        <view class="activity-sprite" aria-hidden="true"><image class="activity-sprite-sheet" src="{{activity.mascot}}" mode="scaleToFill" fade-show="{{false}}" /></view>
       </view>
       <view class="scene-copy">
         <text class="scene-badge">{{activity.label}}计价中</text>
