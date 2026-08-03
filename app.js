@@ -8,6 +8,7 @@ const activityModes = {
     idleState: "拉屎模式待开工",
     idleLine: "点击开始，把今天最松弛的一段时间记进账本。",
     runningState: "正在带薪拉屎",
+    sceneLine: "坐稳别急，这段工时正在自动入账。",
     stopAction: "冲水结束",
     doneState: "本次已冲水",
     doneLine: (money) => `刚刚入账 ${formatMoney(money)}，这笔钱很有味道。`,
@@ -36,6 +37,7 @@ const activityModes = {
     idleState: "吃饭模式待开饭",
     idleLine: "选好今天的带薪菜单，开饭后每一口都开始计价。",
     runningState: "正在带薪吃饭",
+    sceneLine: "每一口都是带薪补给，慢慢吃也算工时。",
     stopAction: "吃饱收工",
     doneState: "本次已光盘",
     doneLine: (money) => `这顿饭入账 ${formatMoney(money)}，午休终于有了回报。`,
@@ -64,6 +66,7 @@ const activityModes = {
     idleState: "睡觉模式待入梦",
     idleLine: "找个不容易被发现的角落，闭眼后开始计算睡眠收益。",
     runningState: "正在带薪睡觉",
+    sceneLine: "人已充电，工资计时器还醒着。",
     stopAction: "睡醒收工",
     doneState: "本次已充满",
     doneLine: (money) => `这一觉入账 ${formatMoney(money)}，精神和余额一起回血。`,
@@ -465,6 +468,11 @@ const nodes = {
   activityButtons: document.querySelectorAll(".activity-option"),
   activityHint: document.querySelector("#activityHint"),
   heroMeter: document.querySelector("#heroMeter"),
+  activityScene: document.querySelector("#activityScene"),
+  activityMascot: document.querySelector("#activityMascot"),
+  sceneBadge: document.querySelector("#sceneBadge"),
+  sceneMoney: document.querySelector("#sceneMoney"),
+  sceneLine: document.querySelector("#sceneLine"),
   mainAction: document.querySelector("#mainAction"),
   actionIcon: document.querySelector("#actionIcon"),
   actionText: document.querySelector("#actionText"),
@@ -1209,6 +1217,14 @@ function renderActivityMode() {
   nodes.actionText.textContent = `开始${activity.label}`;
   nodes.sessionState.textContent = activity.idleState;
   nodes.liveLine.textContent = activity.idleLine;
+  nodes.activityScene.dataset.activity = state.activeActivity;
+  nodes.activityScene.classList.remove("scene-toilet", "scene-meal", "scene-nap");
+  nodes.activityScene.classList.add(`scene-${state.activeActivity}`);
+  nodes.activityMascot.src = `./miniprogram/assets/activity-mascots/${state.activeActivity}.png`;
+  nodes.sceneBadge.textContent = `${activity.shortLabel}计价中`;
+  nodes.sceneMoney.textContent = "￥0.00";
+  nodes.sceneLine.textContent = activity.sceneLine;
+  nodes.activityScene.setAttribute("aria-hidden", String(!state.running));
 
   nodes.activityButtons.forEach((button) => {
     const isActive = button.dataset.activity === state.activeActivity;
@@ -1234,9 +1250,13 @@ function startSession() {
   state.elapsedMs = 0;
   nodes.mainAction.classList.add("running");
   nodes.actionIcon.classList.add("active");
+  nodes.heroMeter.classList.add("running");
+  nodes.activityScene.setAttribute("aria-hidden", "false");
   nodes.actionText.textContent = activity.stopAction;
   nodes.sessionState.textContent = activity.runningState;
   nodes.liveLine.textContent = activity.encouragements[0];
+  nodes.sceneBadge.textContent = `${activity.shortLabel}计价中`;
+  nodes.sceneLine.textContent = activity.sceneLine;
   setActivityPickerDisabled(true);
   startMoneyRain();
   tick();
@@ -1271,6 +1291,8 @@ function stopSession() {
   state.elapsedMs = 0;
   nodes.mainAction.classList.remove("running");
   nodes.actionIcon.classList.remove("active");
+  nodes.heroMeter.classList.remove("running");
+  nodes.activityScene.setAttribute("aria-hidden", "true");
   nodes.actionText.textContent = `开始${activity.label}`;
   nodes.sessionState.textContent = activity.doneState;
   nodes.liveLine.textContent = activity.doneLine(money);
@@ -1350,6 +1372,7 @@ function tick() {
   const money = seconds * getRates().second;
   nodes.timer.textContent = formatClock(seconds);
   nodes.liveEarning.textContent = formatMoney(money);
+  nodes.sceneMoney.textContent = formatMoney(money);
   renderGoalProgress(money);
   nodes.liveLine.textContent = activity.encouragements[
     Math.floor(seconds / 5) % activity.encouragements.length
