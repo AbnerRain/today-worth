@@ -37,10 +37,12 @@
 .scene-meal { background: #fffadc; }
 .scene-nap { background: #eef7ff; }
 .mascot-stage { position: relative; width: 200rpx; height: 200rpx; align-self: end; }
-.activity-mascot { display: block; width: 200rpx; height: 200rpx; transform-origin: 50% 86%; }
-.scene-toilet .activity-mascot { animation: toilet-sticker-loop 1.8s steps(6,end) infinite; }
-.scene-meal .activity-mascot { animation: meal-sticker-loop 1.35s steps(6,end) infinite; }
+.activity-mascot { display: block; width: 200rpx; height: 200rpx; transform-origin: 50% 86%; will-change: transform; }
+.scene-toilet .activity-mascot { animation: toilet-action-loop 2.4s steps(6,end) infinite; }
+.scene-meal .activity-mascot { animation: meal-action-loop 2s steps(6,end) infinite; }
 .scene-nap .activity-mascot { animation: nap-sticker-loop 2.6s steps(6,end) infinite; }
+.meal-bite { position: absolute; z-index: 4; display: none; width: 14rpx; height: 10rpx; left: 91rpx; bottom: 51rpx; border: 3rpx solid #131b2b; border-radius: 50%; background: #ff9f43; opacity: 0; }
+.scene-meal .meal-bite { display: block; animation: meal-bite-loop 2s steps(6,end) infinite; }
 .motion-mark { position: absolute; z-index: 2; display: block; opacity: 0; }
 .scene-toilet .motion-mark { right: 8rpx; width: 22rpx; height: 8rpx; border-radius: 99rpx; background: #11a66a; transform-origin: left center; animation: relief-pop 1.25s ease-out infinite; }
 .scene-toilet .mark-one { top: 38rpx; transform: rotate(-28deg); }
@@ -52,15 +54,11 @@
 .scene-nap .mark-one { right: 26rpx; top: 32rpx; }
 .scene-nap .mark-two { right: 4rpx; top: 8rpx; animation-delay: .6s; }
 .action-prop { position: absolute; z-index: 3; inset: 0; display: none; pointer-events: none; }
-.scene-toilet .prop-toilet, .scene-meal .prop-meal, .scene-nap .prop-nap { display: block; }
+.scene-toilet .prop-toilet, .scene-nap .prop-nap { display: block; }
 .prop-puff { position: absolute; width: 14rpx; height: 14rpx; border: 3rpx solid #11a66a; border-radius: 50%; opacity: 0; }
 .puff-one { right: 22rpx; bottom: 54rpx; animation: toilet-puff 1.8s steps(4,end) infinite; }
 .puff-two { right: 2rpx; bottom: 80rpx; animation: toilet-puff 1.8s steps(4,end) .42s infinite; }
 .prop-flush { position: absolute; right: 6rpx; bottom: 25rpx; width: 34rpx; height: 18rpx; border-bottom: 4rpx solid #2f6bff; border-radius: 50%; opacity: 0; animation: toilet-flush 1.8s steps(5,end) infinite; }
-.prop-plate { position: absolute; left: 20rpx; bottom: 18rpx; width: 66rpx; height: 18rpx; border: 3rpx solid #131b2b; border-radius: 50%; background: #fff; animation: plate-bounce 1.35s steps(4,end) infinite; }
-.prop-chopstick { position: absolute; width: 5rpx; height: 70rpx; border-radius: 99rpx; background: #ff6259; transform-origin: 50% 100%; }
-.chopstick-one { left: 61rpx; top: 19rpx; transform: rotate(28deg); animation: chopstick-tap 1.35s steps(4,end) infinite; }
-.chopstick-two { left: 78rpx; top: 16rpx; transform: rotate(38deg); animation: chopstick-tap 1.35s steps(4,end) .1s infinite; }
 .prop-zzz { position: absolute; color: #2f6bff; font-family: "SF Mono", Menlo, monospace; font-size: 28rpx; font-weight: 900; opacity: 0; }
 .z-one { right: 16rpx; top: 28rpx; animation: zzz-pop 2.6s steps(5,end) infinite; }
 .z-two { right: 0; top: 2rpx; font-size: 20rpx; animation: zzz-pop 2.6s steps(5,end) .8s infinite; }
@@ -225,13 +223,12 @@
 .close-button { background: #fff; color: #131b2b; }
 
 @keyframes reward-fall { 0% { opacity: 0; transform: translate3d(0,-80rpx,0) rotate(0deg) scale(var(--reward-scale)); } 7% { opacity: 1; } 92% { opacity: 1; } 100% { opacity: .35; transform: translate3d(var(--reward-drift),calc(100vh + 260rpx),0) rotate(var(--reward-spin)) scale(var(--reward-scale)); } }
-@keyframes toilet-sticker-loop { 0%,100% { transform: translate(0,0) rotate(-1deg) scale(1); } 18% { transform: translate(2rpx,2rpx) rotate(2deg) scale(.98,1.01); } 36% { transform: translate(4rpx,4rpx) rotate(4deg) scale(.96,1.03); } 54% { transform: translate(1rpx,1rpx) rotate(0) scale(1.01,.99); } 72% { transform: translate(-2rpx,-1rpx) rotate(-2deg) scale(1); } }
-@keyframes meal-sticker-loop { 0%,100% { transform: translate(0,0) rotate(0); } 17% { transform: translate(-2rpx,2rpx) rotate(-2deg); } 34% { transform: translate(-3rpx,7rpx) rotate(-4deg) scale(.98,1.02); } 51% { transform: translate(1rpx,1rpx) rotate(2deg); } 68% { transform: translate(2rpx,-3rpx) rotate(1deg) scale(1.01,.99); } }
+@keyframes toilet-action-loop { 0%, 12% { transform: translateY(0); } 24% { transform: translateY(3rpx); } 38% { transform: translateY(7rpx); } 52% { transform: translateY(3rpx); } 66%, 100% { transform: translateY(0); } }
+@keyframes meal-action-loop { 0%, 16% { transform: translateY(0); } 28% { transform: translateY(3rpx); } 42% { transform: translateY(0); } 56% { transform: translateY(4rpx); } 70%, 100% { transform: translateY(0); } }
+@keyframes meal-bite-loop { 0%, 24% { opacity: 0; transform: translate(0, 0) scale(.6); } 32% { opacity: 1; transform: translate(0, 0) scale(1); } 52% { opacity: 1; transform: translate(0, -64rpx) scale(.9); } 62%, 100% { opacity: 0; transform: translate(0, -64rpx) scale(.6); } }
 @keyframes nap-sticker-loop { 0%,100% { transform: translate(0,0) scale(1,1); } 18% { transform: translate(0,2rpx) scale(1.01,.985); } 36% { transform: translate(0,4rpx) scale(1.025,.97); } 54% { transform: translate(0,2rpx) scale(1.01,.985); } 72% { transform: translate(0,-1rpx) scale(1,1); } }
 @keyframes toilet-puff { 0%,20% { opacity: 0; transform: translate(0,4rpx) scale(.5); } 45% { opacity: .8; } 100% { opacity: 0; transform: translate(12rpx,-10rpx) scale(1.25); } }
 @keyframes toilet-flush { 0%,40% { opacity: 0; transform: scaleX(.4); } 58% { opacity: .8; } 100% { opacity: 0; transform: translateX(14rpx) scaleX(1.25); } }
-@keyframes plate-bounce { 0%,100% { transform: translateY(0) rotate(-2deg); } 35% { transform: translateY(5rpx) rotate(2deg); } 58% { transform: translateY(1rpx) rotate(-1deg); } }
-@keyframes chopstick-tap { 0%,100% { transform: rotate(28deg); } 35% { transform: rotate(12deg) translate(-2rpx,5rpx); } 58% { transform: rotate(34deg); } }
 @keyframes zzz-pop { 0%,30% { opacity: 0; transform: translate(3rpx,8rpx) scale(.65); } 55% { opacity: 1; } 100% { opacity: 0; transform: translate(14rpx,-24rpx) scale(1.08); } }
 @keyframes blanket-breathe { 0%,100% { transform: scaleX(.86); } 42% { transform: scaleX(1.04); } 68% { transform: scaleX(.92); } }
 @keyframes relief-pop { 0%,25% { opacity: 0; transform: translateX(-8rpx) scaleX(.5); } 55% { opacity: 1; } 100% { opacity: 0; transform: translateX(14rpx) scaleX(1.1); } }

@@ -808,6 +808,35 @@ textarea:focus-visible {
   left: -15px;
   bottom: -2px;
   object-fit: contain;
+  transform-origin: 50% 86%;
+  will-change: transform;
+}
+
+.scene-toilet .activity-mascot {
+  animation: scene-toilet-action 2.4s steps(6, end) infinite;
+}
+
+.scene-meal .activity-mascot {
+  animation: scene-meal-action 2s steps(6, end) infinite;
+}
+
+.meal-bite {
+  position: absolute;
+  z-index: 4;
+  display: none;
+  width: 11px;
+  height: 8px;
+  left: 60px;
+  bottom: 42px;
+  border: 2px solid var(--ink);
+  border-radius: 50%;
+  background: #ff9f43;
+  opacity: 0;
+}
+
+.scene-meal .meal-bite {
+  display: block;
+  animation: scene-meal-bite 2s steps(6, end) infinite;
 }
 
 .motion-mark {
@@ -4403,6 +4432,29 @@ dialog[open] .report-illustration-nap .nap-moon {
   0%, 22% { opacity: 0; transform: translateX(-7px) scaleX(.45); }
   52% { opacity: 1; }
   100% { opacity: 0; transform: translateX(13px) scaleX(1.12); }
+}
+
+@keyframes scene-toilet-action {
+  0%, 12% { transform: translateY(0); }
+  24% { transform: translateY(3px); }
+  38% { transform: translateY(7px); }
+  52% { transform: translateY(3px); }
+  66%, 100% { transform: translateY(0); }
+}
+
+@keyframes scene-meal-action {
+  0%, 16% { transform: translateY(0); }
+  28% { transform: translateY(3px); }
+  42% { transform: translateY(0); }
+  56% { transform: translateY(4px); }
+  70%, 100% { transform: translateY(0); }
+}
+
+@keyframes scene-meal-bite {
+  0%, 24% { opacity: 0; transform: translate(0, 0) scale(.6); }
+  32% { opacity: 1; transform: translate(0, 0) scale(1); }
+  52% { opacity: 1; transform: translate(0, -52px) scale(.9); }
+  62%, 100% { opacity: 0; transform: translate(0, -52px) scale(.6); }
 }
 
 @keyframes scene-steam-rise {

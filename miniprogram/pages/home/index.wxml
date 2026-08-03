@@ -36,7 +36,7 @@
         <view class="motion-mark mark-one"></view>
         <view class="motion-mark mark-two"></view>
         <view class="action-prop prop-toilet"><view class="prop-puff puff-one"></view><view class="prop-puff puff-two"></view><view class="prop-flush"></view></view>
-        <view class="action-prop prop-meal"><view class="prop-plate"></view><view class="prop-chopstick chopstick-one"></view><view class="prop-chopstick chopstick-two"></view></view>
+        <view class="meal-bite"></view>
         <view class="action-prop prop-nap"><text class="prop-zzz z-one">Z</text><text class="prop-zzz z-two">Z</text><view class="prop-breathe"></view></view>
       </view>
       <view class="scene-copy">
