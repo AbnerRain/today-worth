@@ -3,13 +3,22 @@ const store = require("../../utils/data");
 Page({
   data: {
     profile: store.defaultProfile,
-    preview: {}
+    preview: {},
+    pageSubtitle: store.copyLines.settings[0],
+    privacyNote: store.copyLines.privacy[0]
   },
 
   onLoad() {
     const profile = store.getProfile();
     this.setData({ profile });
     this.updatePreview(profile);
+  },
+
+  onShow() {
+    this.setData({
+      pageSubtitle: store.pickLine(store.copyLines.settings, this.data.pageSubtitle),
+      privacyNote: store.pickLine(store.copyLines.privacy, this.data.privacyNote)
+    });
   },
 
   onInput(event) {

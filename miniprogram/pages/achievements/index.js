@@ -9,19 +9,29 @@ Page({
       { key: "nap", label: "睡觉" }
     ],
     activeFilter: "all",
+    pageSubtitle: store.copyLines.achievements[0],
     unlockedCount: 0,
     totalCount: store.achievements.length,
     completion: 0,
+    passNote: store.copyLines.achievementProgress[0],
     activityProgress: [],
     badges: []
   },
 
   onShow() {
+    this.setData({
+      pageSubtitle: store.pickLine(store.copyLines.achievements, this.data.pageSubtitle),
+      passNote: store.pickLine(store.copyLines.achievementProgress, this.data.passNote)
+    });
     this.renderBadges();
   },
 
   selectFilter(event) {
-    this.setData({ activeFilter: event.currentTarget.dataset.filter });
+    this.setData({
+      activeFilter: event.currentTarget.dataset.filter,
+      pageSubtitle: store.pickLine(store.copyLines.achievements, this.data.pageSubtitle),
+      passNote: store.pickLine(store.copyLines.achievementProgress, this.data.passNote)
+    });
     this.renderBadges();
   },
 
@@ -72,7 +82,8 @@ Page({
       badges,
       unlockedCount,
       completion: Math.round((unlockedCount / allBadges.length) * 100),
-      activityProgress
+      activityProgress,
+      passNote: store.pickLine(store.copyLines.achievementProgress, this.data.passNote)
     });
   },
 

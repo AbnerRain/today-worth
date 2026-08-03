@@ -1,5 +1,5 @@
 <view class="page-shell settings-page">
-  <view class="page-header"><text class="page-title">摸鱼基金</text><text class="page-subtitle">先填工资，再算每一秒。</text></view>
+  <view class="page-header"><text class="page-title">摸鱼基金</text><text class="page-subtitle">{{pageSubtitle}}</text></view>
   <view class="preview comic-card">
     <view class="preview-cell is-first"><text class="preview-label">时薪</text><text class="preview-value">{{preview.hour}}</text></view>
     <view class="preview-cell"><text class="preview-label">分钟</text><text class="preview-value">{{preview.minute}}</text></view>
@@ -13,5 +13,5 @@
   </view>
   <button class="save-button" bindtap="save">保存工资条</button>
   <button class="clear-button" bindtap="clearData">清空本机数据</button>
-  <text class="privacy-note">所有数据只保存在你的手机里，当前版本不会上传工资与计时记录。</text>
+  <text class="privacy-note">{{privacyNote}}</text>
 </view>

@@ -9,7 +9,7 @@
     <view>
       <text class="eyebrow">OFFICE PAYSLIP · 01</text>
       <view class="brand-row"><text class="brand">时间工资条</text><text class="brand-stamp">值</text></view>
-      <text class="tagline">时间既然卖了，就得知道卖了多少钱。</text>
+      <text class="tagline">{{tagline}}</text>
     </view>
   </view>
 
@@ -42,12 +42,12 @@
       <view class="scene-copy">
         <text class="scene-badge">{{activity.label}}计价中</text>
         <text class="scene-money">{{liveMoney}}</text>
-        <text class="scene-line">{{activity.sceneLine}}</text>
+        <text class="scene-line">{{sceneLine}}</text>
       </view>
     </view>
   </view>
 
-  <view class="section-heading"><text class="section-title">带薪模式</text><text class="section-note">{{activity.hint}}</text></view>
+  <view class="section-heading"><text class="section-title">带薪模式</text><text class="section-note">{{activityHint}}</text></view>
   <view class="activity-grid">
     <button wx:for="{{activities}}" wx:key="key" class="activity-button activity-{{item.key}} {{activeActivity === item.key ? 'is-active' : ''}}" data-key="{{item.key}}" disabled="{{running}}" bindtap="selectActivity">
       <text class="activity-stamp">{{item.stamp}}</text><text class="activity-label">{{item.label}}</text><text class="activity-english">{{item.english}}</text>
@@ -58,7 +58,7 @@
     <text>{{running ? '■' : '▶'}}</text><text>{{running ? activity.stopText : '开始' + activity.fullLabel}}</text>
   </button>
 
-  <view class="section-heading"><text class="section-title">带薪愿望单</text><text class="section-note">今日回本目标</text></view>
+  <view class="section-heading"><text class="section-title">带薪愿望单</text><text class="section-note">{{goalNote}}</text></view>
   <view class="goal-card comic-card">
     <view class="goal-main">
       <text class="goal-stamp">{{goal.stamp}}</text>
@@ -72,7 +72,7 @@
     </view>
   </view>
 
-  <view class="section-heading"><text class="section-title">今日{{activity.label}}累计</text><text class="section-note">只算当前模式</text></view>
+  <view class="section-heading"><text class="section-title">今日{{activity.label}}累计</text><text class="section-note">{{todayNote}}</text></view>
   <view class="today-card comic-card">
     <view class="today-summary">
       <view class="today-stat is-first"><text class="today-value">{{today.count}}</text><text class="today-label">次数</text></view>
@@ -93,7 +93,7 @@
       <view class="onboarding-mark"><text>￥</text><text class="onboarding-mark-time">TIME</text></view>
       <text class="onboarding-kicker">首次设置 · 约 1 分钟</text>
       <text class="onboarding-title">先给你的时间标个价</text>
-      <text class="onboarding-subtitle">填入工作信息，生成只属于你的时间工资条。</text>
+      <text class="onboarding-subtitle">{{onboardingSubtitle}}</text>
 
       <view class="onboarding-form">
         <label class="onboarding-field"><text class="onboarding-label">你的摸鱼代号</text><input class="onboarding-input" value="{{onboardingProfile.alias}}" maxlength="12" data-field="alias" bindinput="onOnboardingInput" placeholder="例：工位隐士" /></label>

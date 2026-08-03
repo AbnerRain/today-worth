@@ -1,7 +1,7 @@
 <view class="page-shell stats-page">
   <view class="page-header">
     <text class="page-title">数据统计</text>
-    <text class="page-subtitle">每一笔带薪时间，都有出处。</text>
+    <text class="page-subtitle">{{pageSubtitle}}</text>
   </view>
 
   <view class="period-tabs">
@@ -15,7 +15,7 @@
     <view class="summary-card comic-card verdict"><text class="summary-value verdict-value">{{verdict.label}}</text><text class="summary-label">{{verdict.detail}}</text></view>
   </view>
 
-  <view class="section-heading"><text class="section-title">老板的钱花哪了</text><text class="section-note">{{periodLabel}} · 三类贡献</text></view>
+  <view class="section-heading"><text class="section-title">老板的钱花哪了</text><text class="section-note">{{periodLabel}} · {{contributionNote}}</text></view>
   <view class="contribution-card comic-card">
     <view wx:for="{{contributions}}" wx:key="key" class="contribution-row">
       <text class="contribution-stamp" style="background: {{item.color}};">{{item.stamp}}</text>
@@ -24,9 +24,9 @@
     </view>
   </view>
 
-  <view class="section-heading"><text class="section-title">收益明细</text><text class="section-note">最近 8 笔</text></view>
+  <view class="section-heading"><text class="section-title">收益明细</text><text class="section-note">{{recordsNote}}</text></view>
   <view class="records-card comic-card">
-    <view wx:if="{{!records.length}}" class="empty">还没有记录，先去首页赚第一笔。</view>
+    <view wx:if="{{!records.length}}" class="empty">{{emptyText}}</view>
     <view wx:for="{{records}}" wx:key="id" class="record-row">
       <text class="record-stamp">{{item.stamp}}</text><view class="record-copy"><text class="record-title">{{item.label}}</text><text class="record-detail">{{item.time}}</text></view><view class="record-copy record-values"><text class="record-title">{{item.moneyText}}</text><text class="record-detail">{{item.secondsText}}</text></view>
     </view>

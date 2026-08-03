@@ -12,6 +12,12 @@ Page({
     activities: store.activityList,
     activeActivity: "toilet",
     activity: store.activities.toilet,
+    tagline: store.copyLines.home[0],
+    activityHint: store.activities.toilet.hint,
+    sceneLine: store.activities.toilet.sceneLine,
+    onboardingSubtitle: store.copyLines.onboarding[0],
+    goalNote: store.copyLines.goals.notes[0],
+    todayNote: store.copyLines.todayNotes[0],
     running: false,
     timerText: "00:00:00",
     liveMoney: "￥0.00",
@@ -45,6 +51,7 @@ Page({
   },
 
   onShow() {
+    this.refreshCopy();
     this.refreshData();
     if (this.data.running) this.tick();
   },
@@ -77,6 +84,18 @@ Page({
     this.renderTotals();
   },
 
+  refreshCopy() {
+    const activity = this.data.activity || store.activities.toilet;
+    this.setData({
+      tagline: store.pickLine(store.copyLines.home, this.data.tagline),
+      activityHint: store.pickLine(activity.hints, this.data.activityHint),
+      sceneLine: store.pickLine(activity.sceneLines, this.data.sceneLine),
+      onboardingSubtitle: store.pickLine(store.copyLines.onboarding, this.data.onboardingSubtitle),
+      goalNote: store.pickLine(store.copyLines.goals.notes, this.data.goalNote),
+      todayNote: store.pickLine(store.copyLines.todayNotes, this.data.todayNote)
+    });
+  },
+
   selectActivity(event) {
     if (this.data.running) return;
     const key = event.currentTarget.dataset.key;
@@ -85,7 +104,9 @@ Page({
     this.setData({
       activeActivity: key,
       activity,
-      liveLine: activity.idle
+      activityHint: store.pickLine(activity.hints, this.data.activityHint),
+      sceneLine: store.pickLine(activity.sceneLines, this.data.sceneLine),
+      liveLine: store.pickLine(activity.idleLines, this.data.liveLine)
     });
     this.renderTotals();
   },
@@ -97,6 +118,7 @@ Page({
 
   startTimer() {
     this.startedAt = Date.now();
+    const activity = this.data.activity;
     const rewardItems = Array.from({ length: 18 }, (_, index) => {
       const isCoin = index % 3 === 1;
       return {
@@ -109,7 +131,8 @@ Page({
     });
     this.setData({
       running: true,
-      liveLine: this.data.activity.running,
+      liveLine: store.pickLine(activity.runningLines, this.data.liveLine),
+      sceneLine: store.pickLine(activity.sceneLines, this.data.sceneLine),
       rewardItems
     });
     this.tick();
@@ -129,6 +152,8 @@ Page({
     const seconds = Math.max(1, Math.round((Date.now() - this.startedAt) / 1000));
     const money = seconds * this.rates.second;
     const activity = this.data.activity;
+    const quote = store.pickLine(activity.reportQuotes, this.data.report && this.data.report.quote);
+    const reportCaption = store.pickLine(activity.reportCaptions, this.data.report && this.data.report.reportCaption);
     const finishedAt = Date.now();
     store.addSession({ activity: activity.key, seconds, money, at: finishedAt });
     const todayKey = store.getDateKey(finishedAt);
@@ -142,7 +167,7 @@ Page({
       running: false,
       timerText: "00:00:00",
       liveMoney: "￥0.00",
-      liveLine: activity.done,
+      liveLine: store.pickLine(activity.doneLines, this.data.liveLine),
       rewardItems: [],
       showReport: true,
       report: {
@@ -151,11 +176,11 @@ Page({
         title: `本次${activity.fullLabel}`,
         secondsText: store.formatDuration(seconds),
         moneyText: store.formatMoney(money),
-        quote: activity.done,
+        quote,
         reportKicker: activity.reportKicker,
         reportTag: activity.reportTag,
         reportSfx: activity.reportSfx,
-        reportCaption: activity.reportCaption,
+        reportCaption,
         todayCountText: `${todayActivityTotal.count}次`,
         todaySecondsText: store.formatDuration(todayActivityTotal.seconds)
       }
@@ -176,7 +201,6 @@ Page({
     const total = store.aggregate(sessions);
     const goal = this.data.goal;
     const progress = Math.min(100, Math.round((total.money / goal.target) * 100));
-    const remaining = Math.max(0, goal.target - total.money);
     const todayActivities = store.activityList.map((activity) => ({
       key: activity.key,
       label: activity.label,
@@ -195,10 +219,17 @@ Page({
       todayActivities,
       goalMoneyText: `${store.formatMoney(total.money)} / ${store.formatMoney(goal.target)}`,
       goalProgress: progress,
-      goalStatus: remaining < 0.005
-        ? `今天的${goal.label}由老板买单。`
-        : `还差 ${store.formatMoney(remaining)}，继续带薪就能拿下。`
+      goalStatus: this.makeGoalStatus(total.money, goal)
     });
+  },
+
+  makeGoalStatus(totalMoney, goal) {
+    const remaining = Math.max(0, goal.target - totalMoney);
+    if (remaining < 0.005) {
+      return store.pickLine(store.copyLines.goals.complete, this.data.goalStatus);
+    }
+    const line = store.pickLine(store.copyLines.goals.progress, this.data.goalStatus);
+    return `${line} 还差 ${store.formatMoney(remaining)}。`;
   },
 
   selectGoal(event) {

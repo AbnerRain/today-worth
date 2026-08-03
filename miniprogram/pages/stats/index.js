@@ -23,6 +23,10 @@ Page({
     ],
     activePeriod: "day",
     periodLabel: "今天",
+    pageSubtitle: store.copyLines.stats[0],
+    contributionNote: store.copyLines.statsContributionNotes[0],
+    recordsNote: store.copyLines.statsRecordNotes[0],
+    emptyText: store.copyLines.emptyStats[0],
     summary: {},
     verdict: {},
     contributions: [],
@@ -30,12 +34,27 @@ Page({
   },
 
   onShow() {
+    this.refreshCopy();
     this.renderStats();
   },
 
   selectPeriod(event) {
-    this.setData({ activePeriod: event.currentTarget.dataset.period });
+    this.setData({
+      activePeriod: event.currentTarget.dataset.period,
+      pageSubtitle: store.pickLine(store.copyLines.stats, this.data.pageSubtitle),
+      contributionNote: store.pickLine(store.copyLines.statsContributionNotes, this.data.contributionNote),
+      recordsNote: store.pickLine(store.copyLines.statsRecordNotes, this.data.recordsNote)
+    });
     this.renderStats();
+  },
+
+  refreshCopy() {
+    this.setData({
+      pageSubtitle: store.pickLine(store.copyLines.stats, this.data.pageSubtitle),
+      contributionNote: store.pickLine(store.copyLines.statsContributionNotes, this.data.contributionNote),
+      recordsNote: store.pickLine(store.copyLines.statsRecordNotes, this.data.recordsNote),
+      emptyText: store.pickLine(store.copyLines.emptyStats, this.data.emptyText)
+    });
   },
 
   renderStats() {
@@ -64,6 +83,7 @@ Page({
       },
       verdict: this.makeVerdict(total.money),
       contributions,
+      emptyText: store.pickLine(store.copyLines.emptyStats, this.data.emptyText),
       records: sessions.slice().sort((a, b) => b.at - a.at).slice(0, 8).map((session) => {
         const activity = store.activities[session.activity] || store.activities.toilet;
         const date = new Date(session.at);

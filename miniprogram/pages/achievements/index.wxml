@@ -1,9 +1,9 @@
 <view class="page-shell achievements-page">
-  <view class="page-header"><text class="page-title">摸鱼履历</text><text class="page-subtitle">上班没有白上，章也不能白盖。</text></view>
+  <view class="page-header"><text class="page-title">摸鱼履历</text><text class="page-subtitle">{{pageSubtitle}}</text></view>
   <view class="pass comic-card">
     <view class="pass-head"><text>履历完成度</text><text>{{unlockedCount}} / {{totalCount}}</text></view>
     <view class="pass-track"><view class="pass-fill" style="width: {{completion}}%;"></view></view>
-    <text class="pass-foot">已解锁 {{completion}}%</text>
+    <text class="pass-foot">已解锁 {{completion}}% · {{passNote}}</text>
     <view class="activity-progress-list">
       <view wx:for="{{activityProgress}}" wx:key="key" class="activity-progress-row">
         <view class="activity-progress-head"><view class="activity-progress-name"><text class="activity-progress-stamp activity-{{item.key}}">{{item.stamp}}</text><text>{{item.label}}</text></view><text>{{item.unlocked}} / {{item.total}}</text></view>
