@@ -12,6 +12,9 @@ const activities = {
     hint: "肠道健康也算现金流",
     idle: "点击开始，把松弛时间记进账本。",
     running: "老板正在为你的肠道健康买单。",
+    sceneLine: "坐稳别急，这段工时正在自动入账。",
+    mascot: "/assets/activity-mascots/toilet.png",
+    coin: "/assets/reward-rain/toilet-coin.png",
     stopText: "冲水结算",
     done: "冲水完成，这笔钱很有味道。",
     color: "#bff5df"
@@ -25,6 +28,9 @@ const activities = {
     hint: "午饭不是暂停，是带薪补给",
     idle: "开饭后，每一口都开始计价。",
     running: "这口饭由工作时间买单。",
+    sceneLine: "每一口都是带薪补给，慢慢吃也算工时。",
+    mascot: "/assets/activity-mascots/meal.png",
+    coin: "/assets/reward-rain/meal-coin.png",
     stopText: "吃饱结算",
     done: "光盘入账，午休终于有了回报。",
     color: "#fff0a6"
@@ -38,6 +44,9 @@ const activities = {
     hint: "闭眼充电，醒来结算",
     idle: "闭眼以后，睡眠收益开始计算。",
     running: "眼睛闭上了，收益没有。",
+    sceneLine: "人已充电，工资计时器还醒着。",
+    mascot: "/assets/activity-mascots/nap.png",
+    coin: "/assets/reward-rain/nap-coin.png",
     stopText: "睡醒结算",
     done: "充电完成，精神和余额一起回血。",
     color: "#cbe8ff"

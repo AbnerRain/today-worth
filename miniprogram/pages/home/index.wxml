@@ -1,7 +1,7 @@
 <view class="page-shell home-page">
   <view wx:if="{{running}}" class="money-rain">
-    <view wx:for="{{moneyBills}}" wx:key="id" class="money-bill">
-      <image class="money-bill-image" src="{{item.src}}" mode="aspectFit" />
+    <view wx:for="{{rewardItems}}" wx:key="id" class="reward-item is-{{item.kind}}">
+      <image class="reward-image" src="{{item.src}}" mode="aspectFit" />
     </view>
   </view>
 
@@ -30,11 +30,23 @@
     <text class="timer">{{timerText}}</text>
     <view class="earning-ticket"><text class="earning-label">本次已赚</text><text class="earning-value">{{liveMoney}}</text></view>
     <text class="live-line">{{liveLine}}</text>
+    <view wx:if="{{running}}" class="activity-scene scene-{{activeActivity}}">
+      <view class="mascot-stage">
+        <image class="activity-mascot" src="{{activity.mascot}}" mode="aspectFit" />
+        <view class="motion-mark mark-one"></view>
+        <view class="motion-mark mark-two"></view>
+      </view>
+      <view class="scene-copy">
+        <text class="scene-badge">{{activity.label}}计价中</text>
+        <text class="scene-money">{{liveMoney}}</text>
+        <text class="scene-line">{{activity.sceneLine}}</text>
+      </view>
+    </view>
   </view>
 
   <view class="section-heading"><text class="section-title">带薪模式</text><text class="section-note">{{activity.hint}}</text></view>
   <view class="activity-grid">
-    <button wx:for="{{activities}}" wx:key="key" class="activity-button {{activeActivity === item.key ? 'is-active' : ''}}" data-key="{{item.key}}" disabled="{{running}}" bindtap="selectActivity">
+    <button wx:for="{{activities}}" wx:key="key" class="activity-button activity-{{item.key}} {{activeActivity === item.key ? 'is-active' : ''}}" data-key="{{item.key}}" disabled="{{running}}" bindtap="selectActivity">
       <text class="activity-stamp">{{item.stamp}}</text><text class="activity-label">{{item.label}}</text><text class="activity-english">{{item.english}}</text>
     </button>
   </view>

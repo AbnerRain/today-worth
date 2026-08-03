@@ -26,7 +26,7 @@ Page({
     goalStatus: "开始一次带薪活动，向冰美式发起冲击。",
     showReport: false,
     report: {},
-    moneyBills: [],
+    rewardItems: [],
     profileMeta: {},
     showOnboarding: false,
     onboardingProfile: store.defaultProfile,
@@ -97,14 +97,20 @@ Page({
 
   startTimer() {
     this.startedAt = Date.now();
-    const bills = Array.from({ length: 20 }, (_, index) => ({
-      id: `${this.startedAt}-${index}`,
-      src: moneyBillAssets[index % moneyBillAssets.length]
-    }));
+    const rewardItems = Array.from({ length: 18 }, (_, index) => {
+      const isCoin = index % 3 === 1;
+      return {
+        id: `${this.startedAt}-${index}`,
+        kind: isCoin ? "coin" : "bill",
+        src: isCoin
+          ? this.data.activity.coin
+          : moneyBillAssets[index % moneyBillAssets.length]
+      };
+    });
     this.setData({
       running: true,
       liveLine: this.data.activity.running,
-      moneyBills: bills
+      rewardItems
     });
     this.tick();
     this.timerId = setInterval(() => this.tick(), 250);
@@ -131,7 +137,7 @@ Page({
       timerText: "00:00:00",
       liveMoney: "￥0.00",
       liveLine: activity.done,
-      moneyBills: [],
+      rewardItems: [],
       showReport: true,
       report: {
         stamp: activity.stamp,

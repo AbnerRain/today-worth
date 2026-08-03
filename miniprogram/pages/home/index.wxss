@@ -32,13 +32,45 @@
 .earning-label { color: #687186; font-size: 19rpx; font-weight: 700; }
 .earning-value { font-size: 31rpx; font-weight: 900; }
 .live-line { display: block; max-width: 68%; color: #39445a; font-size: 23rpx; font-weight: 700; line-height: 1.55; }
+.activity-scene { position: relative; z-index: 2; display: grid; min-height: 218rpx; margin-top: 24rpx; padding: 14rpx 18rpx 14rpx 12rpx; grid-template-columns: 210rpx minmax(0,1fr); align-items: center; gap: 10rpx; overflow: hidden; border: 4rpx solid #131b2b; border-radius: 12rpx; box-shadow: 6rpx 6rpx 0 #131b2b; box-sizing: border-box; }
+.scene-toilet { background: #edfff7; }
+.scene-meal { background: #fffadc; }
+.scene-nap { background: #eef7ff; }
+.mascot-stage { position: relative; width: 200rpx; height: 200rpx; align-self: end; }
+.activity-mascot { display: block; width: 200rpx; height: 200rpx; transform-origin: 50% 86%; }
+.scene-toilet .activity-mascot { animation: toilet-bob 1.25s steps(2,end) infinite; }
+.scene-meal .activity-mascot { animation: meal-munch .72s ease-in-out infinite; }
+.scene-nap .activity-mascot { animation: nap-breathe 2.2s ease-in-out infinite; }
+.motion-mark { position: absolute; z-index: 2; display: block; opacity: 0; }
+.scene-toilet .motion-mark { right: 8rpx; width: 22rpx; height: 8rpx; border-radius: 99rpx; background: #11a66a; transform-origin: left center; animation: relief-pop 1.25s ease-out infinite; }
+.scene-toilet .mark-one { top: 38rpx; transform: rotate(-28deg); }
+.scene-toilet .mark-two { top: 62rpx; animation-delay: .18s; transform: rotate(12deg); }
+.scene-meal .motion-mark { top: 26rpx; width: 9rpx; height: 42rpx; border: 4rpx solid #ff6259; border-width: 0 0 0 4rpx; border-radius: 50%; animation: steam-rise 1.15s ease-out infinite; }
+.scene-meal .mark-one { left: 70rpx; }
+.scene-meal .mark-two { left: 102rpx; animation-delay: .35s; }
+.scene-nap .motion-mark { width: 18rpx; height: 18rpx; border-top: 5rpx solid #2f6bff; border-right: 5rpx solid #2f6bff; animation: dream-float 1.8s ease-out infinite; }
+.scene-nap .mark-one { right: 26rpx; top: 32rpx; }
+.scene-nap .mark-two { right: 4rpx; top: 8rpx; animation-delay: .6s; }
+.scene-copy { display: flex; min-width: 0; padding: 10rpx 0; flex-direction: column; align-items: flex-start; }
+.scene-badge { padding: 7rpx 12rpx; border: 3rpx solid #131b2b; border-radius: 7rpx; background: #131b2b; color: #fff; font-size: 18rpx; font-weight: 900; }
+.scene-money { max-width: 100%; margin: 8rpx 0 4rpx; color: #2f6bff; font-size: 43rpx; font-weight: 900; line-height: 1.12; animation: money-tick 1s steps(2,end) infinite; }
+.scene-line { color: #4f596d; font-size: 20rpx; font-weight: 700; line-height: 1.45; }
 
 .activity-grid { display: flex; gap: 16rpx; }
 .activity-button { display: flex; flex: 1 1 0; width: 0; min-width: 0; height: 156rpx; margin: 0; padding: 16rpx 10rpx; flex-direction: column; align-items: center; justify-content: center; border: 3rpx solid #131b2b; border-radius: 14rpx; background: #fff; box-shadow: 5rpx 5rpx 0 #131b2b; color: #131b2b; line-height: 1.15; box-sizing: border-box; }
-.activity-button.is-active { background: #ffdc3f; transform: translate(3rpx, 3rpx); box-shadow: 2rpx 2rpx 0 #131b2b; }
+.activity-button.activity-toilet { background: #edfff7; }
+.activity-button.activity-meal { background: #fffadc; }
+.activity-button.activity-nap { background: #eef7ff; }
+.activity-button.activity-toilet.is-active { background: #8be5bd; }
+.activity-button.activity-meal.is-active { background: #ffdc3f; }
+.activity-button.activity-nap.is-active { background: #9bd4ff; }
+.activity-button.is-active { transform: translate(3rpx, 3rpx); box-shadow: 2rpx 2rpx 0 #131b2b; }
 .activity-label { margin: 8rpx 0 4rpx; font-size: 28rpx; font-weight: 900; }
 .activity-english { color: #687186; font-size: 17rpx; font-weight: 800; }
 .activity-stamp { display: flex; min-width: 48rpx; height: 42rpx; padding: 0 8rpx; align-items: center; justify-content: center; border: 3rpx solid #131b2b; border-radius: 7rpx; background: #f5f7fb; font-size: 20rpx; font-weight: 900; }
+.activity-toilet .activity-stamp { background: #bff5df; }
+.activity-meal .activity-stamp { background: #fff0a6; }
+.activity-nap .activity-stamp { background: #cbe8ff; }
 
 .main-action { display: flex; width: 100%; height: 104rpx; margin: 28rpx 0 0; align-items: center; justify-content: center; gap: 18rpx; border: 4rpx solid #131b2b; border-radius: 16rpx; background: #2f6bff; box-shadow: 8rpx 8rpx 0 #131b2b; color: #fff; font-size: 32rpx; font-weight: 900; box-sizing: border-box; }
 .main-action.is-running { background: #ff6259; }
@@ -73,20 +105,28 @@
 .ledger-values { align-items: flex-end; }
 
 .money-rain { position: fixed; inset: 0; z-index: 80; pointer-events: none; overflow: hidden; }
-.money-bill { position: absolute; top: -140rpx; width: 184rpx; height: 92rpx; overflow: hidden; border-radius: 5rpx; box-shadow: 5rpx 7rpx 0 rgba(19,27,43,.42); animation: money-fall linear infinite; transform-origin: center; }
-.money-bill-image { display: block; width: 100%; height: 100%; }
-.money-bill:nth-child(12n+1) { left: 3%; animation-delay: -.2s; animation-duration: 3.08s; --bill-drift: 54rpx; --bill-spin: 430deg; --bill-scale: .86; }
-.money-bill:nth-child(12n+2) { left: 14%; animation-delay: -1.9s; animation-duration: 3.54s; --bill-drift: -72rpx; --bill-spin: -360deg; --bill-scale: .96; }
-.money-bill:nth-child(12n+3) { left: 27%; animation-delay: -.8s; animation-duration: 2.86s; --bill-drift: 84rpx; --bill-spin: 510deg; --bill-scale: 1.08; }
-.money-bill:nth-child(12n+4) { left: 41%; animation-delay: -2.7s; animation-duration: 3.72s; --bill-drift: -46rpx; --bill-spin: -470deg; --bill-scale: .9; }
-.money-bill:nth-child(12n+5) { left: 56%; animation-delay: -1.2s; animation-duration: 3.26s; --bill-drift: 68rpx; --bill-spin: 390deg; --bill-scale: 1.02; }
-.money-bill:nth-child(12n+6) { left: 72%; animation-delay: -3.1s; animation-duration: 3.92s; --bill-drift: -86rpx; --bill-spin: -540deg; --bill-scale: .84; }
-.money-bill:nth-child(12n+7) { left: 88%; animation-delay: -.5s; animation-duration: 2.96s; --bill-drift: -58rpx; --bill-spin: 450deg; --bill-scale: .98; }
-.money-bill:nth-child(12n+8) { left: 8%; animation-delay: -2.4s; animation-duration: 3.44s; --bill-drift: 92rpx; --bill-spin: -410deg; --bill-scale: 1.06; }
-.money-bill:nth-child(12n+9) { left: 22%; animation-delay: -3.5s; animation-duration: 4.02s; --bill-drift: -64rpx; --bill-spin: 560deg; --bill-scale: .88; }
-.money-bill:nth-child(12n+10) { left: 49%; animation-delay: -1.6s; animation-duration: 3.18s; --bill-drift: 76rpx; --bill-spin: -500deg; --bill-scale: .94; }
-.money-bill:nth-child(12n+11) { left: 66%; animation-delay: -2.1s; animation-duration: 3.66s; --bill-drift: -52rpx; --bill-spin: 420deg; --bill-scale: 1.1; }
-.money-bill:nth-child(12n+12) { left: 82%; animation-delay: -3.3s; animation-duration: 3.84s; --bill-drift: 62rpx; --bill-spin: -390deg; --bill-scale: .92; }
+.reward-item { position: absolute; top: -180rpx; animation: reward-fall linear infinite both; transform-origin: center; will-change: transform; }
+.reward-item.is-bill { width: 184rpx; height: 92rpx; overflow: hidden; border-radius: 5rpx; box-shadow: 5rpx 7rpx 0 rgba(19,27,43,.42); }
+.reward-item.is-coin { width: 94rpx; height: 94rpx; border-radius: 50%; box-shadow: 4rpx 6rpx 0 rgba(19,27,43,.38); }
+.reward-image { display: block; width: 100%; height: 100%; }
+.reward-item:nth-child(1) { left: 2%; animation-delay: 0s; animation-duration: 3.62s; --reward-drift: 46rpx; --reward-spin: 380deg; --reward-scale: .86; }
+.reward-item:nth-child(2) { left: 18%; animation-delay: .18s; animation-duration: 3.28s; --reward-drift: -38rpx; --reward-spin: -420deg; --reward-scale: .96; }
+.reward-item:nth-child(3) { left: 31%; animation-delay: .36s; animation-duration: 3.9s; --reward-drift: 68rpx; --reward-spin: 480deg; --reward-scale: 1.02; }
+.reward-item:nth-child(4) { left: 45%; animation-delay: .54s; animation-duration: 3.46s; --reward-drift: -58rpx; --reward-spin: -350deg; --reward-scale: .9; }
+.reward-item:nth-child(5) { left: 60%; animation-delay: .72s; animation-duration: 3.18s; --reward-drift: 42rpx; --reward-spin: 520deg; --reward-scale: 1.06; }
+.reward-item:nth-child(6) { left: 73%; animation-delay: .9s; animation-duration: 4.02s; --reward-drift: -72rpx; --reward-spin: -460deg; --reward-scale: .84; }
+.reward-item:nth-child(7) { left: 8%; animation-delay: 1.08s; animation-duration: 3.36s; --reward-drift: 82rpx; --reward-spin: 410deg; --reward-scale: .94; }
+.reward-item:nth-child(8) { left: 26%; animation-delay: 1.26s; animation-duration: 3.76s; --reward-drift: -44rpx; --reward-spin: -560deg; --reward-scale: .9; }
+.reward-item:nth-child(9) { left: 40%; animation-delay: 1.44s; animation-duration: 3.54s; --reward-drift: 56rpx; --reward-spin: 450deg; --reward-scale: 1.08; }
+.reward-item:nth-child(10) { left: 55%; animation-delay: 1.62s; animation-duration: 3.22s; --reward-drift: -62rpx; --reward-spin: -390deg; --reward-scale: .88; }
+.reward-item:nth-child(11) { left: 78%; animation-delay: 1.8s; animation-duration: 3.84s; --reward-drift: -58rpx; --reward-spin: 540deg; --reward-scale: 1; }
+.reward-item:nth-child(12) { left: 64%; animation-delay: 1.98s; animation-duration: 3.48s; --reward-drift: 48rpx; --reward-spin: -430deg; --reward-scale: .92; }
+.reward-item:nth-child(13) { left: 1%; animation-delay: 2.16s; animation-duration: 3.96s; --reward-drift: 64rpx; --reward-spin: 500deg; --reward-scale: 1.04; }
+.reward-item:nth-child(14) { left: 35%; animation-delay: 2.34s; animation-duration: 3.3s; --reward-drift: -52rpx; --reward-spin: -470deg; --reward-scale: .86; }
+.reward-item:nth-child(15) { left: 69%; animation-delay: 2.52s; animation-duration: 3.7s; --reward-drift: -76rpx; --reward-spin: 390deg; --reward-scale: .98; }
+.reward-item:nth-child(16) { left: 15%; animation-delay: 2.7s; animation-duration: 3.42s; --reward-drift: 74rpx; --reward-spin: -520deg; --reward-scale: .9; }
+.reward-item:nth-child(17) { left: 52%; animation-delay: 2.88s; animation-duration: 3.14s; --reward-drift: -36rpx; --reward-spin: 460deg; --reward-scale: 1.08; }
+.reward-item:nth-child(18) { left: 70%; animation-delay: 3.06s; animation-duration: 3.86s; --reward-drift: 54rpx; --reward-spin: -400deg; --reward-scale: .88; }
 .onboarding-mask { position: fixed; inset: 0; z-index: 120; background: #f5f7fb; }
 .onboarding-scroll { width: 100%; height: 100%; }
 .onboarding-sheet { min-height: 100vh; padding: calc(52rpx + env(safe-area-inset-top)) 38rpx calc(42rpx + env(safe-area-inset-bottom)); background-image: radial-gradient(circle at 1px 1px,rgba(19,27,43,.08) 1px,transparent 1.5px); background-size: 22rpx 22rpx; box-sizing: border-box; }
@@ -128,5 +168,12 @@
 .share-button { background: #2f6bff; box-shadow: 6rpx 6rpx 0 #131b2b; color: #fff; }
 .close-button { background: #fff; color: #131b2b; }
 
-@keyframes money-fall { 0% { opacity: 0; transform: translate3d(0,-120rpx,0) rotate(0deg) scale(var(--bill-scale)); } 10% { opacity: 1; } 100% { opacity: .94; transform: translate3d(var(--bill-drift),120vh,0) rotate(var(--bill-spin)) scale(var(--bill-scale)); } }
+@keyframes reward-fall { 0% { opacity: 0; transform: translate3d(0,-80rpx,0) rotate(0deg) scale(var(--reward-scale)); } 7% { opacity: 1; } 92% { opacity: 1; } 100% { opacity: .35; transform: translate3d(var(--reward-drift),calc(100vh + 260rpx),0) rotate(var(--reward-spin)) scale(var(--reward-scale)); } }
+@keyframes toilet-bob { 0%,100% { transform: translateY(0) rotate(-1deg); } 50% { transform: translateY(-5rpx) rotate(1deg); } }
+@keyframes meal-munch { 0%,100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-4rpx) rotate(-1deg); } }
+@keyframes nap-breathe { 0%,100% { transform: translateY(0) scale(1); } 50% { transform: translateY(3rpx) scale(.985); } }
+@keyframes relief-pop { 0%,25% { opacity: 0; transform: translateX(-8rpx) scaleX(.5); } 55% { opacity: 1; } 100% { opacity: 0; transform: translateX(14rpx) scaleX(1.1); } }
+@keyframes steam-rise { 0% { opacity: 0; transform: translateY(10rpx) scale(.7); } 35% { opacity: .9; } 100% { opacity: 0; transform: translateY(-28rpx) scale(1.1); } }
+@keyframes dream-float { 0% { opacity: 0; transform: translate(-8rpx,10rpx) rotate(-12deg) scale(.65); } 35% { opacity: 1; } 100% { opacity: 0; transform: translate(12rpx,-26rpx) rotate(8deg) scale(1.1); } }
+@keyframes money-tick { 50% { transform: translateY(-2rpx) scale(1.025); } }
 @keyframes pulse { 50% { transform: scale(1.35); opacity: .55; } }
