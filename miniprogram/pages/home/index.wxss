@@ -5,12 +5,12 @@
 .brand { font-size: 52rpx; font-weight: 900; line-height: 1.12; }
 .brand-stamp { display: flex; width: 48rpx; height: 48rpx; align-items: center; justify-content: center; border: 4rpx solid #131b2b; border-radius: 8rpx; background: #ffdc3f; font-size: 26rpx; font-weight: 900; transform: rotate(5deg); }
 .tagline { color: #596377; font-size: 24rpx; font-weight: 600; }
-.profile-bar { display: flex; min-width: 0; margin-bottom: 18rpx; align-items: flex-start; justify-content: space-between; gap: 16rpx; }
+.profile-bar { display: flex; min-width: 0; min-height: 58rpx; margin-bottom: 22rpx; align-items: center; justify-content: space-between; gap: 12rpx; }
 .profile-copy { display: flex; min-width: 0; flex: 1; flex-direction: column; gap: 3rpx; }
 .profile-name { overflow: hidden; font-size: 24rpx; font-weight: 900; text-overflow: ellipsis; white-space: nowrap; }
 .profile-detail { overflow: hidden; color: #687186; font-size: 19rpx; font-weight: 700; text-overflow: ellipsis; white-space: nowrap; }
-.settings-button { display: inline-flex; flex: 0 0 176rpx; width: 176rpx; max-width: 176rpx; min-width: 0; height: 64rpx; margin: 0 0 0 auto; padding: 0 12rpx; align-items: center; justify-content: center; gap: 7rpx; overflow: hidden; border: 3rpx solid #131b2b; border-radius: 11rpx; background: #fff; box-shadow: 5rpx 5rpx 0 #131b2b; color: #131b2b; font-size: 22rpx; font-weight: 900; line-height: 1; white-space: nowrap; box-sizing: border-box; }
-.settings-icon { flex: 0 0 auto; font-size: 22rpx; line-height: 1; }
+.settings-button { display: inline-flex; flex: 0 0 152rpx; width: 152rpx; max-width: 152rpx; min-width: 0; height: 56rpx; margin: 0 0 0 auto; padding: 0 8rpx; align-items: center; justify-content: center; gap: 5rpx; overflow: hidden; border: 3rpx solid #131b2b; border-radius: 10rpx; background: #fff; box-shadow: 4rpx 4rpx 0 #131b2b; color: #131b2b; font-size: 21rpx; font-weight: 900; line-height: 1; white-space: nowrap; box-sizing: border-box; }
+.settings-icon { flex: 0 0 auto; font-size: 20rpx; line-height: 1; }
 
 .rate-strip { display: grid; grid-template-columns: 1.15fr 1fr 1fr; overflow: hidden; box-shadow: 6rpx 6rpx 0 #131b2b; }
 .rate-cell { display: flex; min-width: 0; flex-direction: column; gap: 6rpx; padding: 20rpx 16rpx; border-left: 3rpx solid #131b2b; }

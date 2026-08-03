@@ -382,7 +382,7 @@ textarea:focus-visible {
 .app-header {
   min-height: 96px;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: space-between;
   gap: 14px;
   padding: 8px 20px 14px;
@@ -474,6 +474,7 @@ textarea:focus-visible {
 }
 
 .header-copy {
+  flex: 1 1 auto;
   min-width: 0;
 }
 
@@ -545,14 +546,14 @@ textarea:focus-visible {
 
 .icon-button {
   width: auto;
-  min-width: 92px;
-  height: 44px;
+  min-width: 96px;
+  height: 40px;
   flex: 0 0 auto;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 5px;
-  padding: 0 9px;
+  padding: 0 8px;
   border: 2px solid var(--ink);
   border-radius: 8px;
   background: var(--surface);
