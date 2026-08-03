@@ -111,7 +111,7 @@ Page({
 
   onShareAppMessage() {
     return {
-      title: `我的时间工资条：${this.data.periodLabel}已赚${this.data.summary.moneyText || "￥0.00"}`,
+      title: `我的摸力全开：${this.data.periodLabel}已赚${this.data.summary.moneyText || "￥0.00"}`,
       path: "/pages/home/index?from=stats"
     };
   }

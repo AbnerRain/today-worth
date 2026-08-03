@@ -287,7 +287,7 @@ Page({
     return {
       title: report.title
         ? `${report.title}，赚了${report.moneyText}`
-        : "时间工资条：算算你上班每分钟值多少钱",
+        : "摸力全开：算算你上班每分钟值多少钱",
       path: "/pages/home/index?from=share"
     };
   }

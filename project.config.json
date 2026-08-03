@@ -1,6 +1,6 @@
 {
-  "description": "时间工资条微信小程序原生项目",
-  "projectname": "时间工资条",
+  "description": "摸力全开微信小程序原生项目",
+  "projectname": "摸力全开",
   "appid": "wx2eb22fe5dbb782d9",
   "compileType": "miniprogram",
   "miniprogramRoot": "miniprogram/",

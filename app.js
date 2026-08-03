@@ -2211,7 +2211,7 @@ function makeShareData(report) {
   ].join("\n");
 
   const data = {
-    title: `时间工资条 · ${activity.shortLabel}战报`,
+    title: `摸力全开 · ${activity.shortLabel}战报`,
     text
   };
 
