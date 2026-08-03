@@ -546,15 +546,15 @@ textarea:focus-visible {
 
 .icon-button {
   width: auto;
-  min-width: 116px;
-  height: 48px;
+  min-width: 130px;
+  height: 54px;
   flex: 0 0 auto;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 7px;
-  padding: 0 9px;
-  border: 2px solid var(--ink);
+  gap: 9px;
+  padding: 0 10px;
+  border: 3px solid var(--ink);
   border-radius: 8px;
   background: var(--surface);
   color: var(--ink);
@@ -566,19 +566,25 @@ textarea:focus-visible {
 }
 
 .icon-button:active {
+  background: var(--yellow);
   transform: translate(3px, 3px);
   box-shadow: 0 0 0 var(--ink);
 }
 
+.icon-button:active .settings-icon-shell {
+  background: var(--blue);
+  color: #fff;
+}
+
 .icon-button svg {
-  width: 21px;
-  height: 21px;
+  width: 24px;
+  height: 24px;
 }
 
 .settings-icon-shell {
-  width: 30px;
-  height: 30px;
-  flex: 0 0 30px;
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
   display: grid;
   place-items: center;
   border: 2px solid var(--ink);
@@ -588,7 +594,7 @@ textarea:focus-visible {
 }
 
 .button-label {
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1;
   font-weight: 900;
   white-space: nowrap;
@@ -1154,9 +1160,9 @@ textarea:focus-visible {
 }
 
 .primary-action {
-  width: calc(100% + 4px);
+  width: 100%;
   min-height: 64px;
-  margin: 14px -2px 28px;
+  margin: 14px 0 28px;
   display: flex;
   align-items: center;
   justify-content: center;

@@ -5,13 +5,15 @@
 .brand { font-size: 52rpx; font-weight: 900; line-height: 1.12; }
 .brand-stamp { display: flex; width: 48rpx; height: 48rpx; align-items: center; justify-content: center; border: 4rpx solid #131b2b; border-radius: 8rpx; background: #ffdc3f; font-size: 26rpx; font-weight: 900; transform: rotate(5deg); }
 .tagline { color: #596377; font-size: 24rpx; font-weight: 600; }
-.profile-bar { display: flex; min-width: 0; min-height: 72rpx; margin-bottom: 22rpx; align-items: center; justify-content: space-between; gap: 16rpx; }
+.profile-bar { display: flex; min-width: 0; min-height: 92rpx; margin-bottom: 22rpx; align-items: center; justify-content: space-between; gap: 18rpx; }
 .profile-copy { display: flex; min-width: 0; flex: 1; flex-direction: column; gap: 3rpx; }
 .profile-name { overflow: hidden; font-size: 24rpx; font-weight: 900; text-overflow: ellipsis; white-space: nowrap; }
 .profile-detail { overflow: hidden; color: #687186; font-size: 19rpx; font-weight: 700; text-overflow: ellipsis; white-space: nowrap; }
-.settings-button { display: inline-flex; flex: 0 0 184rpx; width: 184rpx; max-width: 184rpx; min-width: 0; height: 68rpx; margin: 0 4rpx 4rpx auto; padding: 0 10rpx; align-items: center; justify-content: center; gap: 9rpx; overflow: hidden; border: 3rpx solid #131b2b; border-radius: 11rpx; background: #fff; box-shadow: 5rpx 5rpx 0 #131b2b; color: #131b2b; font-weight: 900; line-height: 1; white-space: nowrap; box-sizing: border-box; }
-.settings-icon { display: flex; flex: 0 0 40rpx; width: 40rpx; height: 40rpx; align-items: center; justify-content: center; border: 2rpx solid #131b2b; border-radius: 8rpx; background: #ffdc3f; font-family: Arial, sans-serif; font-size: 29rpx; font-weight: 700; line-height: 1; box-sizing: border-box; }
-.settings-label { flex: 0 0 auto; font-size: 23rpx; line-height: 1; }
+.settings-button { display: inline-flex; flex: 0 0 232rpx; width: 232rpx; max-width: 232rpx; min-width: 232rpx; height: 90rpx; margin: 0 7rpx 7rpx auto; padding: 0 14rpx; align-items: center; justify-content: center; gap: 14rpx; overflow: hidden; border: 4rpx solid #131b2b; border-radius: 16rpx; background: #fff; box-shadow: 7rpx 7rpx 0 #131b2b; color: #131b2b; font-weight: 900; line-height: 1; white-space: nowrap; box-sizing: border-box; }
+.settings-icon { display: flex; flex: 0 0 58rpx; width: 58rpx; height: 58rpx; align-items: center; justify-content: center; border: 4rpx solid #131b2b; border-radius: 12rpx; background: #ffdc3f; font-family: Arial, sans-serif; font-size: 39rpx; font-weight: 700; line-height: 1; box-sizing: border-box; }
+.settings-label { flex: 0 0 auto; font-size: 29rpx; line-height: 1; }
+.settings-button--pressed { background: #ffdc3f; box-shadow: 3rpx 3rpx 0 #131b2b; transform: translate(4rpx, 4rpx); }
+.settings-button--pressed .settings-icon { background: #2f6bff; color: #fff; }
 
 .rate-strip { display: grid; grid-template-columns: 1.15fr 1fr 1fr; overflow: hidden; box-shadow: 6rpx 6rpx 0 #131b2b; }
 .rate-cell { display: flex; min-width: 0; flex-direction: column; gap: 6rpx; padding: 20rpx 16rpx; border-left: 3rpx solid #131b2b; }
@@ -84,8 +86,11 @@
 .activity-meal .activity-stamp { background: #fff0a6; }
 .activity-nap .activity-stamp { background: #cbe8ff; }
 
-.main-action { display: flex; width: calc(100% + 8rpx); height: 112rpx; margin: 28rpx -4rpx 0; align-items: center; justify-content: center; gap: 20rpx; border: 4rpx solid #131b2b; border-radius: 16rpx; background: #2f6bff; box-shadow: 8rpx 8rpx 0 #131b2b; color: #fff; font-weight: 900; box-sizing: border-box; }
+.main-action-wrap { width: 100%; margin-top: 28rpx; }
+.main-action { display: flex; width: 100%; min-width: 100%; max-width: none; height: 116rpx; margin: 0; padding: 0 24rpx; align-items: center; justify-content: center; gap: 20rpx; border: 4rpx solid #131b2b; border-radius: 16rpx; background: #2f6bff; box-shadow: 8rpx 8rpx 0 #131b2b; color: #fff; font-weight: 900; box-sizing: border-box; }
 .main-action.is-running { background: #ff6259; }
+.main-action--pressed { background: #2458d8; box-shadow: 3rpx 3rpx 0 #131b2b; transform: translate(5rpx, 5rpx); }
+.main-action.is-running.main-action--pressed { background: #e84f48; }
 .main-action-icon { display: flex; width: 56rpx; height: 56rpx; flex: 0 0 56rpx; align-items: center; justify-content: center; border: 4rpx solid currentColor; border-radius: 50%; box-sizing: border-box; }
 .main-action-icon text { margin-left: 3rpx; font-size: 27rpx; line-height: 1; }
 .main-action.is-running .main-action-icon text { margin-left: 0; font-size: 23rpx; }

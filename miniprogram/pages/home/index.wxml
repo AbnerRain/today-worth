@@ -15,7 +15,7 @@
 
   <view class="profile-bar">
     <view class="profile-copy"><text class="profile-name">{{profileMeta.alias}}的时间单价</text><text class="profile-detail">{{profileMeta.detail}}</text></view>
-    <button class="settings-button" aria-label="打开工资设置" bindtap="openSettings"><text class="settings-icon" aria-hidden="true">⚙</text><text class="settings-label">工资设置</text></button>
+    <button class="settings-button" aria-label="打开工资设置" bindtap="openSettings" hover-class="settings-button--pressed" hover-start-time="0" hover-stay-time="100"><text class="settings-icon" aria-hidden="true">⚙</text><text class="settings-label">工资设置</text></button>
   </view>
 
   <view class="rate-strip comic-card">
@@ -63,9 +63,11 @@
     </button>
   </view>
 
-  <button class="main-action {{running ? 'is-running' : ''}}" bindtap="toggleTimer">
-    <view class="main-action-icon"><text>{{running ? '■' : '▶'}}</text></view><text class="main-action-label">{{running ? activity.stopText : '开始' + activity.fullLabel}}</text>
-  </button>
+  <view class="main-action-wrap">
+    <button class="main-action {{running ? 'is-running' : ''}}" bindtap="toggleTimer" hover-class="main-action--pressed" hover-start-time="0" hover-stay-time="80">
+      <view class="main-action-icon"><text>{{running ? '■' : '▶'}}</text></view><text class="main-action-label">{{running ? activity.stopText : '开始' + activity.fullLabel}}</text>
+    </button>
+  </view>
 
   <view class="section-heading"><text class="section-title">带薪愿望单</text><text class="section-note">{{goalNote}}</text></view>
   <view class="goal-card comic-card">
