@@ -28,14 +28,14 @@ const activityModes = {
     ]
   },
   meal: {
-    label: "带薪用膳",
-    shortLabel: "用膳",
+    label: "带薪吃饭",
+    shortLabel: "吃饭",
     stamp: "饭",
     hint: "午饭不是暂停，是带薪补给",
     meterLabel: "饭点计价器 // DINING",
-    idleState: "用膳模式待开饭",
+    idleState: "吃饭模式待开饭",
     idleLine: "选好今天的带薪菜单，开饭后每一口都开始计价。",
-    runningState: "正在带薪用膳",
+    runningState: "正在带薪吃饭",
     stopAction: "吃饱收工",
     doneState: "本次已光盘",
     doneLine: (money) => `这顿饭入账 ${formatMoney(money)}，午休终于有了回报。`,
