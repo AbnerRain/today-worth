@@ -38,10 +38,18 @@
 .scene-nap { background: #eef7ff; }
 .mascot-stage { position: relative; width: 200rpx; height: 200rpx; align-self: end; }
 .activity-sprite { position: absolute; inset: 0; display: block; width: 200rpx; height: 200rpx; overflow: hidden; }
+.activity-frame { position: absolute; inset: 0; overflow: hidden; opacity: 0; animation-timing-function: ease-in-out; animation-iteration-count: infinite; }
 .activity-sprite-sheet { position: absolute; left: 0; top: 0; display: block; width: 400rpx; height: 400rpx; will-change: transform; }
-.scene-toilet .activity-sprite-sheet { animation: toilet-sprite-loop 3.2s steps(1,end) infinite; }
-.scene-meal .activity-sprite-sheet { animation: meal-sprite-loop 2.6s steps(1,end) infinite; }
-.scene-nap .activity-sprite-sheet { animation: nap-sprite-loop 4s steps(1,end) infinite; }
+.sprite-frame-two .activity-sprite-sheet { transform: translate(-200rpx,0); }
+.sprite-frame-three .activity-sprite-sheet { transform: translate(0,-200rpx); }
+.sprite-frame-four .activity-sprite-sheet { transform: translate(-200rpx,-200rpx); }
+.sprite-frame-one { animation-name: sprite-fade-one; }
+.sprite-frame-two { animation-name: sprite-fade-two; }
+.sprite-frame-three { animation-name: sprite-fade-three; }
+.sprite-frame-four { animation-name: sprite-fade-four; }
+.scene-toilet .activity-frame { animation-duration: 1.8s; }
+.scene-meal .activity-frame { animation-duration: 1.4s; }
+.scene-nap .activity-frame { animation-duration: 2.4s; }
 .scene-copy { display: flex; min-width: 0; padding: 10rpx 0; flex-direction: column; align-items: flex-start; }
 .scene-badge { padding: 7rpx 12rpx; border: 3rpx solid #131b2b; border-radius: 7rpx; background: #131b2b; color: #fff; font-size: 18rpx; font-weight: 900; }
 .scene-money { max-width: 100%; margin: 8rpx 0 4rpx; color: #2f6bff; font-size: 43rpx; font-weight: 900; line-height: 1.12; animation: money-tick 1s steps(2,end) infinite; }
@@ -202,9 +210,10 @@
 .close-button { background: #fff; color: #131b2b; }
 
 @keyframes reward-fall { 0% { opacity: 0; transform: translate3d(0,-80rpx,0) rotate(0deg) scale(var(--reward-scale)); } 7% { opacity: 1; } 92% { opacity: 1; } 100% { opacity: .35; transform: translate3d(var(--reward-drift),calc(100vh + 260rpx),0) rotate(var(--reward-spin)) scale(var(--reward-scale)); } }
-@keyframes toilet-sprite-loop { 0%, 24% { transform: translate(0,0); } 25%, 49% { transform: translate(-200rpx,0); } 50%, 74% { transform: translate(0,-200rpx); } 75%, 100% { transform: translate(-200rpx,-200rpx); } }
-@keyframes meal-sprite-loop { 0%, 24% { transform: translate(0,0); } 25%, 49% { transform: translate(-200rpx,0); } 50%, 74% { transform: translate(0,-200rpx); } 75%, 100% { transform: translate(-200rpx,-200rpx); } }
-@keyframes nap-sprite-loop { 0%, 29% { transform: translate(0,0); } 30%, 49% { transform: translate(-200rpx,0); } 50%, 69% { transform: translate(0,-200rpx); } 70%, 100% { transform: translate(-200rpx,-200rpx); } }
+@keyframes sprite-fade-one { 0%,18% { opacity: 1; } 25%,88% { opacity: 0; } 95%,100% { opacity: 1; } }
+@keyframes sprite-fade-two { 0%,18% { opacity: 0; } 25%,43% { opacity: 1; } 50%,100% { opacity: 0; } }
+@keyframes sprite-fade-three { 0%,43% { opacity: 0; } 50%,68% { opacity: 1; } 75%,100% { opacity: 0; } }
+@keyframes sprite-fade-four { 0%,68% { opacity: 0; } 75%,93% { opacity: 1; } 100% { opacity: 0; } }
 @keyframes report-lid { 0%,100% { transform: rotate(-4deg) translateY(0); } 42% { transform: rotate(2deg) translateY(8rpx); } 65% { transform: rotate(-1deg) translateY(3rpx); } }
 @keyframes report-water { 0%,100% { transform: scaleX(.78); } 45% { transform: scaleX(1.08); } 70% { transform: scaleX(.9); } }
 @keyframes report-roll { 0%,100% { transform: rotate(-4deg); } 42% { transform: rotate(7deg) translateY(-3rpx); } 66% { transform: rotate(-2deg); } }

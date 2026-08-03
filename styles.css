@@ -810,6 +810,15 @@ textarea:focus-visible {
   overflow: hidden;
 }
 
+.activity-frame {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  opacity: 0;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+
 .activity-sprite-sheet {
   position: absolute;
   left: 0;
@@ -821,16 +830,25 @@ textarea:focus-visible {
   will-change: transform;
 }
 
-.scene-toilet .activity-sprite-sheet {
-  animation: scene-toilet-sprite 3.2s steps(1, end) infinite;
+.sprite-frame-two .activity-sprite-sheet {
+  transform: translate(-50%, 0);
 }
 
-.scene-meal .activity-sprite-sheet {
-  animation: scene-meal-sprite 2.6s steps(1, end) infinite;
+.sprite-frame-three .activity-sprite-sheet {
+  transform: translate(0, -50%);
 }
 
-.scene-nap .activity-sprite-sheet {
-  animation: scene-nap-sprite 4s steps(1, end) infinite;
+.sprite-frame-four .activity-sprite-sheet {
+  transform: translate(-50%, -50%);
+}
+
+.sprite-frame-one { animation-name: sprite-fade-one; }
+.sprite-frame-two { animation-name: sprite-fade-two; }
+.sprite-frame-three { animation-name: sprite-fade-three; }
+.sprite-frame-four { animation-name: sprite-fade-four; }
+.scene-toilet .activity-frame { animation-duration: 1.8s; }
+.scene-meal .activity-frame { animation-duration: 1.4s; }
+.scene-nap .activity-frame { animation-duration: 2.4s; }
 }
 
 .scene-copy {
@@ -4367,6 +4385,7 @@ dialog[open] .report-illustration-nap .nap-moon {
   }
 }
 
-@keyframes scene-toilet-sprite { 0%, 24% { transform: translate(0,0); } 25%, 49% { transform: translate(-50%,0); } 50%, 74% { transform: translate(0,-50%); } 75%, 100% { transform: translate(-50%,-50%); } }
-@keyframes scene-meal-sprite { 0%, 24% { transform: translate(0,0); } 25%, 49% { transform: translate(-50%,0); } 50%, 74% { transform: translate(0,-50%); } 75%, 100% { transform: translate(-50%,-50%); } }
-@keyframes scene-nap-sprite { 0%, 29% { transform: translate(0,0); } 30%, 49% { transform: translate(-50%,0); } 50%, 69% { transform: translate(0,-50%); } 70%, 100% { transform: translate(-50%,-50%); } }
+@keyframes sprite-fade-one { 0%,18% { opacity: 1; } 25%,88% { opacity: 0; } 95%,100% { opacity: 1; } }
+@keyframes sprite-fade-two { 0%,18% { opacity: 0; } 25%,43% { opacity: 1; } 50%,100% { opacity: 0; } }
+@keyframes sprite-fade-three { 0%,43% { opacity: 0; } 50%,68% { opacity: 1; } 75%,100% { opacity: 0; } }
+@keyframes sprite-fade-four { 0%,68% { opacity: 0; } 75%,93% { opacity: 1; } 100% { opacity: 0; } }

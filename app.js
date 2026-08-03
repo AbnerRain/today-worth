@@ -467,7 +467,7 @@ const nodes = {
   heroModeLabel: document.querySelector("#heroModeLabel"),
   liveDot: document.querySelector("#liveDot"),
   activityScene: document.querySelector("#activityScene"),
-  activitySpriteSheet: document.querySelector("#activitySpriteSheet"),
+  activitySpriteSheets: document.querySelectorAll(".activity-sprite-sheet"),
   sceneBadge: document.querySelector("#sceneBadge"),
   sceneMoney: document.querySelector("#sceneMoney"),
   sceneLine: document.querySelector("#sceneLine"),
@@ -1223,7 +1223,9 @@ function renderActivityMode() {
   nodes.activityScene.dataset.activity = state.activeActivity;
   nodes.activityScene.classList.remove("scene-toilet", "scene-meal", "scene-nap");
   nodes.activityScene.classList.add(`scene-${state.activeActivity}`);
-  nodes.activitySpriteSheet.src = `./miniprogram/assets/activity-mascots/${state.activeActivity}-sprite-v2.png`;
+  nodes.activitySpriteSheets.forEach((sprite) => {
+    sprite.src = `./miniprogram/assets/activity-mascots/${state.activeActivity}-sprite-v2.png`;
+  });
   nodes.sceneBadge.textContent = `${activity.shortLabel}计价中`;
   nodes.sceneMoney.textContent = "￥0.00";
   nodes.sceneLine.textContent = activity.sceneLine;
