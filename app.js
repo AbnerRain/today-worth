@@ -1224,7 +1224,7 @@ function renderActivityMode() {
   nodes.activityScene.classList.remove("scene-toilet", "scene-meal", "scene-nap");
   nodes.activityScene.classList.add(`scene-${state.activeActivity}`);
   nodes.activitySpriteSheets.forEach((sprite) => {
-    sprite.src = `./miniprogram/assets/activity-mascots/${state.activeActivity}-sprite-v2.png`;
+    sprite.src = `./miniprogram/assets/activity-mascots/${state.activeActivity}-sprite-v3.png`;
   });
   nodes.sceneBadge.textContent = `${activity.shortLabel}计价中`;
   nodes.sceneMoney.textContent = "￥0.00";
