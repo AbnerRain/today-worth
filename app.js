@@ -269,12 +269,6 @@ const ledgerModeText = {
   "waste-money": "浪费"
 };
 
-const baseStats = {
-  week: { count: 19, seconds: 4 * 3600 + 23 * 60, money: 286 },
-  month: { count: 70, seconds: 20 * 3600 + 23 * 60, money: 1288 },
-  career: { count: 512, seconds: 216 * 3600, money: 16237 }
-};
-
 const valueBenchmarks = [
   { price: 0.5, label: "购物袋有着落" },
   { price: 1, label: "打印店单页王" },
@@ -298,6 +292,16 @@ const valueBenchmarks = [
   { price: 15000, label: "电脑换新基金" }
 ];
 
+const goalPresets = [
+  { id: "water", label: "矿泉水", target: 3, mark: "水" },
+  { id: "coffee", label: "冰美式", target: 18, mark: "咖" },
+  { id: "meal", label: "工作餐", target: 25, mark: "饭" },
+  { id: "tea", label: "奶茶自由", target: 35, mark: "茶" },
+  { id: "hotpot", label: "一顿火锅", target: 120, mark: "锅" }
+];
+
+const defaultGoal = { ...goalPresets[1] };
+
 const periodDetailConfig = {
   day: {
     label: "日",
@@ -305,21 +309,15 @@ const periodDetailConfig = {
   },
   week: {
     label: "周",
-    granularity: "按星期汇总",
-    rows: ["周一", "周二", "周三", "周四", "周五", "周六", "周日"],
-    weights: [17, 14, 19, 16, 22, 7, 5]
+    granularity: "按星期汇总"
   },
   month: {
     label: "月",
-    granularity: "按周汇总",
-    rows: ["第 1 周", "第 2 周", "第 3 周", "第 4 周", "本周"],
-    weights: [18, 23, 20, 24, 15]
+    granularity: "按周汇总"
   },
   career: {
     label: "生涯",
-    granularity: "按年度汇总",
-    rows: ["2023", "2024", "2025", "2026"],
-    weights: [12, 24, 31, 33]
+    granularity: "按年度汇总"
   }
 };
 
@@ -414,6 +412,7 @@ const headerTaglines = [
 ];
 
 const defaultProfile = {
+  alias: "",
   salary: 12000,
   workdays: 22,
   hours: 8
@@ -423,6 +422,7 @@ const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)
 
 const state = {
   profile: loadProfile(),
+  goal: loadGoal(),
   ledgerEntries: loadLedgerEntries(),
   sessions: loadSessions(),
   running: false,
@@ -442,10 +442,16 @@ const state = {
 const nodes = {
   phone: document.querySelector(".phone"),
   headerTagline: document.querySelector("#headerTagline"),
+  headerContextCard: document.querySelector("#headerContextCard"),
+  headerContextMark: document.querySelector("#headerContextMark"),
+  headerContextTitle: document.querySelector("#headerContextTitle"),
+  headerContextDetail: document.querySelector("#headerContextDetail"),
   settingsButton: document.querySelector("#settingsButton"),
   settingsDialog: document.querySelector("#settingsDialog"),
   cancelSettings: document.querySelector("#cancelSettings"),
   salaryForm: document.querySelector("#salaryForm"),
+  aliasPreview: document.querySelector("#aliasPreview"),
+  aliasInput: document.querySelector("#aliasInput"),
   salaryInput: document.querySelector("#salaryInput"),
   workdaysInput: document.querySelector("#workdaysInput"),
   hoursInput: document.querySelector("#hoursInput"),
@@ -469,6 +475,19 @@ const nodes = {
   liveEarning: document.querySelector("#liveEarning"),
   ledgerFeedback: document.querySelector("#ledgerFeedback"),
   ledgerGrid: document.querySelector("#ledgerGrid"),
+  goalCard: document.querySelector("#goalCard"),
+  goalStamp: document.querySelector("#goalStamp"),
+  goalTitle: document.querySelector("#goalTitle"),
+  goalCurrent: document.querySelector("#goalCurrent"),
+  goalProgress: document.querySelector("#goalProgress"),
+  goalProgressBar: document.querySelector("#goalProgressBar"),
+  goalStatus: document.querySelector("#goalStatus"),
+  goalOptions: document.querySelector("#goalOptions"),
+  goalDialog: document.querySelector("#goalDialog"),
+  goalForm: document.querySelector("#goalForm"),
+  goalNameInput: document.querySelector("#goalNameInput"),
+  goalAmountInput: document.querySelector("#goalAmountInput"),
+  cancelGoal: document.querySelector("#cancelGoal"),
   ledgerDialog: document.querySelector("#ledgerDialog"),
   ledgerForm: document.querySelector("#ledgerForm"),
   ledgerDialogTitle: document.querySelector("#ledgerDialogTitle"),
@@ -495,6 +514,11 @@ const nodes = {
   todayMood: document.querySelector("#todayMood"),
   todayActivityList: document.querySelector("#todayActivityList"),
   statsBoard: document.querySelector("#statsBoard"),
+  contributionSubtitle: document.querySelector("#contributionSubtitle"),
+  contributionContent: document.querySelector("#contributionContent"),
+  comparisonSubtitle: document.querySelector("#comparisonSubtitle"),
+  comparisonGrid: document.querySelector("#comparisonGrid"),
+  recordsGrid: document.querySelector("#recordsGrid"),
   periodDetailSubtitle: document.querySelector("#periodDetailSubtitle"),
   periodDetails: document.querySelector("#periodDetails"),
   badgesGrid: document.querySelector("#badgesGrid"),
@@ -519,6 +543,7 @@ const nodes = {
   reportTotalDuration: document.querySelector("#reportTotalDuration"),
   reportTotalMoney: document.querySelector("#reportTotalMoney"),
   posterTitle: document.querySelector("#posterTitle"),
+  posterAlias: document.querySelector("#posterAlias"),
   posterDuration: document.querySelector("#posterDuration"),
   posterMoney: document.querySelector("#posterMoney"),
   posterMark: document.querySelector("#posterMark"),
@@ -531,14 +556,13 @@ const nodes = {
 init();
 
 function init() {
-  nodes.salaryInput.value = state.profile.salary;
-  nodes.workdaysInput.value = state.profile.workdays;
-  nodes.hoursInput.value = state.profile.hours;
+  renderSettingsForm();
   nodes.headerTagline.textContent = headerTaglines[state.headerTaglineIndex];
 
   bindEvents();
   renderActivityMode();
   renderRates();
+  renderGoal();
   renderLedger();
   renderToday();
   renderStats();
@@ -547,6 +571,7 @@ function init() {
 
 function bindEvents() {
   nodes.settingsButton.addEventListener("click", () => {
+    renderSettingsForm();
     if (typeof nodes.settingsDialog.showModal === "function") {
       nodes.settingsDialog.showModal();
     }
@@ -556,15 +581,22 @@ function bindEvents() {
     nodes.settingsDialog.close();
   });
 
+  nodes.aliasInput.addEventListener("input", () => {
+    nodes.aliasPreview.textContent = normalizeAlias(nodes.aliasInput.value, state.profile.alias);
+  });
+
   nodes.salaryForm.addEventListener("submit", (event) => {
     event.preventDefault();
     state.profile = {
+      alias: normalizeAlias(nodes.aliasInput.value, state.profile.alias),
       salary: normalizeNumber(nodes.salaryInput.value, defaultProfile.salary),
       workdays: normalizeNumber(nodes.workdaysInput.value, defaultProfile.workdays),
       hours: normalizeNumber(nodes.hoursInput.value, defaultProfile.hours)
     };
     localStorage.setItem("today-worth-profile", JSON.stringify(state.profile));
+    renderSettingsForm();
     renderRates();
+    renderGoalProgress();
     renderToday();
     renderStats();
     nodes.settingsDialog.close();
@@ -579,6 +611,7 @@ function bindEvents() {
       state.activePeriod = button.dataset.period;
       nodes.periodButtons.forEach((item) => item.classList.toggle("active", item === button));
       renderStats();
+      renderHeaderContext();
     });
   });
 
@@ -618,6 +651,36 @@ function bindEvents() {
       rotateHeaderTagline();
       options[nextIndex].focus();
     });
+  });
+
+  nodes.goalOptions.addEventListener("click", (event) => {
+    const button = event.target.closest(".goal-option");
+    if (!button) { return; }
+
+    if (button.dataset.goalId === "custom") {
+      openGoalEditor();
+      return;
+    }
+
+    const preset = goalPresets.find((goal) => goal.id === button.dataset.goalId);
+    if (!preset) { return; }
+    state.goal = { ...preset };
+    saveGoal();
+    renderGoal();
+  });
+
+  nodes.cancelGoal.addEventListener("click", () => {
+    nodes.goalDialog.close();
+  });
+
+  nodes.goalForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const label = nodes.goalNameInput.value.trim().slice(0, 8) || "自定义目标";
+    const target = Math.max(0.5, Number(nodes.goalAmountInput.value) || 50);
+    state.goal = { id: "custom", label, target, mark: "定" };
+    saveGoal();
+    renderGoal();
+    nodes.goalDialog.close();
   });
 
   nodes.mainAction.addEventListener("click", () => {
@@ -698,10 +761,131 @@ function bindEvents() {
 function loadProfile() {
   try {
     const saved = JSON.parse(localStorage.getItem("today-worth-profile"));
-    return { ...defaultProfile, ...saved };
+    const profile = { ...defaultProfile, ...saved };
+    profile.alias = normalizeAlias(saved?.alias);
+    if (!saved?.alias || saved.alias !== profile.alias) {
+      localStorage.setItem("today-worth-profile", JSON.stringify(profile));
+    }
+    return profile;
   } catch {
-    return { ...defaultProfile };
+    const profile = { ...defaultProfile, alias: makeMoyuAlias() };
+    localStorage.setItem("today-worth-profile", JSON.stringify(profile));
+    return profile;
   }
+}
+
+function makeMoyuAlias() {
+  return `摸鱼群众 ${Math.floor(1000 + Math.random() * 9000)}`;
+}
+
+function normalizeAlias(value, fallback = "") {
+  const alias = typeof value === "string" ? value.trim().slice(0, 12) : "";
+  return alias || fallback || makeMoyuAlias();
+}
+
+function renderSettingsForm() {
+  nodes.aliasInput.value = state.profile.alias;
+  nodes.aliasPreview.textContent = state.profile.alias;
+  nodes.salaryInput.value = state.profile.salary;
+  nodes.workdaysInput.value = state.profile.workdays;
+  nodes.hoursInput.value = state.profile.hours;
+}
+
+function loadGoal() {
+  try {
+    const saved = JSON.parse(localStorage.getItem("today-worth-goal"));
+    if (saved?.id === "custom") {
+      const label = typeof saved.label === "string" && saved.label.trim()
+        ? saved.label.trim().slice(0, 8)
+        : "自定义目标";
+      const target = Math.max(0.5, Number(saved.target) || 50);
+      return { id: "custom", label, target, mark: "定" };
+    }
+
+    const preset = goalPresets.find((goal) => goal.id === saved?.id);
+    return preset ? { ...preset } : { ...defaultGoal };
+  } catch {
+    return { ...defaultGoal };
+  }
+}
+
+function saveGoal() {
+  localStorage.setItem("today-worth-goal", JSON.stringify(state.goal));
+}
+
+function openGoalEditor() {
+  nodes.goalNameInput.value = state.goal.id === "custom" ? state.goal.label : "";
+  nodes.goalAmountInput.value = state.goal.id === "custom" ? state.goal.target : 50;
+  if (typeof nodes.goalDialog.showModal === "function") {
+    nodes.goalDialog.showModal();
+  }
+}
+
+function renderGoal() {
+  nodes.goalOptions.innerHTML = `
+    ${goalPresets.map((goal) => `
+      <button
+        class="goal-option${state.goal.id === goal.id ? " active" : ""}"
+        data-goal-id="${goal.id}"
+        type="button"
+        aria-pressed="${state.goal.id === goal.id}"
+      >
+        <span aria-hidden="true">${goal.mark}</span>
+        <strong>${goal.label}</strong>
+        <small>${formatMoney(goal.target)}</small>
+      </button>
+    `).join("")}
+    <button
+      class="goal-option custom${state.goal.id === "custom" ? " active" : ""}"
+      data-goal-id="custom"
+      type="button"
+      aria-pressed="${state.goal.id === "custom"}"
+    >
+      <span aria-hidden="true">定</span>
+      <strong>自定义</strong>
+      <small>${state.goal.id === "custom" ? formatMoney(state.goal.target) : "自己定价"}</small>
+    </button>
+  `;
+  renderGoalProgress();
+}
+
+function renderGoalProgress(liveMoney = 0) {
+  const todayMoney = getTodayTotals().money + Math.max(0, liveMoney);
+  const target = Math.max(0.5, Number(state.goal.target) || defaultGoal.target);
+  const percentage = Math.min(100, Math.round((todayMoney / target) * 100));
+  const remaining = Math.max(0, target - todayMoney);
+  const isComplete = remaining < 0.005;
+
+  nodes.goalCard.dataset.complete = String(isComplete);
+  nodes.goalCard.dataset.goal = state.goal.id;
+  nodes.goalStamp.textContent = state.goal.mark || "定";
+  nodes.goalTitle.textContent = state.goal.label;
+  nodes.goalCurrent.textContent = `${formatMoney(todayMoney)} / ${formatMoney(target)}`;
+  nodes.goalProgressBar.style.width = `${percentage}%`;
+  nodes.goalProgress.setAttribute("aria-valuenow", String(percentage));
+  nodes.goalProgress.setAttribute(
+    "aria-label",
+    `${state.goal.label}目标，已完成${percentage}%`
+  );
+
+  if (isComplete) {
+    const surplus = Math.max(0, todayMoney - target);
+    nodes.goalStatus.textContent = surplus >= 0.01
+      ? `今天的${state.goal.label}由老板买单，还多薅了 ${formatMoney(surplus)}。`
+      : `恭喜，今天的${state.goal.label}由老板买单。`;
+    return;
+  }
+
+  if (todayMoney < 0.01) {
+    nodes.goalStatus.textContent = `开始一次带薪活动，向${state.goal.label}发起冲击。`;
+    return;
+  }
+
+  const secondRate = getRates().second;
+  const remainingSeconds = secondRate > 0 ? Math.ceil(remaining / secondRate) : 0;
+  nodes.goalStatus.textContent = secondRate > 0
+    ? `还差 ${formatMoney(remaining)}，再带薪 ${formatDuration(remainingSeconds)} 即可拿下。`
+    : `还差 ${formatMoney(remaining)}，继续积累带薪收益即可拿下。`;
 }
 
 function loadSessions() {
@@ -1095,6 +1279,7 @@ function stopSession() {
   setActivityPickerDisabled(false);
 
   renderToday();
+  renderGoal();
   renderStats();
   renderBadges();
   renderReport(session, newlyUnlocked);
@@ -1165,6 +1350,7 @@ function tick() {
   const money = seconds * getRates().second;
   nodes.timer.textContent = formatClock(seconds);
   nodes.liveEarning.textContent = formatMoney(money);
+  renderGoalProgress(money);
   nodes.liveLine.textContent = activity.encouragements[
     Math.floor(seconds / 5) % activity.encouragements.length
   ];
@@ -1173,6 +1359,7 @@ function tick() {
 function switchTab(tab) {
   nodes.phone.dataset.activeTab = tab;
   rotateHeaderTagline();
+  renderHeaderContext();
   nodes.tabButtons.forEach((button) => {
     const isActive = button.dataset.tab === tab;
     button.classList.toggle("active", isActive);
@@ -1186,6 +1373,36 @@ function switchTab(tab) {
     screen.classList.toggle("active", screen.id === `${tab}Screen`);
   });
   nodes.contentScroll.scrollTop = 0;
+}
+
+function renderHeaderContext() {
+  const activeTab = nodes.phone.dataset.activeTab;
+
+  if (activeTab === "stats") {
+    const periodLabels = {
+      day: "今日账本",
+      week: "本周账本",
+      month: "本月账本",
+      career: "生涯总账"
+    };
+    nodes.headerContextMark.textContent = "账";
+    nodes.headerContextTitle.textContent = "数据档案";
+    nodes.headerContextDetail.textContent = periodLabels[state.activePeriod];
+    nodes.headerContextCard.setAttribute("aria-label", `数据档案，${periodLabels[state.activePeriod]}`);
+    return;
+  }
+
+  if (activeTab === "badges") {
+    const progress = getAchievementProgress();
+    const unlockedCount = progress.filter((badge) => badge.unlocked).length;
+    nodes.headerContextMark.textContent = "章";
+    nodes.headerContextTitle.textContent = "荣誉在编";
+    nodes.headerContextDetail.textContent = `${unlockedCount}/${progress.length} 已解锁`;
+    nodes.headerContextCard.setAttribute(
+      "aria-label",
+      `荣誉在编，已解锁${unlockedCount}枚，共${progress.length}枚`
+    );
+  }
 }
 
 function rotateHeaderTagline() {
@@ -1302,14 +1519,8 @@ function renderToday() {
 }
 
 function renderStats() {
-  const today = getTodayTotals();
-  const stats = {
-    day: today,
-    week: combineStats(baseStats.week, today),
-    month: combineStats(baseStats.month, today),
-    career: combineStats(baseStats.career, today)
-  };
-  const current = stats[state.activePeriod];
+  const currentSessions = getPeriodSessions(state.activePeriod);
+  const current = aggregateSessions(currentSessions);
   const verdict = makeVerdict(current.money);
   const labels = {
     day: "今天",
@@ -1338,15 +1549,285 @@ function renderStats() {
     </article>
   `;
 
-  renderPeriodDetails(current);
+  renderContribution(currentSessions, current);
+  renderComparison();
+  renderPeriodDetails(currentSessions);
+  renderPersonalRecords();
 }
 
-function combineStats(base, addition) {
-  return {
-    count: base.count + addition.count,
-    seconds: base.seconds + addition.seconds,
-    money: base.money + addition.money
+function aggregateSessions(sessions) {
+  return sessions.reduce(
+    (totals, session) => {
+      totals.count += 1;
+      totals.seconds += session.seconds;
+      totals.money += session.money;
+      return totals;
+    },
+    { count: 0, seconds: 0, money: 0 }
+  );
+}
+
+function getPeriodRange(period, offset = 0, now = new Date()) {
+  if (period === "career") {
+    return { start: null, end: null };
+  }
+
+  if (period === "day") {
+    const start = new Date(now.getFullYear(), now.getMonth(), now.getDate() + offset);
+    const end = new Date(start.getFullYear(), start.getMonth(), start.getDate() + 1);
+    return { start, end };
+  }
+
+  if (period === "week") {
+    const mondayOffset = (now.getDay() + 6) % 7;
+    const start = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate() - mondayOffset + offset * 7
+    );
+    const end = new Date(start.getFullYear(), start.getMonth(), start.getDate() + 7);
+    return { start, end };
+  }
+
+  const start = new Date(now.getFullYear(), now.getMonth() + offset, 1);
+  const end = new Date(start.getFullYear(), start.getMonth() + 1, 1);
+  return { start, end };
+}
+
+function getPeriodSessions(period, offset = 0) {
+  if (period === "career") {
+    return [...state.sessions];
+  }
+
+  const { start, end } = getPeriodRange(period, offset);
+  return state.sessions.filter((session) => session.at >= start && session.at < end);
+}
+
+function getYearSessions(yearOffset = 0) {
+  const year = new Date().getFullYear() + yearOffset;
+  const start = new Date(year, 0, 1);
+  const end = new Date(year + 1, 0, 1);
+  return state.sessions.filter((session) => session.at >= start && session.at < end);
+}
+
+function getActivityTotalsForSessions(sessions) {
+  const totals = Object.fromEntries(
+    Object.keys(activityModes).map((activity) => [
+      activity,
+      { count: 0, seconds: 0, money: 0 }
+    ])
+  );
+
+  sessions.forEach((session) => {
+    const activity = activityModes[session.activity] ? session.activity : "toilet";
+    totals[activity].count += 1;
+    totals[activity].seconds += session.seconds;
+    totals[activity].money += session.money;
+  });
+
+  return totals;
+}
+
+function renderContribution(sessions, total) {
+  const periodLabels = { day: "今日", week: "本周", month: "本月", career: "生涯" };
+  nodes.contributionSubtitle.textContent = `${periodLabels[state.activePeriod]} · 三类贡献`;
+
+  if (!sessions.length) {
+    nodes.contributionContent.innerHTML = `
+      <div class="timeline-empty" role="status">
+        当前周期还没有记录，完成一次计时后会出现贡献占比。
+      </div>
+    `;
+    return;
+  }
+
+  const activityTotals = getActivityTotalsForSessions(sessions);
+  const basis = total.money > 0 ? "money" : total.seconds > 0 ? "seconds" : "count";
+  const basisTotal = Object.values(activityTotals).reduce((sum, item) => sum + item[basis], 0) || 1;
+  const contributions = Object.entries(activityModes).map(([activityKey, activity]) => {
+    const activityTotal = activityTotals[activityKey];
+    return {
+      activityKey,
+      activity,
+      ...activityTotal,
+      percentage: Math.round((activityTotal[basis] / basisTotal) * 100)
+    };
+  });
+
+  nodes.contributionContent.innerHTML = `
+    <div class="contribution-track" aria-label="三类活动收益占比">
+      ${contributions.map((item) => `
+        <span
+          data-activity="${item.activityKey}"
+          style="width: ${item.percentage}%"
+          title="${item.activity.shortLabel} ${item.percentage}%"
+        ></span>
+      `).join("")}
+    </div>
+    <div class="contribution-list">
+      ${contributions.map((item) => `
+        <article class="contribution-row" data-activity="${item.activityKey}">
+          <span class="contribution-stamp" aria-hidden="true">${item.activity.stamp}</span>
+          <div>
+            <strong>${item.activity.shortLabel}</strong>
+            <small>${item.count} 次 · ${formatDuration(item.seconds)}</small>
+          </div>
+          <div class="contribution-value">
+            <strong>${item.percentage}%</strong>
+            <small>${formatMoney(item.money)}</small>
+          </div>
+        </article>
+      `).join("")}
+    </div>
+  `;
+}
+
+function getComparisonData() {
+  const labels = {
+    day: "今天对昨天",
+    week: "本周对上周",
+    month: "本月对上月",
+    career: "今年对去年"
   };
+  const currentSessions = state.activePeriod === "career"
+    ? getYearSessions(0)
+    : getPeriodSessions(state.activePeriod, 0);
+  const previousSessions = state.activePeriod === "career"
+    ? getYearSessions(-1)
+    : getPeriodSessions(state.activePeriod, -1);
+
+  return {
+    label: labels[state.activePeriod],
+    current: aggregateSessions(currentSessions),
+    previous: aggregateSessions(previousSessions)
+  };
+}
+
+function makeTrend(current, previous) {
+  const difference = current - previous;
+  if (current === 0 && previous === 0) {
+    return { difference, direction: "flat", rate: "暂无变化" };
+  }
+  if (previous === 0) {
+    return { difference, direction: "up", rate: "新开张" };
+  }
+
+  const percentage = Math.round((Math.abs(difference) / previous) * 100);
+  return {
+    difference,
+    direction: difference > 0 ? "up" : difference < 0 ? "down" : "flat",
+    rate: difference > 0 ? `↑ ${percentage}%` : difference < 0 ? `↓ ${percentage}%` : "持平"
+  };
+}
+
+function formatTrendDifference(metric, difference) {
+  const sign = difference > 0 ? "+" : difference < 0 ? "−" : "";
+  const absolute = Math.abs(difference);
+  if (metric === "seconds") {
+    return `${sign}${formatDuration(absolute)}`;
+  }
+  if (metric === "money") {
+    return `${sign}${formatMoney(absolute)}`;
+  }
+  return `${sign}${Math.round(absolute)}次`;
+}
+
+function renderComparison() {
+  const comparison = getComparisonData();
+  const metrics = [
+    { key: "count", label: "次数" },
+    { key: "seconds", label: "带薪时长" },
+    { key: "money", label: "收益" }
+  ];
+
+  nodes.comparisonSubtitle.textContent = comparison.label;
+  nodes.comparisonGrid.innerHTML = metrics.map((metric) => {
+    const trend = makeTrend(comparison.current[metric.key], comparison.previous[metric.key]);
+    return `
+      <article class="comparison-item ${trend.direction}">
+        <span class="trend-chip">${trend.rate}</span>
+        <strong>${formatTrendDifference(metric.key, trend.difference)}</strong>
+        <small>${metric.label}</small>
+      </article>
+    `;
+  }).join("");
+}
+
+function renderPersonalRecords() {
+  if (!state.sessions.length) {
+    nodes.recordsGrid.innerHTML = `
+      <div class="timeline-empty records-empty" role="status">
+        还没有个人纪录。第一笔完成后，这里会开始记住你的高光时刻。
+      </div>
+    `;
+    return;
+  }
+
+  const longest = state.sessions.reduce(
+    (record, session) => session.seconds > record.seconds ? session : record,
+    state.sessions[0]
+  );
+  const richest = state.sessions.reduce(
+    (record, session) => session.money > record.money ? session : record,
+    state.sessions[0]
+  );
+  const dayTotals = new Map();
+  state.sessions.forEach((session) => {
+    const dayKey = getDateKey(session.at);
+    const current = dayTotals.get(dayKey) || { money: 0, seconds: 0, count: 0 };
+    current.money += session.money;
+    current.seconds += session.seconds;
+    current.count += 1;
+    dayTotals.set(dayKey, current);
+  });
+  const bestDay = [...dayTotals.entries()].reduce(
+    (record, entry) => entry[1].money > record[1].money ? entry : record
+  );
+  const dayKeys = [...dayTotals.keys()].sort();
+  const longestStreak = getLongestDayStreak(dayKeys);
+  const [year, month, day] = bestDay[0].split("-").map(Number);
+  const bestDayLabel = new Date(year, month - 1, day).toLocaleDateString("zh-CN", {
+    month: "numeric",
+    day: "numeric"
+  });
+
+  const records = [
+    {
+      mark: "久",
+      title: "坐得最久",
+      value: formatDuration(longest.seconds),
+      detail: `${getActivityMode(longest.activity).shortLabel} · 单次纪录`
+    },
+    {
+      mark: "￥",
+      title: "单笔之王",
+      value: formatMoney(richest.money),
+      detail: `${getActivityMode(richest.activity).shortLabel} · 最高收益`
+    },
+    {
+      mark: "日",
+      title: "最高产的一天",
+      value: formatMoney(bestDay[1].money),
+      detail: `${bestDayLabel} · ${bestDay[1].count} 次`
+    },
+    {
+      mark: "连",
+      title: "在编天数",
+      value: `${dayKeys.length}天`,
+      detail: `最长连续 ${longestStreak} 天`
+    }
+  ];
+
+  nodes.recordsGrid.innerHTML = records.map((record) => `
+    <article class="record-item">
+      <span class="record-mark" aria-hidden="true">${record.mark}</span>
+      <div>
+        <small>${record.title}</small>
+        <strong>${record.value}</strong>
+        <span>${record.detail}</span>
+      </div>
+    </article>
+  `).join("");
 }
 
 function makeVerdict(money) {
@@ -1379,46 +1860,35 @@ function makeVerdict(money) {
   };
 }
 
-function renderPeriodDetails(total) {
+function renderPeriodDetails(sessions) {
   const config = periodDetailConfig[state.activePeriod];
-  const rows = state.activePeriod === "day"
-    ? getTodaySessions().map((session, index) => ({
-        label: session.at instanceof Date
-          ? session.at.toLocaleTimeString("zh-CN", {
-              hour: "2-digit",
-              minute: "2-digit",
-              hour12: false
-            })
-          : `第 ${index + 1} 笔`,
-        count: 1,
-        seconds: session.seconds,
-        money: session.money,
-        activity: session.activity || "toilet"
-      }))
-    : makeAggregateRows(total, config);
+  const rows = makePeriodRows(sessions, state.activePeriod);
 
   nodes.periodDetailSubtitle.textContent = `${config.label} · ${config.granularity}`;
-  if (!rows.length) {
+  if (!sessions.length) {
+    const emptyLabels = { day: "今天", week: "本周", month: "本月", career: "生涯" };
     nodes.periodDetails.innerHTML = `
       <div class="timeline-empty" role="status">
-        今天暂无记录，完成一次计时后会自动入账。
+        ${emptyLabels[state.activePeriod]}暂无记录，完成一次计时后会自动入账。
       </div>
     `;
     return;
   }
 
-  const maxMoney = Math.max(...rows.map((row) => row.money), 1);
+  const maxValue = Math.max(...rows.map((row) => row.money || row.seconds), 1);
   nodes.periodDetails.innerHTML = rows
-    .map((row, index) => {
+    .map((row) => {
       const duration = formatDuration(row.seconds);
       const detail = state.activePeriod === "day"
         ? `${getActivityMode(row.activity).shortLabel} · ${duration}`
         : `${row.count} 次 · ${duration}`;
-      const width = Math.max(8, Math.round((row.money / maxMoney) * 100));
+      const width = row.count === 0
+        ? 0
+        : Math.max(8, Math.round(((row.money || row.seconds) / maxValue) * 100));
 
       return `
         <div
-          class="timeline-row"
+          class="timeline-row${row.count === 0 ? " empty-row" : ""}"
           role="listitem"
           aria-label="${row.label}，${row.count}次，${duration}，收益${formatMoney(row.money)}"
         >
@@ -1436,33 +1906,63 @@ function renderPeriodDetails(total) {
     .join("");
 }
 
-function makeAggregateRows(total, config) {
-  const counts = allocateByWeight(total.count, config.weights);
-  const seconds = allocateByWeight(total.seconds, config.weights);
-  const moneyInCents = allocateByWeight(Math.round(total.money * 100), config.weights);
-
-  return config.rows.map((label, index) => ({
-    label,
-    count: counts[index],
-    seconds: seconds[index],
-    money: moneyInCents[index] / 100
-  }));
-}
-
-function allocateByWeight(total, weights) {
-  const weightTotal = weights.reduce((sum, weight) => sum + weight, 0);
-  const rawValues = weights.map((weight) => (total * weight) / weightTotal);
-  const values = rawValues.map((value) => Math.floor(value));
-  const allocated = values.reduce((sum, value) => sum + value, 0);
-  const remainderOrder = rawValues
-    .map((value, index) => ({ index, fraction: value - values[index] }))
-    .sort((a, b) => b.fraction - a.fraction);
-
-  for (let index = 0; index < total - allocated; index += 1) {
-    values[remainderOrder[index % remainderOrder.length].index] += 1;
+function makePeriodRows(sessions, period) {
+  if (period === "day") {
+    return sessions.map((session, index) => ({
+        label: session.at instanceof Date
+          ? session.at.toLocaleTimeString("zh-CN", {
+              hour: "2-digit",
+              minute: "2-digit",
+              hour12: false
+            })
+          : `第 ${index + 1} 笔`,
+        count: 1,
+        seconds: session.seconds,
+        money: session.money,
+        activity: session.activity || "toilet"
+      }));
   }
 
-  return values;
+  if (period === "week") {
+    const labels = ["周一", "周二", "周三", "周四", "周五", "周六", "周日"];
+    const rows = labels.map((label) => ({ label, count: 0, seconds: 0, money: 0 }));
+    sessions.forEach((session) => {
+      const index = (session.at.getDay() + 6) % 7;
+      rows[index].count += 1;
+      rows[index].seconds += session.seconds;
+      rows[index].money += session.money;
+    });
+    return rows;
+  }
+
+  if (period === "month") {
+    const { start, end } = getPeriodRange("month");
+    const numberOfWeeks = Math.ceil((end.getTime() - start.getTime()) / 86400000 / 7);
+    const rows = Array.from({ length: numberOfWeeks }, (_, index) => ({
+      label: `第 ${index + 1} 周`,
+      count: 0,
+      seconds: 0,
+      money: 0
+    }));
+    sessions.forEach((session) => {
+      const index = Math.floor((session.at.getDate() - 1) / 7);
+      rows[index].count += 1;
+      rows[index].seconds += session.seconds;
+      rows[index].money += session.money;
+    });
+    return rows;
+  }
+
+  const rowsByYear = new Map();
+  sessions.forEach((session) => {
+    const year = String(session.at.getFullYear());
+    const row = rowsByYear.get(year) || { label: year, count: 0, seconds: 0, money: 0 };
+    row.count += 1;
+    row.seconds += session.seconds;
+    row.money += session.money;
+    rowsByYear.set(year, row);
+  });
+  return [...rowsByYear.values()].sort((left, right) => Number(left.label) - Number(right.label));
 }
 
 function getAchievementMetrics(activity) {
@@ -1587,6 +2087,7 @@ function renderReport(session, newlyUnlocked = []) {
   nodes.reportSceneTag.textContent = activity.reportTag;
   nodes.reportTitle.textContent = `本次${activity.label}`;
   nodes.posterTitle.textContent = `今日${activity.label}`;
+  nodes.posterAlias.textContent = `摸鱼代号 · ${state.profile.alias}`;
   nodes.shareStatus.textContent = "";
   nodes.reportMoney.textContent = formatMoney(session.money);
   nodes.reportQuote.textContent = message;
@@ -1667,7 +2168,7 @@ function makeShareData(report) {
   const { session, totals, message } = report;
   const activity = getActivityMode(session.activity);
   const text = [
-    `我刚完成一次${activity.label}：`,
+    `摸鱼代号「${state.profile.alias}」刚完成一次${activity.label}：`,
     `本次 ${formatDuration(session.seconds)}，赚了 ${formatMoney(session.money)}。`,
     `今日累计 ${formatDuration(totals.seconds)}，共 ${formatMoney(totals.money)}。`,
     message,
