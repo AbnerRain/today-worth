@@ -26,10 +26,12 @@ Page({
 
   renderBadges() {
     const grouped = store.groupByActivity(store.getSessions());
+    const activityIndexes = {};
     const allBadges = store.achievements.map((badge, index) => {
       const current = grouped[badge.activity][badge.metric];
       const activity = store.activities[badge.activity];
       const unlocked = current >= badge.target;
+      activityIndexes[badge.activity] = (activityIndexes[badge.activity] || 0) + 1;
       return {
         id: `${badge.activity}-${badge.metric}-${badge.target}`,
         index: String(index + 1).padStart(2, "0"),
@@ -37,7 +39,7 @@ Page({
         activityLabel: activity.label,
         stamp: activity.stamp,
         color: activity.color,
-        image: `/assets/achievement-badges/${badge.activity}-${String(index + 1).padStart(2, "0")}.png`,
+        image: `/assets/achievement-badges/${badge.activity}-${String(activityIndexes[badge.activity]).padStart(2, "0")}.png`,
         title: badge.title,
         desc: badge.desc,
         unlocked,
