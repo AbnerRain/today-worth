@@ -111,20 +111,6 @@
 .goal-chip.is-active { background: #ffdc3f; }
 .goal-custom { background: #e8f0ff; }
 
-.work-ledger-card { padding: 22rpx; }
-.ledger-feedback { display: block; min-height: 48rpx; margin-bottom: 16rpx; padding: 16rpx 18rpx; border: 3rpx solid #131b2b; border-radius: 12rpx; background: #fff8ca; color: #39445a; font-size: 22rpx; font-weight: 800; line-height: 1.45; box-sizing: border-box; }
-.work-ledger-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 14rpx; }
-.work-ledger-item { display: grid; width: 100%; min-width: 0; min-height: 122rpx; margin: 0; padding: 16rpx 14rpx; grid-template-columns: 50rpx minmax(0,1fr); align-items: center; gap: 12rpx; border: 3rpx solid #131b2b; border-radius: 12rpx; background: #fff; color: #131b2b; text-align: left; box-shadow: 4rpx 4rpx 0 #131b2b; box-sizing: border-box; }
-.work-ledger-item:nth-child(1) { background: #edfff7; }
-.work-ledger-item:nth-child(2) { background: #fffadc; }
-.work-ledger-item:nth-child(3) { background: #eef7ff; }
-.work-ledger-item:nth-child(4) { background: #ffd9d5; }
-.work-ledger-item--pressed { box-shadow: 1rpx 1rpx 0 #131b2b; transform: translate(3rpx, 3rpx); }
-.work-ledger-stamp { display: flex; width: 48rpx; height: 48rpx; align-items: center; justify-content: center; border: 3rpx solid #131b2b; border-radius: 9rpx; background: #ffdc3f; font-size: 22rpx; font-weight: 900; box-sizing: border-box; }
-.work-ledger-copy { display: flex; min-width: 0; flex-direction: column; gap: 6rpx; }
-.work-ledger-title { overflow: hidden; font-size: 24rpx; font-weight: 900; line-height: 1.1; text-overflow: ellipsis; white-space: nowrap; }
-.work-ledger-detail { overflow: hidden; color: #687186; font-size: 19rpx; font-weight: 800; line-height: 1.2; text-overflow: ellipsis; white-space: nowrap; }
-
 .today-summary { display: grid; grid-template-columns: repeat(3, 1fr); border-bottom: 3rpx solid #131b2b; }
 .today-stat { display: flex; min-width: 0; padding: 4rpx 10rpx 22rpx; flex-direction: column; align-items: center; border-left: 2rpx dashed #aab1bf; }
 .today-stat.is-first { border-left: 0; }

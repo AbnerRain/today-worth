@@ -84,20 +84,6 @@
     </view>
   </view>
 
-  <view class="section-heading"><text class="section-title">职场损耗</text><text class="section-note">通勤、补给、会议和加班</text></view>
-  <view class="work-ledger-card comic-card">
-    <text class="ledger-feedback">{{ledgerFeedback}}</text>
-    <view class="work-ledger-grid">
-      <button wx:for="{{ledgerEntries}}" wx:key="kind" class="work-ledger-item" data-kind="{{item.kind}}" bindtap="openLedgerEditor" hover-class="work-ledger-item--pressed" hover-start-time="0" hover-stay-time="80">
-        <text class="work-ledger-stamp">{{item.stamp}}</text>
-        <view class="work-ledger-copy">
-          <text class="work-ledger-title">{{item.title}}</text>
-          <text class="work-ledger-detail">{{item.summary}}</text>
-        </view>
-      </button>
-    </view>
-  </view>
-
   <view class="section-heading"><text class="section-title">今日{{activity.label}}累计</text><text class="section-note">{{todayNote}}</text></view>
   <view class="today-card comic-card">
     <view class="today-summary">
@@ -128,36 +114,6 @@
     <view class="editor-actions">
       <button class="editor-button editor-secondary" bindtap="closeGoalEditor">取消</button>
       <button class="editor-button editor-primary" bindtap="saveCustomGoal">保存目标</button>
-    </view>
-  </view>
-</view>
-
-<view wx:if="{{showLedgerEditor}}" class="editor-mask" bindtap="closeLedgerEditor">
-  <view class="editor-card comic-card" catchtap="blockBubble">
-    <text class="editor-kicker">{{ledgerEditor.subtitle}}</text>
-    <text class="editor-title">{{ledgerEditor.dialogTitle}}</text>
-    <text class="editor-note">{{ledgerEditor.note}}</text>
-    <label class="editor-field">
-      <text class="editor-label">账单标签</text>
-      <input class="editor-input" value="{{ledgerEditor.title}}" maxlength="8" data-field="title" bindinput="onLedgerInput" placeholder="{{ledgerEditor.titlePlaceholder}}" />
-    </label>
-    <view class="editor-field">
-      <text class="editor-label">记录方式</text>
-      <view class="mode-grid">
-        <button wx:for="{{ledgerModeOptions}}" wx:key="value" class="mode-chip {{ledgerEditor.mode === item.value ? 'is-active' : ''}}" data-mode="{{item.value}}" bindtap="selectLedgerMode">{{item.label}}</button>
-      </view>
-    </view>
-    <label class="editor-field">
-      <text class="editor-label">{{ledgerEditor.modeLabel}}</text>
-      <view class="editor-control"><input class="editor-input" type="digit" value="{{ledgerEditor.value}}" data-field="value" bindinput="onLedgerInput" /><text class="editor-unit">{{ledgerEditor.unit}}</text></view>
-    </label>
-    <label class="editor-field">
-      <text class="editor-label">反馈文案</text>
-      <textarea class="editor-textarea" value="{{ledgerEditor.copy}}" maxlength="80" data-field="copy" bindinput="onLedgerInput" />
-    </label>
-    <view class="editor-actions">
-      <button class="editor-button editor-secondary" bindtap="closeLedgerEditor">取消</button>
-      <button class="editor-button editor-primary" bindtap="saveLedgerEditor">保存账单</button>
     </view>
   </view>
 </view>

@@ -32,11 +32,6 @@ Page({
     goalStatus: "开始一次带薪活动，向冰美式发起冲击。",
     customGoalDraft: { label: "自定义目标", target: 50 },
     showGoalEditor: false,
-    ledgerEntries: [],
-    ledgerFeedback: "挣的、花的、浪费的都在这里单独记清楚。",
-    showLedgerEditor: false,
-    ledgerEditor: {},
-    ledgerModeOptions: [],
     showReport: false,
     report: {},
     rewardItems: [],
@@ -86,8 +81,7 @@ Page({
         detail: `月薪 ${store.formatMoney(profile.salary)} · ${profile.workdays}天 × ${profile.hours}小时`
       },
       showOnboarding,
-      goal: store.getGoal(),
-      ledgerEntries: this.makeLedgerRows(store.getLedgerEntries())
+      goal: store.getGoal()
     });
     this.renderTotals();
   },
@@ -288,78 +282,6 @@ Page({
 
   closeGoalEditor() {
     this.setData({ showGoalEditor: false });
-  },
-
-  makeLedgerRows(entries) {
-    return entries.map((entry) => Object.assign({}, entry, {
-      summary: store.formatLedgerSummary(entry)
-    }));
-  },
-
-  openLedgerEditor(event) {
-    const kind = event.currentTarget.dataset.kind;
-    const entry = store.getLedgerEntries().find((item) => item.kind === kind);
-    const module = store.ledgerModules[kind] || store.ledgerModules.commute;
-    if (!entry || !module) return;
-    this.setData({
-      showLedgerEditor: true,
-      ledgerFeedback: entry.copy,
-      ledgerModeOptions: module.modes,
-      ledgerEditor: Object.assign({}, entry, {
-        dialogTitle: module.dialogTitle,
-        subtitle: module.subtitle,
-        note: module.note,
-        titlePlaceholder: module.titlePlaceholder,
-        modeLabel: store.getLedgerModeConfig(entry.kind, entry.mode).label,
-        unit: store.getLedgerModeConfig(entry.kind, entry.mode).unit
-      })
-    });
-  },
-
-  onLedgerInput(event) {
-    const field = event.currentTarget.dataset.field;
-    const ledgerEditor = Object.assign({}, this.data.ledgerEditor, {
-      [field]: event.detail.value
-    });
-    this.setData({ ledgerEditor });
-  },
-
-  selectLedgerMode(event) {
-    const mode = event.currentTarget.dataset.mode;
-    const current = this.data.ledgerEditor;
-    const modeConfig = store.getLedgerModeConfig(current.kind, mode);
-    this.setData({
-      ledgerEditor: Object.assign({}, current, {
-        mode,
-        value: modeConfig.defaultValue,
-        copy: modeConfig.defaultCopy,
-        modeLabel: modeConfig.label,
-        unit: modeConfig.unit
-      }),
-      ledgerFeedback: modeConfig.defaultCopy
-    });
-  },
-
-  saveLedgerEditor() {
-    const editor = this.data.ledgerEditor;
-    const entries = store.saveLedgerEntry({
-      kind: editor.kind,
-      title: editor.title,
-      mode: editor.mode,
-      value: editor.value,
-      copy: editor.copy
-    });
-    const saved = entries.find((entry) => entry.kind === editor.kind);
-    this.setData({
-      showLedgerEditor: false,
-      ledgerEntries: this.makeLedgerRows(entries),
-      ledgerFeedback: saved ? saved.copy : this.data.ledgerFeedback
-    });
-    wx.showToast({ title: "账单已更新", icon: "success" });
-  },
-
-  closeLedgerEditor() {
-    this.setData({ showLedgerEditor: false });
   },
 
   openSettings() {
