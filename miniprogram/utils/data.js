@@ -1,6 +1,7 @@
 const PROFILE_KEY = "time-payslip-profile-v1";
 const SESSIONS_KEY = "time-payslip-sessions-v1";
 const GOAL_KEY = "time-payslip-goal-v1";
+const LEDGER_KEY = "time-payslip-ledger-v1";
 
 const copyLines = {
   home: [
@@ -192,6 +193,84 @@ const activities = {
 
 const activityList = Object.keys(activities).map((key) => activities[key]);
 
+const defaultLedgerEntries = [
+  {
+    kind: "commute",
+    stamp: "路",
+    title: "通勤",
+    mode: "spend-minutes",
+    value: 45,
+    copy: "今天通勤 45 分钟，路上的精神折旧先记账。"
+  },
+  {
+    kind: "coffee",
+    stamp: "咖",
+    title: "咖啡",
+    mode: "spend-minutes",
+    value: 14,
+    copy: "咖啡时间已入账，清醒也是生产资料。"
+  },
+  {
+    kind: "meeting",
+    stamp: "会",
+    title: "会议",
+    mode: "waste-money",
+    value: 42.6,
+    copy: "会议价值已换算，沉默也有时薪。"
+  },
+  {
+    kind: "overtime",
+    stamp: "加",
+    title: "加班",
+    mode: "spend-minutes",
+    value: 60,
+    copy: "今天加班 60 分钟，被拉长的夜晚先记一笔。"
+  }
+];
+
+const ledgerModules = {
+  commute: {
+    dialogTitle: "通勤账单",
+    subtitle: "路上的时间和成本",
+    note: "把路上被吃掉的时间或交通成本单独记下来。",
+    titlePlaceholder: "例：地铁",
+    modes: [
+      { value: "spend-minutes", label: "通勤耗时", unit: "分钟", defaultValue: 45, defaultCopy: "今天通勤 45 分钟，路上的精神折旧先记账。", summaryPrefix: "路上" },
+      { value: "waste-money", label: "通勤成本", unit: "元", defaultValue: 18.2, defaultCopy: "今天通勤花掉 18.2 元，路上的成本先记一笔。", summaryPrefix: "通勤" }
+    ]
+  },
+  coffee: {
+    dialogTitle: "饮品账单",
+    subtitle: "清醒和休息都算数",
+    note: "记录一杯饮品换来的清醒，或者顺手摸掉的几分钟。",
+    titlePlaceholder: "例：冰美式",
+    modes: [
+      { value: "spend-minutes", label: "休息时长", unit: "分钟", defaultValue: 14, defaultCopy: "休息时间已入账，清醒也是生产资料。", summaryPrefix: "休息" },
+      { value: "waste-money", label: "支出金额", unit: "元", defaultValue: 18, defaultCopy: "这次饮品花掉 18 元，清醒成本先摊销。", summaryPrefix: "饮品" }
+    ]
+  },
+  meeting: {
+    dialogTitle: "会议账单",
+    subtitle: "沉默也有时薪",
+    note: "记录会议消耗的时间，或者把会议损耗直接折算成金额。",
+    titlePlaceholder: "例：周会",
+    modes: [
+      { value: "waste-money", label: "会议损耗", unit: "元", defaultValue: 42.6, defaultCopy: "会议价值已换算，沉默也有时薪。", summaryPrefix: "浪费" },
+      { value: "spend-minutes", label: "会议时长", unit: "分钟", defaultValue: 30, defaultCopy: "会议占用 30 分钟，时间成本已经入账。", summaryPrefix: "会议" }
+    ]
+  },
+  overtime: {
+    dialogTitle: "加班账单",
+    subtitle: "时间和收入分开记",
+    note: "记录额外工作的时长，或者这段加班实际多赚的钱。",
+    titlePlaceholder: "例：赶版本",
+    modes: [
+      { value: "spend-minutes", label: "加班时长", unit: "分钟", defaultValue: 60, defaultCopy: "今天加班 60 分钟，被拉长的夜晚先记一笔。", summaryPrefix: "加班" },
+      { value: "earn-money", label: "加班收入", unit: "元", defaultValue: 120, defaultCopy: "这段加班多赚 120 元，夜晚终于有点回响。", summaryPrefix: "多赚" }
+    ]
+  }
+};
+
 function pickLine(lines = [], previous = "") {
   if (!lines.length) return "";
   if (lines.length === 1) return lines[0];
@@ -279,11 +358,31 @@ function addSession(session) {
 
 function getGoal() {
   const saved = wx.getStorageSync(GOAL_KEY);
+  if (saved && typeof saved === "object") {
+    return normalizeGoal(saved);
+  }
   return goalPresets.find((goal) => goal.id === saved) || goalPresets[1];
 }
 
-function saveGoal(goalId) {
-  wx.setStorageSync(GOAL_KEY, goalId);
+function normalizeGoal(goal = {}) {
+  const preset = goalPresets.find((item) => item.id === goal.id);
+  if (preset) return preset;
+  return {
+    id: "custom",
+    label: String(goal.label || "自定义目标").trim().slice(0, 8) || "自定义目标",
+    target: Math.max(0.5, Number(goal.target) || 50),
+    stamp: String(goal.stamp || "定").trim().slice(0, 2) || "定"
+  };
+}
+
+function saveGoal(goal) {
+  if (typeof goal === "string") {
+    wx.setStorageSync(GOAL_KEY, goal);
+    return getGoal();
+  }
+  const normalized = normalizeGoal(goal);
+  wx.setStorageSync(GOAL_KEY, normalized);
+  return normalized;
 }
 
 function getRates(profile = getProfile()) {
@@ -357,15 +456,69 @@ function formatDuration(totalSeconds) {
   return hours ? `${hours}小时${minutes}分钟` : `${minutes}分钟`;
 }
 
+function normalizeLedgerEntry(entry = {}, fallback = {}) {
+  const kind = fallback.kind || entry.kind || "commute";
+  const module = ledgerModules[kind] || ledgerModules.commute;
+  const mode = module.modes.find((item) => item.value === entry.mode) ? entry.mode : module.modes[0].value;
+  const modeConfig = module.modes.find((item) => item.value === mode);
+  return {
+    kind,
+    stamp: fallback.stamp || entry.stamp || "账",
+    title: String(entry.title || fallback.title || module.dialogTitle).trim().slice(0, 8),
+    mode,
+    value: Math.max(0, Number(entry.value) || modeConfig.defaultValue),
+    copy: String(entry.copy || fallback.copy || modeConfig.defaultCopy).trim().slice(0, 80)
+  };
+}
+
+function getLedgerEntries() {
+  const saved = wx.getStorageSync(LEDGER_KEY);
+  if (!Array.isArray(saved)) return defaultLedgerEntries.map((entry) => normalizeLedgerEntry(entry, entry));
+  return defaultLedgerEntries.map((fallback) => {
+    const current = saved.find((entry) => entry && entry.kind === fallback.kind);
+    return normalizeLedgerEntry(current || fallback, fallback);
+  });
+}
+
+function saveLedgerEntries(entries) {
+  const normalized = defaultLedgerEntries.map((fallback) => {
+    const current = Array.isArray(entries) ? entries.find((entry) => entry && entry.kind === fallback.kind) : null;
+    return normalizeLedgerEntry(current || fallback, fallback);
+  });
+  wx.setStorageSync(LEDGER_KEY, normalized);
+  return normalized;
+}
+
+function saveLedgerEntry(entry) {
+  const entries = getLedgerEntries();
+  return saveLedgerEntries(entries.map((item) => (
+    item.kind === entry.kind ? normalizeLedgerEntry(entry, item) : item
+  )));
+}
+
+function getLedgerModeConfig(kind, mode) {
+  const module = ledgerModules[kind] || ledgerModules.commute;
+  return module.modes.find((item) => item.value === mode) || module.modes[0];
+}
+
+function formatLedgerSummary(entry) {
+  const modeConfig = getLedgerModeConfig(entry.kind, entry.mode);
+  if (entry.mode === "spend-minutes") return `${modeConfig.summaryPrefix} ${Math.round(entry.value)} 分钟`;
+  return `${modeConfig.summaryPrefix} ${formatMoney(entry.value)}`;
+}
+
 function clearAllData() {
   wx.removeStorageSync(PROFILE_KEY);
   wx.removeStorageSync(SESSIONS_KEY);
   wx.removeStorageSync(GOAL_KEY);
+  wx.removeStorageSync(LEDGER_KEY);
 }
 
 module.exports = {
   activities,
   activityList,
+  ledgerModules,
+  defaultLedgerEntries,
   goalPresets,
   achievements,
   copyLines,
@@ -379,6 +532,7 @@ module.exports = {
   saveSessions,
   addSession,
   getGoal,
+  normalizeGoal,
   saveGoal,
   getRates,
   getDateKey,
@@ -388,5 +542,10 @@ module.exports = {
   formatMoney,
   formatClock,
   formatDuration,
+  getLedgerEntries,
+  saveLedgerEntries,
+  saveLedgerEntry,
+  getLedgerModeConfig,
+  formatLedgerSummary,
   clearAllData
 };
