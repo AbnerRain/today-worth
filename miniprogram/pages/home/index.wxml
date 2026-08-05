@@ -143,7 +143,7 @@
         <label class="onboarding-field"><text class="onboarding-label">你的摸鱼代号</text><input class="onboarding-input" value="{{onboardingProfile.alias}}" maxlength="12" data-field="alias" bindinput="onOnboardingInput" placeholder="例：工位隐士" /></label>
         <label class="onboarding-field"><text class="onboarding-label">每月税前工资</text><view class="onboarding-control"><input class="onboarding-input" type="digit" value="{{onboardingProfile.salary}}" data-field="salary" bindinput="onOnboardingInput" /><text class="onboarding-unit">元</text></view></label>
         <view class="onboarding-field-row">
-          <label class="onboarding-field onboarding-half"><text class="onboarding-label">每月工作</text><view class="onboarding-control"><input class="onboarding-input" type="number" value="{{onboardingProfile.workdays}}" data-field="workdays" bindinput="onOnboardingInput" /><text class="onboarding-unit">天</text></view></label>
+          <label class="onboarding-field onboarding-half"><text class="onboarding-label">每月工作</text><view class="onboarding-control"><input class="onboarding-input" type="digit" value="{{onboardingProfile.workdays}}" data-field="workdays" bindinput="onOnboardingInput" /><text class="onboarding-unit">天</text></view></label>
           <label class="onboarding-field onboarding-half"><text class="onboarding-label">每天工作</text><view class="onboarding-control"><input class="onboarding-input" type="digit" value="{{onboardingProfile.hours}}" data-field="hours" bindinput="onOnboardingInput" /><text class="onboarding-unit">小时</text></view></label>
         </view>
       </view>

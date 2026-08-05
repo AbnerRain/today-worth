@@ -8,7 +8,7 @@
   <view class="form-card comic-card">
     <label class="field"><text class="field-label">摸鱼代号</text><input class="field-input" value="{{profile.alias}}" maxlength="12" data-field="alias" bindinput="onInput" placeholder="例：工位隐士" /></label>
     <label class="field"><text class="field-label">月薪</text><view class="field-control"><input class="field-input" type="digit" value="{{profile.salary}}" data-field="salary" bindinput="onInput" /><text class="field-unit">元</text></view></label>
-    <label class="field"><text class="field-label">每月工作天数</text><view class="field-control"><input class="field-input" type="number" value="{{profile.workdays}}" data-field="workdays" bindinput="onInput" /><text class="field-unit">天</text></view></label>
+    <label class="field"><text class="field-label">每月工作天数</text><view class="field-control"><input class="field-input" type="digit" value="{{profile.workdays}}" data-field="workdays" bindinput="onInput" /><text class="field-unit">天</text></view></label>
     <label class="field is-last"><text class="field-label">每天工作时长</text><view class="field-control"><input class="field-input" type="digit" value="{{profile.hours}}" data-field="hours" bindinput="onInput" /><text class="field-unit">小时</text></view></label>
   </view>
   <button class="save-button" bindtap="save">保存工资条</button>
