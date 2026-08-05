@@ -7,21 +7,24 @@ const moneyBillAssets = [
   "/assets/money-rain/off-10.png"
 ];
 
+const initialActivities = store.getActivities();
+const initialActivity = initialActivities.toilet;
+
 Page({
   data: {
-    activities: store.activityList,
+    activities: store.getActivityList(),
     activeActivity: "toilet",
-    activity: store.activities.toilet,
+    activity: initialActivity,
     tagline: store.copyLines.home[0],
-    activityHint: store.activities.toilet.hint,
-    sceneLine: store.activities.toilet.sceneLine,
+    activityHint: initialActivity.hint,
+    sceneLine: initialActivity.sceneLine,
     onboardingSubtitle: store.copyLines.onboarding[0],
     goalNote: store.copyLines.goals.notes[0],
     todayNote: store.copyLines.todayNotes[0],
     running: false,
     timerText: "00:00:00",
     liveMoney: "￥0.00",
-    liveLine: store.activities.toilet.idle,
+    liveLine: initialActivity.idle,
     rates: {},
     today: { count: 0, secondsText: "0秒", moneyText: "￥0.00" },
     todayActivities: [],
@@ -36,7 +39,9 @@ Page({
     profileMeta: {},
     showOnboarding: false,
     onboardingProfile: store.defaultProfile,
-    onboardingPreview: {}
+    onboardingPreview: {},
+    showCustomActivityEditor: false,
+    customActivityDraft: { label: "", stamp: "" }
   },
 
   onLoad() {
@@ -64,11 +69,17 @@ Page({
     const profile = store.getProfile();
     const rates = store.getRates(profile);
     const showOnboarding = !store.hasProfile();
+    const activities = store.getActivities();
+    const activeActivity = activities[this.data.activeActivity] ? this.data.activeActivity : "toilet";
+    const activity = activities[activeActivity];
     this.profile = profile;
     this.rates = rates;
     if (showOnboarding) wx.hideTabBar({ animation: false });
     else wx.showTabBar({ animation: false });
     this.setData({
+      activities: store.getActivityList(),
+      activeActivity,
+      activity,
       rates: {
         hour: store.formatMoney(rates.hour),
         minute: store.formatMoney(rates.minute),
@@ -79,13 +90,16 @@ Page({
         detail: `月薪 ${store.formatMoney(profile.salary)} · ${profile.workdays}天 × ${profile.hours}小时`
       },
       showOnboarding,
-      goal: store.getGoal()
+      goal: store.getGoal(),
+      activityHint: activity.hint,
+      sceneLine: activity.sceneLine,
+      liveLine: this.data.running ? this.data.liveLine : activity.idle
     });
     this.renderTotals();
   },
 
   refreshCopy() {
-    const activity = this.data.activity || store.activities.toilet;
+    const activity = this.data.activity || store.getActivities().toilet;
     this.setData({
       tagline: store.pickLine(store.copyLines.home, this.data.tagline),
       activityHint: store.pickLine(activity.hints, this.data.activityHint),
@@ -99,8 +113,12 @@ Page({
   selectActivity(event) {
     if (this.data.running) return;
     const key = event.currentTarget.dataset.key;
-    const activity = store.activities[key];
+    const activity = store.getActivities()[key];
     if (!activity) return;
+    if (key === "custom" && !activity.configured) {
+      this.openCustomActivityEditor();
+      return;
+    }
     this.setData({
       activeActivity: key,
       activity,
@@ -109,6 +127,53 @@ Page({
       liveLine: store.pickLine(activity.idleLines, this.data.liveLine)
     });
     this.renderTotals();
+  },
+
+  editActivity(event) {
+    if (this.data.running) return;
+    if (event.currentTarget.dataset.key === "custom") this.openCustomActivityEditor();
+  },
+
+  openCustomActivityEditor() {
+    if (this.data.running) return;
+    const activity = store.getCustomActivity();
+    this.setData({
+      showCustomActivityEditor: true,
+      customActivityDraft: {
+        label: activity.configured ? activity.label : "",
+        stamp: activity.configured ? activity.stamp : ""
+      }
+    });
+  },
+
+  closeCustomActivityEditor() {
+    this.setData({ showCustomActivityEditor: false });
+  },
+
+  onCustomActivityInput(event) {
+    const field = event.currentTarget.dataset.field;
+    this.setData({ [`customActivityDraft.${field}`]: event.detail.value });
+  },
+
+  saveCustomActivity() {
+    const label = String(this.data.customActivityDraft.label || "").trim().slice(0, 6);
+    const stamp = String(this.data.customActivityDraft.stamp || "").trim().slice(0, 2);
+    if (!label) {
+      wx.showToast({ title: "先填行为名称", icon: "none" });
+      return;
+    }
+    const activity = store.saveCustomActivity({ label, stamp });
+    this.setData({
+      showCustomActivityEditor: false,
+      activities: store.getActivityList(),
+      activeActivity: "custom",
+      activity,
+      activityHint: store.pickLine(activity.hints, this.data.activityHint),
+      sceneLine: store.pickLine(activity.sceneLines, this.data.sceneLine),
+      liveLine: store.pickLine(activity.idleLines, this.data.liveLine)
+    });
+    this.renderTotals();
+    wx.showToast({ title: "行为已保存", icon: "success" });
   },
 
   toggleTimer() {
@@ -180,7 +245,7 @@ Page({
         reportKicker: activity.reportKicker,
         reportTag: activity.reportTag,
         reportSfx: activity.reportSfx,
-        mascot: `/assets/activity-mascots/${activity.key}-report-v1.png`,
+        mascot: activity.reportMascot || `/assets/activity-mascots/${activity.key}-report-v1.png`,
         reportCaption,
         todayCountText: `${todayActivityTotal.count}次`,
         todaySecondsText: store.formatDuration(todayActivityTotal.seconds)
@@ -198,11 +263,11 @@ Page({
     const todayKey = store.getDateKey();
     const sessions = store.getSessions().filter((session) => store.getDateKey(session.at) === todayKey);
     const grouped = store.groupByActivity(sessions);
-    const active = grouped[this.data.activeActivity];
+    const active = grouped[this.data.activeActivity] || grouped.toilet;
     const total = store.aggregate(sessions);
     const goal = this.data.goal;
     const progress = Math.min(100, Math.round((total.money / goal.target) * 100));
-    const todayActivities = store.activityList.map((activity) => ({
+    const todayActivities = store.getActivityList().map((activity) => ({
       key: activity.key,
       label: activity.label,
       stamp: activity.stamp,

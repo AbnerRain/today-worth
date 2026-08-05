@@ -58,7 +58,7 @@
 
   <view class="section-heading"><text class="section-title">带薪模式</text><text class="section-note">{{activityHint}}</text></view>
   <view class="activity-grid">
-    <button wx:for="{{activities}}" wx:key="key" class="activity-button activity-{{item.key}} {{activeActivity === item.key ? 'is-active' : ''}}" data-key="{{item.key}}" disabled="{{running}}" bindtap="selectActivity">
+    <button wx:for="{{activities}}" wx:key="key" class="activity-button activity-{{item.key}} {{activeActivity === item.key ? 'is-active' : ''}}" data-key="{{item.key}}" disabled="{{running}}" bindtap="selectActivity" bindlongpress="editActivity">
       <text class="activity-stamp">{{item.stamp}}</text><text class="activity-label">{{item.label}}</text><text class="activity-english">{{item.english}}</text>
     </button>
   </view>
@@ -94,6 +94,26 @@
       <view wx:for="{{todayActivities}}" wx:key="key" class="ledger-row {{item.active ? 'is-active' : ''}}">
         <text class="ledger-stamp">{{item.stamp}}</text><view class="ledger-copy"><text class="ledger-title">{{item.label}}</text><text class="ledger-detail">{{item.countText}}</text></view><view class="ledger-copy ledger-values"><text class="ledger-title">{{item.secondsText}}</text><text class="ledger-detail">{{item.moneyText}}</text></view>
       </view>
+    </view>
+  </view>
+</view>
+
+<view wx:if="{{showCustomActivityEditor}}" class="editor-mask" bindtap="closeCustomActivityEditor" catchtouchmove="blockBubble">
+  <view class="editor-card comic-card" catchtap="blockBubble">
+    <text class="editor-kicker">带薪模式 · 自定义</text>
+    <text class="editor-title">设置一个摸鱼行为</text>
+    <text class="editor-note">保存后，这个按钮会像拉屎、吃饭、睡觉一样计时、结算和进统计。</text>
+    <label class="editor-field">
+      <text class="editor-label">行为名称</text>
+      <input class="editor-input" value="{{customActivityDraft.label}}" maxlength="6" data-field="label" bindinput="onCustomActivityInput" placeholder="例：抽烟" confirm-type="done" />
+    </label>
+    <label class="editor-field">
+      <text class="editor-label">按钮标记</text>
+      <view class="editor-control"><input class="editor-input" value="{{customActivityDraft.stamp}}" maxlength="2" data-field="stamp" bindinput="onCustomActivityInput" placeholder="例：烟" confirm-type="done" /><text class="editor-unit">可空</text></view>
+    </label>
+    <view class="editor-actions">
+      <button class="editor-button editor-secondary" bindtap="closeCustomActivityEditor">取消</button>
+      <button class="editor-button editor-primary" bindtap="saveCustomActivity">保存行为</button>
     </view>
   </view>
 </view>

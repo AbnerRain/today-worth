@@ -61,7 +61,8 @@ Page({
     const sessions = store.getPeriodSessions(store.getSessions(), this.data.activePeriod);
     const total = store.aggregate(sessions);
     const grouped = store.groupByActivity(sessions);
-    const contributions = store.activityList.map((activity) => {
+    const activities = store.getActivities();
+    const contributions = store.getActivityList().map((activity) => {
       const item = grouped[activity.key];
       return {
         key: activity.key,
@@ -85,7 +86,7 @@ Page({
       contributions,
       emptyText: store.pickLine(store.copyLines.emptyStats, this.data.emptyText),
       records: sessions.slice().sort((a, b) => b.at - a.at).slice(0, 8).map((session) => {
-        const activity = store.activities[session.activity] || store.activities.toilet;
+        const activity = activities[session.activity] || activities.toilet;
         const date = new Date(session.at);
         return {
           id: `${session.at}-${session.activity}`,

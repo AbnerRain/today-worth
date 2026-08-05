@@ -25,6 +25,7 @@
 .meter.activity-toilet { background: #bff5df; }
 .meter.activity-meal { background: #fff0a6; }
 .meter.activity-nap { background: #cbe8ff; }
+.meter.activity-custom { background: #dfe8ff; }
 .meter::after { content: ""; position: absolute; right: -42rpx; bottom: -58rpx; width: 190rpx; height: 190rpx; border: 5rpx solid #131b2b; border-radius: 50%; opacity: .12; }
 .meter-kicker { display: flex; align-items: center; justify-content: space-between; color: #31405a; font-size: 20rpx; font-weight: 900; }
 .live-dot { width: 18rpx; height: 18rpx; border: 3rpx solid #131b2b; border-radius: 50%; background: #fff; }
@@ -39,6 +40,7 @@
 .scene-toilet { background: #edfff7; }
 .scene-meal { background: #fffadc; }
 .scene-nap { background: #eef7ff; }
+.scene-custom { background: #f4f7ff; }
 .mascot-stage { position: relative; width: 200rpx; height: 200rpx; align-self: end; }
 .activity-figure { position: absolute; inset: 0; display: block; width: 200rpx; height: 200rpx; overflow: hidden; }
 .activity-mascot-image { position: absolute; inset: 0; z-index: 1; display: block; width: 200rpx; height: 200rpx; }
@@ -70,21 +72,24 @@
 .scene-money { max-width: 100%; margin: 8rpx 0 4rpx; color: #2f6bff; font-size: 43rpx; font-weight: 900; line-height: 1.12; animation: money-tick 1s steps(2,end) infinite; }
 .scene-line { color: #4f596d; font-size: 20rpx; font-weight: 700; line-height: 1.45; }
 
-.activity-grid { display: flex; gap: 16rpx; }
-.activity-button { display: flex; flex: 1 1 0; width: 0; min-width: 0; height: 156rpx; margin: 0; padding: 16rpx 10rpx; flex-direction: column; align-items: center; justify-content: center; border: 3rpx solid #131b2b; border-radius: 14rpx; background: #fff; box-shadow: 5rpx 5rpx 0 #131b2b; color: #131b2b; line-height: 1.15; box-sizing: border-box; }
+.activity-grid { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 12rpx; }
+.activity-button { display: flex; width: 100%; min-width: 0; height: 148rpx; margin: 0; padding: 14rpx 6rpx; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; border: 3rpx solid #131b2b; border-radius: 14rpx; background: #fff; box-shadow: 5rpx 5rpx 0 #131b2b; color: #131b2b; line-height: 1.15; box-sizing: border-box; }
 .activity-button.activity-toilet { background: #edfff7; }
 .activity-button.activity-meal { background: #fffadc; }
 .activity-button.activity-nap { background: #eef7ff; }
+.activity-button.activity-custom { background: #f4f0ff; }
 .activity-button.activity-toilet.is-active { background: #8be5bd; }
 .activity-button.activity-meal.is-active { background: #ffdc3f; }
 .activity-button.activity-nap.is-active { background: #9bd4ff; }
+.activity-button.activity-custom.is-active { background: #d9ccff; }
 .activity-button.is-active { transform: translate(3rpx, 3rpx); box-shadow: 2rpx 2rpx 0 #131b2b; }
-.activity-label { margin: 8rpx 0 4rpx; font-size: 28rpx; font-weight: 900; }
-.activity-english { color: #687186; font-size: 17rpx; font-weight: 800; }
-.activity-stamp { display: flex; min-width: 48rpx; height: 42rpx; padding: 0 8rpx; align-items: center; justify-content: center; border: 3rpx solid #131b2b; border-radius: 7rpx; background: #f5f7fb; font-size: 20rpx; font-weight: 900; }
+.activity-label { max-width: 100%; margin: 8rpx 0 4rpx; overflow: hidden; font-size: 24rpx; font-weight: 900; text-overflow: ellipsis; white-space: nowrap; }
+.activity-english { max-width: 100%; overflow: hidden; color: #687186; font-size: 15rpx; font-weight: 800; text-overflow: ellipsis; white-space: nowrap; }
+.activity-stamp { display: flex; min-width: 44rpx; height: 40rpx; padding: 0 7rpx; align-items: center; justify-content: center; border: 3rpx solid #131b2b; border-radius: 7rpx; background: #f5f7fb; font-size: 19rpx; font-weight: 900; }
 .activity-toilet .activity-stamp { background: #bff5df; }
 .activity-meal .activity-stamp { background: #fff0a6; }
 .activity-nap .activity-stamp { background: #cbe8ff; }
+.activity-custom .activity-stamp { background: #e8f0ff; }
 
 .main-action-wrap { width: 100%; margin-top: 28rpx; }
 .main-action { display: flex; width: 100%; min-width: 100%; max-width: none; height: 116rpx; margin: 0; padding: 0 24rpx; align-items: center; justify-content: center; gap: 20rpx; border: 4rpx solid #131b2b; border-radius: 16rpx; background: #2f6bff; box-shadow: 8rpx 8rpx 0 #131b2b; color: #fff; font-weight: 900; box-sizing: border-box; }
@@ -202,16 +207,20 @@
 .report-scene.report-meal::after { background: #fff0a6; }
 .report-scene.report-nap { background-color: #eef7ff; }
 .report-scene.report-nap::after { background: #cbe8ff; }
+.report-scene.report-custom { background-color: #f4f7ff; }
+.report-scene.report-custom::after { background: #d9ccff; }
 .report-scene-mascot { position: absolute; left: 10rpx; bottom: 4rpx; z-index: 2; width: 238rpx; height: 238rpx; }
 .report-scene-ticket { position: absolute; right: 20rpx; top: 78rpx; z-index: 3; display: flex; width: 194rpx; min-height: 104rpx; padding: 13rpx 14rpx; flex-direction: column; align-items: flex-start; justify-content: center; border: 4rpx solid #131b2b; border-radius: 10rpx; background: #fff; box-shadow: 6rpx 6rpx 0 #131b2b; box-sizing: border-box; transform: rotate(1deg); }
 .report-ticket-label { color: #687186; font-size: 18rpx; font-weight: 800; }
 .report-ticket-money { margin: 5rpx 0; color: #2f6bff; font-family: "SF Mono", Menlo, monospace; font-size: 31rpx; font-weight: 900; line-height: 1; white-space: nowrap; }
 .report-meal .report-ticket-money { color: #da3a32; }
 .report-nap .report-ticket-money { color: #166999; }
+.report-custom .report-ticket-money { color: #5941c9; }
 .report-ticket-time { color: #4f596d; font-size: 18rpx; font-weight: 700; }
 .report-scene-tag { position: absolute; left: 20rpx; top: 18rpx; z-index: 5; padding: 8rpx 12rpx; border: 3rpx solid #131b2b; border-radius: 7rpx; background: #ffdc3f; color: #131b2b; font-size: 20rpx; font-weight: 900; transform: rotate(-4deg); }
 .report-meal .report-scene-tag { background: #fff; transform: rotate(3deg); }
 .report-nap .report-scene-tag { background: #bff5df; }
+.report-custom .report-scene-tag { background: #e8f0ff; }
 .report-stamp { position: absolute; right: 20rpx; top: 18rpx; z-index: 6; display: flex; width: 82rpx; height: 82rpx; align-items: center; justify-content: center; border: 5rpx solid #131b2b; border-radius: 50%; background: #fff; font-size: 30rpx; font-weight: 900; transform: rotate(-7deg); }
 .report-pop { position: absolute; right: 28rpx; bottom: 22rpx; z-index: 6; padding: 8rpx 12rpx; border: 3rpx solid #131b2b; background: #ff6259; color: #fff; font-size: 22rpx; font-weight: 900; transform: rotate(7deg); }
 .report-title, .report-money, .report-quote { display: block; }

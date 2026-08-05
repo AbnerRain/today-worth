@@ -1,6 +1,7 @@
 const PROFILE_KEY = "time-payslip-profile-v1";
 const SESSIONS_KEY = "time-payslip-sessions-v1";
 const GOAL_KEY = "time-payslip-goal-v1";
+const CUSTOM_ACTIVITY_KEY = "time-payslip-custom-activity-v1";
 const LEGACY_LEDGER_KEY = "time-payslip-ledger-v1";
 
 const copyLines = {
@@ -193,6 +194,88 @@ const activities = {
 
 const activityList = Object.keys(activities).map((key) => activities[key]);
 
+function normalizeCustomActivityConfig(config = {}) {
+  const label = String(config.label || "").trim().slice(0, 6);
+  const stamp = String(config.stamp || "").trim().slice(0, 2) || label.slice(0, 1) || "+";
+  return { label, stamp };
+}
+
+function makeCustomActivity(config = {}) {
+  const normalized = normalizeCustomActivityConfig(config);
+  const configured = Boolean(normalized.label);
+  const label = configured ? normalized.label : "自定义";
+  const fullLabel = configured ? `带薪${label}` : "自定义摸鱼";
+  const stamp = configured ? normalized.stamp : "+";
+  const idleLine = configured
+    ? `点击开始，把${label}时间记进账本。`
+    : "先设置一个摸鱼行为，再开始计时。";
+  const runningLine = configured
+    ? `老板正在为你的${label}时间买单。`
+    : "设置好行为后，这段摸鱼也能入账。";
+  const sceneLine = configured
+    ? `${label}进行中，时间工资同步入账。`
+    : "先定一个项目，再让时间开始赚钱。";
+  const doneLine = configured
+    ? `${label}结算完成，这笔带薪时间已入账。`
+    : "自定义摸鱼已结算。";
+
+  return {
+    key: "custom",
+    label,
+    fullLabel,
+    stamp,
+    english: "CUSTOM",
+    configured,
+    hint: configured ? `${label}也算带薪时间` : "把你的摸鱼项目也记进账本",
+    idle: idleLine,
+    running: runningLine,
+    sceneLine,
+    hints: configured
+      ? [`${label}也算带薪时间`, "自己的摸鱼项目，自己记账", "固定项目之外，也要明算账", "这段松弛也有单价"]
+      : ["把你的摸鱼项目也记进账本", "先设置一个专属摸鱼行为", "固定项目之外，留一个自定义槽位", "你的摸鱼项目，也可以按秒结算"],
+    idleLines: [idleLine, "准备好了吗？这段时间也要按秒计价。", "自定义项目就位，时间工资马上开工。", "把这段松弛写进今天的账。"],
+    runningLines: [runningLine, "别急着回工位，这段收入正在增长。", "自定义模式运行中，账本正在更新。", "每一秒都算数，这段摸鱼也不例外。"],
+    sceneLines: [sceneLine, "工位可以暂时不动，账本继续往前走。", "这段自定义项目，正在变成可见收入。", "专属摸鱼时间，正在认真结算。"],
+    doneLines: [doneLine, "项目收工，余额也顺手长了一点。", "这次摸鱼有名有姓，已经记进账本。", "自定义项目完成，今天的收入多了一笔。"],
+    reportQuotes: [doneLine, "这笔收入来自你的专属摸鱼项目。", "固定项目之外，也有一段清楚的时间工资。", "摸鱼可以自定义，入账不能含糊。"],
+    reportCaptions: [`${label}这段时间已经记进今天的工资条。`, "自定义项目已结算，统计页会同步记录。", "专属摸鱼项目完成，带薪时间没有白过。"],
+    mascot: "/assets/activity-mascots/toilet-base-v1.png",
+    reportMascot: "/assets/activity-mascots/toilet-report-v1.png",
+    coin: "/assets/reward-rain/toilet-coin.png",
+    stopText: "结算",
+    done: doneLine,
+    reportKicker: configured ? `${label}项目 · 已结算` : "自定义项目 · 已结算",
+    reportTag: "摸鱼到账",
+    reportSfx: "DONE!",
+    reportCaption: configured ? `${label}这段时间已经记进今天的工资条。` : "自定义项目已结算。",
+    color: "#d9ccff"
+  };
+}
+
+function getCustomActivity() {
+  const saved = wx.getStorageSync(CUSTOM_ACTIVITY_KEY);
+  return makeCustomActivity(saved && typeof saved === "object" ? saved : {});
+}
+
+function saveCustomActivity(config) {
+  const normalized = normalizeCustomActivityConfig(config);
+  if (!normalized.label) {
+    wx.removeStorageSync(CUSTOM_ACTIVITY_KEY);
+    return getCustomActivity();
+  }
+  wx.setStorageSync(CUSTOM_ACTIVITY_KEY, normalized);
+  return getCustomActivity();
+}
+
+function getActivities() {
+  return Object.assign({}, activities, { custom: getCustomActivity() });
+}
+
+function getActivityList() {
+  const allActivities = getActivities();
+  return ["toilet", "meal", "nap", "custom"].map((key) => allActivities[key]);
+}
+
 function pickLine(lines = [], previous = "") {
   if (!lines.length) return "";
   if (lines.length === 1) return lines[0];
@@ -328,11 +411,12 @@ function aggregate(sessions) {
 
 function groupByActivity(sessions) {
   const grouped = {};
-  activityList.forEach((activity) => {
+  const allActivities = getActivities();
+  getActivityList().forEach((activity) => {
     grouped[activity.key] = { count: 0, seconds: 0, money: 0 };
   });
   sessions.forEach((session) => {
-    const key = activities[session.activity] ? session.activity : "toilet";
+    const key = allActivities[session.activity] ? session.activity : "toilet";
     grouped[key].count += 1;
     grouped[key].seconds += Number(session.seconds) || 0;
     grouped[key].money += Number(session.money) || 0;
@@ -377,12 +461,17 @@ function clearAllData() {
   wx.removeStorageSync(PROFILE_KEY);
   wx.removeStorageSync(SESSIONS_KEY);
   wx.removeStorageSync(GOAL_KEY);
+  wx.removeStorageSync(CUSTOM_ACTIVITY_KEY);
   wx.removeStorageSync(LEGACY_LEDGER_KEY);
 }
 
 module.exports = {
   activities,
   activityList,
+  getActivities,
+  getActivityList,
+  getCustomActivity,
+  saveCustomActivity,
   goalPresets,
   achievements,
   copyLines,
