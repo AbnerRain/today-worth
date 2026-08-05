@@ -189,13 +189,16 @@ Page({
   startTimer() {
     this.startedAt = Date.now();
     const activity = this.data.activity;
+    const coinAssets = Array.isArray(activity.coins) && activity.coins.length
+      ? activity.coins
+      : [activity.coin];
     const rewardItems = Array.from({ length: 18 }, (_, index) => {
       const isCoin = index % 3 === 1;
       return {
         id: `${this.startedAt}-${index}`,
         kind: isCoin ? "coin" : "bill",
         src: isCoin
-          ? this.data.activity.coin
+          ? coinAssets[Math.floor(index / 3) % coinAssets.length]
           : moneyBillAssets[index % moneyBillAssets.length]
       };
     });

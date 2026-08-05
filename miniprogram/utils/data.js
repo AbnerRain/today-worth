@@ -243,6 +243,11 @@ function makeCustomActivity(config = {}) {
     mascot: "/assets/activity-mascots/toilet-base-v1.png",
     reportMascot: "/assets/activity-mascots/toilet-report-v1.png",
     coin: "/assets/reward-rain/toilet-coin.png",
+    coins: [
+      "/assets/reward-rain/toilet-coin.png",
+      "/assets/reward-rain/meal-coin.png",
+      "/assets/reward-rain/nap-coin.png"
+    ],
     stopText: "结算",
     done: doneLine,
     reportKicker: configured ? `${label}项目 · 已结算` : "自定义项目 · 已结算",
