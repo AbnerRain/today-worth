@@ -289,12 +289,7 @@ function getGoal() {
 function normalizeGoal(goal = {}) {
   const preset = goalPresets.find((item) => item.id === goal.id);
   if (preset) return preset;
-  return {
-    id: "custom",
-    label: String(goal.label || "自定义目标").trim().slice(0, 8) || "自定义目标",
-    target: Math.max(0.5, Number(goal.target) || 50),
-    stamp: String(goal.stamp || "定").trim().slice(0, 2) || "定"
-  };
+  return goalPresets[1];
 }
 
 function saveGoal(goal) {

@@ -30,8 +30,6 @@ Page({
     goalMoneyText: "￥0.00 / ￥18.00",
     goalProgress: 0,
     goalStatus: "开始一次带薪活动，向冰美式发起冲击。",
-    customGoalDraft: { label: "自定义目标", target: 50 },
-    showGoalEditor: false,
     showReport: false,
     report: {},
     rewardItems: [],
@@ -237,51 +235,11 @@ Page({
 
   selectGoal(event) {
     const goalId = event.currentTarget.dataset.id;
-    if (goalId === "custom") {
-      this.openGoalEditor();
-      return;
-    }
     const goal = store.goalPresets.find((item) => item.id === goalId);
     if (!goal) return;
     const savedGoal = store.saveGoal(goalId);
     this.setData({ goal: savedGoal });
     this.renderTotals();
-  },
-
-  openGoalEditor() {
-    const goal = this.data.goal;
-    this.setData({
-      showGoalEditor: true,
-      customGoalDraft: {
-        label: goal.id === "custom" ? goal.label : "自定义目标",
-        target: goal.id === "custom" ? goal.target : 50
-      }
-    });
-  },
-
-  onGoalInput(event) {
-    const field = event.currentTarget.dataset.field;
-    const customGoalDraft = Object.assign({}, this.data.customGoalDraft, {
-      [field]: event.detail.value
-    });
-    this.setData({ customGoalDraft });
-  },
-
-  saveCustomGoal() {
-    const draft = this.data.customGoalDraft;
-    const goal = store.saveGoal({
-      id: "custom",
-      label: draft.label,
-      target: draft.target,
-      stamp: "定"
-    });
-    this.setData({ goal, showGoalEditor: false });
-    this.renderTotals();
-    wx.showToast({ title: "愿望已更新", icon: "success" });
-  },
-
-  closeGoalEditor() {
-    this.setData({ showGoalEditor: false });
   },
 
   openSettings() {

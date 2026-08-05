@@ -80,7 +80,6 @@
     <text class="goal-status">{{goalStatus}}</text>
     <view class="goal-list">
       <button wx:for="{{goalPresets}}" wx:key="id" class="goal-chip {{goal.id === item.id ? 'is-active' : ''}}" data-id="{{item.id}}" bindtap="selectGoal">{{item.label}}</button>
-      <button class="goal-chip goal-custom {{goal.id === 'custom' ? 'is-active' : ''}}" data-id="custom" bindtap="selectGoal">自定义</button>
     </view>
   </view>
 
@@ -95,25 +94,6 @@
       <view wx:for="{{todayActivities}}" wx:key="key" class="ledger-row {{item.active ? 'is-active' : ''}}">
         <text class="ledger-stamp">{{item.stamp}}</text><view class="ledger-copy"><text class="ledger-title">{{item.label}}</text><text class="ledger-detail">{{item.countText}}</text></view><view class="ledger-copy ledger-values"><text class="ledger-title">{{item.secondsText}}</text><text class="ledger-detail">{{item.moneyText}}</text></view>
       </view>
-    </view>
-  </view>
-</view>
-
-<view wx:if="{{showGoalEditor}}" class="editor-mask" bindtap="closeGoalEditor">
-  <view class="editor-card comic-card" catchtap="blockBubble">
-    <text class="editor-kicker">带薪愿望单</text>
-    <text class="editor-title">自定义老板赞助目标</text>
-    <label class="editor-field">
-      <text class="editor-label">目标名称</text>
-      <input class="editor-input" value="{{customGoalDraft.label}}" maxlength="8" data-field="label" bindinput="onGoalInput" placeholder="例：奶茶" />
-    </label>
-    <label class="editor-field">
-      <text class="editor-label">目标金额</text>
-      <view class="editor-control"><input class="editor-input" type="digit" value="{{customGoalDraft.target}}" data-field="target" bindinput="onGoalInput" /><text class="editor-unit">元</text></view>
-    </label>
-    <view class="editor-actions">
-      <button class="editor-button editor-secondary" bindtap="closeGoalEditor">取消</button>
-      <button class="editor-button editor-primary" bindtap="saveCustomGoal">保存目标</button>
     </view>
   </view>
 </view>

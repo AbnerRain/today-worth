@@ -109,7 +109,6 @@
 .goal-list { display: grid; width: 100%; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 12rpx; }
 .goal-chip { display: flex; width: 100%; min-width: 0; max-width: 100%; height: 58rpx; margin: 0; padding: 0 6rpx; align-items: center; justify-content: center; overflow: hidden; border: 3rpx solid #131b2b; border-radius: 10rpx; background: #fff; color: #131b2b; font-size: 20rpx; font-weight: 800; line-height: 52rpx; text-overflow: ellipsis; white-space: nowrap; box-sizing: border-box; }
 .goal-chip.is-active { background: #ffdc3f; }
-.goal-custom { background: #e8f0ff; }
 
 .today-summary { display: grid; grid-template-columns: repeat(3, 1fr); border-bottom: 3rpx solid #131b2b; }
 .today-stat { display: flex; min-width: 0; padding: 4rpx 10rpx 22rpx; flex-direction: column; align-items: center; border-left: 2rpx dashed #aab1bf; }
