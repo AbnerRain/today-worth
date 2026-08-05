@@ -7,6 +7,14 @@ const moneyBillAssets = [
   "/assets/money-rain/off-10.png"
 ];
 
+const shareCardImages = {
+  toilet: "../../assets/share-cards/toilet.jpg",
+  meal: "../../assets/share-cards/meal.jpg",
+  nap: "../../assets/share-cards/nap.jpg",
+  custom: "../../assets/share-cards/custom.jpg",
+  general: "../../assets/share-cards/general.jpg"
+};
+
 const initialActivities = store.getActivities();
 const initialActivity = initialActivities.toilet;
 
@@ -353,12 +361,13 @@ Page({
 
   onShareAppMessage() {
     const report = this.data.report;
+    const activityKey = report.activityKey || this.data.activeActivity;
     return {
       title: report.title
         ? `${report.title}，赚了${report.moneyText}`
         : "摸力全开：算算你上班每分钟值多少钱",
       path: "/pages/home/index?from=share",
-      imageUrl: "/assets/share-card.png"
+      imageUrl: shareCardImages[activityKey] || shareCardImages.general
     };
   }
 });
