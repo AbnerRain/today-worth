@@ -12,7 +12,8 @@
 .field-control { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 14rpx; }
 .field-input { height: 76rpx; padding: 0 18rpx; border: 3rpx solid #131b2b; border-radius: 10rpx; background: #f5f7fb; color: #131b2b; font-size: 28rpx; font-weight: 800; box-sizing: border-box; }
 .field-unit { min-width: 60rpx; font-size: 23rpx; }
-.save-button, .clear-button { width: 100%; height: 92rpx; margin: 30rpx 0 0; border: 4rpx solid #131b2b; border-radius: 14rpx; font-size: 28rpx; font-weight: 900; }
+.save-button, .feedback-button, .clear-button { width: 100%; height: 92rpx; margin: 30rpx 0 0; border: 4rpx solid #131b2b; border-radius: 14rpx; font-size: 28rpx; font-weight: 900; box-sizing: border-box; }
 .save-button { background: #2f6bff; box-shadow: 7rpx 7rpx 0 #131b2b; color: #fff; }
+.feedback-button { margin-top: 22rpx; background: #ffdc3f; box-shadow: 7rpx 7rpx 0 #131b2b; color: #131b2b; }
 .clear-button { margin-top: 22rpx; background: #fff; color: #d83a34; }
 .privacy-note { display: block; padding: 24rpx 24rpx 0; color: #687186; font-size: 21rpx; line-height: 1.6; text-align: center; }

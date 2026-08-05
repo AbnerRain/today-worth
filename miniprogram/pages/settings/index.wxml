@@ -12,6 +12,7 @@
     <label class="field is-last"><text class="field-label">每天工作时长</text><view class="field-control"><input class="field-input" type="digit" value="{{profile.hours}}" data-field="hours" bindinput="onInput" /><text class="field-unit">小时</text></view></label>
   </view>
   <button class="save-button" bindtap="save">保存工资条</button>
+  <button class="feedback-button" open-type="feedback">反馈建议</button>
   <button class="clear-button" bindtap="clearData">清空本机数据</button>
   <text class="privacy-note">{{privacyNote}}</text>
 </view>

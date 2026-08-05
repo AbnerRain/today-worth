@@ -17,16 +17,17 @@
 .contribution-row:last-child { border-bottom: 0; }
 .contribution-stamp { display: flex; width: 58rpx; height: 58rpx; align-items: center; justify-content: center; border: 3rpx solid #131b2b; border-radius: 10rpx; font-size: 20rpx; font-weight: 900; }
 .contribution-copy { display: flex; min-width: 0; flex-direction: column; gap: 8rpx; }
-.contribution-head { display: flex; justify-content: space-between; font-size: 23rpx; font-weight: 900; }
-.contribution-detail { color: #687186; font-size: 19rpx; }
-.contribution-money { font-size: 24rpx; font-weight: 900; }
+.contribution-head { display: flex; min-width: 0; justify-content: space-between; gap: 14rpx; font-size: 23rpx; font-weight: 900; }
+.contribution-head text:first-child { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.contribution-detail { overflow: hidden; color: #687186; font-size: 19rpx; text-overflow: ellipsis; white-space: nowrap; }
+.contribution-money { font-size: 24rpx; font-weight: 900; text-align: right; white-space: nowrap; }
 .bar { height: 14rpx; overflow: hidden; border: 2rpx solid #131b2b; border-radius: 999rpx; background: #edf0f4; }
 .bar-fill { height: 100%; }
 .record-row { display: grid; grid-template-columns: 54rpx 1fr auto; gap: 14rpx; align-items: center; padding: 20rpx 0; border-bottom: 2rpx dashed #bdc5d1; }
 .record-row:last-child { border-bottom: 0; }
 .record-stamp { font-size: 21rpx; font-weight: 900; }
-.record-copy { display: flex; flex-direction: column; gap: 4rpx; }
-.record-title { font-size: 23rpx; font-weight: 900; }
-.record-detail { color: #687186; font-size: 19rpx; }
+.record-copy { display: flex; min-width: 0; flex-direction: column; gap: 4rpx; }
+.record-title { overflow: hidden; font-size: 23rpx; font-weight: 900; text-overflow: ellipsis; white-space: nowrap; }
+.record-detail { overflow: hidden; color: #687186; font-size: 19rpx; text-overflow: ellipsis; white-space: nowrap; }
 .record-values { align-items: flex-end; }
 .empty { padding: 52rpx 20rpx; color: #687186; font-size: 23rpx; text-align: center; }

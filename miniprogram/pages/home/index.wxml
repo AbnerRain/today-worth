@@ -25,7 +25,7 @@
   </view>
 
   <view class="meter comic-card activity-{{activeActivity}}">
-    <view class="meter-kicker"><text>{{activity.english}} MODE</text><text class="live-dot {{running ? 'is-running' : ''}}"></text></view>
+    <view class="meter-kicker"><text>{{activity.modeLabel || activity.english + ' MODE'}}</text><text class="live-dot {{running ? 'is-running' : ''}}"></text></view>
     <text class="meter-state">{{running ? activity.fullLabel + '进行中' : activity.fullLabel + '待开始'}}</text>
     <text class="timer">{{timerText}}</text>
     <view class="earning-ticket"><text class="earning-label">本次已赚</text><text class="earning-value">{{liveMoney}}</text></view>
