@@ -7,7 +7,7 @@
 
   <view class="masthead">
     <view>
-      <text class="eyebrow">OFFICE PAYSLIP · 01</text>
+      <text class="eyebrow">今日时间工资条</text>
       <view class="brand-row"><text class="brand">摸力全开</text><text class="brand-stamp">值</text></view>
       <text class="tagline">{{tagline}}</text>
     </view>
