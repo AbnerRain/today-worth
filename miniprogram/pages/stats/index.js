@@ -2,15 +2,26 @@ const store = require("../../utils/data");
 
 const periodLabels = { day: "今天", week: "本周", month: "本月", career: "全部" };
 const benchmarks = [
-  { price: 0.5, label: "购物袋有着落" },
-  { price: 1, label: "打印店单页王" },
-  { price: 3, label: "矿泉水到手" },
-  { price: 8, label: "蜜雪入账" },
-  { price: 18, label: "咖啡续命局" },
-  { price: 25, label: "工作餐回血" },
+  { price: 0.5, label: "购物袋到账" },
+  { price: 1, label: "打印一张纸" },
+  { price: 2, label: "茶叶蛋到手" },
+  { price: 3, label: "矿泉水回血" },
+  { price: 5, label: "烤肠加餐局" },
+  { price: 8, label: "柠檬水自由" },
+  { price: 12, label: "手抓饼回血" },
+  { price: 18, label: "冰美式续命" },
+  { price: 25, label: "工作餐到账" },
+  { price: 35, label: "奶茶加料局" },
+  { price: 50, label: "电影票半张" },
   { price: 60, label: "双人快餐局" },
+  { price: 88, label: "外卖硬菜局" },
   { price: 120, label: "单人火锅局" },
-  { price: 800, label: "周末酒店一晚" }
+  { price: 150, label: "理发焕新局" },
+  { price: 200, label: "朋友小聚局" },
+  { price: 300, label: "按摩放松局" },
+  { price: 500, label: "演出看台票" },
+  { price: 800, label: "周末酒店一晚" },
+  { price: 1200, label: "短途周边游" }
 ];
 
 Page({
@@ -103,10 +114,10 @@ Page({
   makeVerdict(money) {
     if (money <= 0) return { label: "还没开始薅", detail: "完成一次计时再换算" };
     const matched = benchmarks.slice().reverse().find((item) => money >= item.price);
-    if (!matched) return { label: "硬币正在加载", detail: `距购物袋还差 ${store.formatMoney(0.5 - money)}` };
+    if (!matched) return { label: "硬币正在加载", detail: `距购物袋到账还差 ${store.formatMoney(0.5 - money)}` };
     return {
       label: matched.label,
-      detail: `参考 ${store.formatMoney(matched.price)}，还剩 ${store.formatMoney(money - matched.price)}`
+      detail: `对标 ${store.formatMoney(matched.price)}，结余 ${store.formatMoney(money - matched.price)}`
     };
   },
 
