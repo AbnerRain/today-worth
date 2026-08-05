@@ -8,11 +8,11 @@ const moneyBillAssets = [
 ];
 
 const shareCardImages = {
-  toilet: "../../assets/share-cards/toilet.jpg",
-  meal: "../../assets/share-cards/meal.jpg",
-  nap: "../../assets/share-cards/nap.jpg",
-  custom: "../../assets/share-cards/custom.jpg",
-  general: "../../assets/share-cards/general.jpg"
+  toilet: "assets/share-cards/toilet.jpg",
+  meal: "assets/share-cards/meal.jpg",
+  nap: "assets/share-cards/nap.jpg",
+  custom: "assets/share-cards/custom.jpg",
+  general: "assets/share-cards/general.jpg"
 };
 
 const initialActivities = store.getActivities();
