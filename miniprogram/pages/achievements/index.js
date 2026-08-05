@@ -96,7 +96,8 @@ Page({
   onShareAppMessage() {
     return {
       title: `我的摸鱼履历已解锁 ${this.data.unlockedCount} 枚成就`,
-      path: "/pages/home/index?from=achievement"
+      path: "/pages/home/index?from=achievement",
+      imageUrl: "/assets/share-card.png"
     };
   }
 });

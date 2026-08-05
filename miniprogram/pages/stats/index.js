@@ -124,7 +124,8 @@ Page({
   onShareAppMessage() {
     return {
       title: `我的摸力全开：${this.data.periodLabel}已赚${this.data.summary.moneyText || "￥0.00"}`,
-      path: "/pages/home/index?from=stats"
+      path: "/pages/home/index?from=stats",
+      imageUrl: "/assets/share-card.png"
     };
   }
 });

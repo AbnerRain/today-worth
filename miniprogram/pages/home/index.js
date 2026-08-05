@@ -357,7 +357,8 @@ Page({
       title: report.title
         ? `${report.title}，赚了${report.moneyText}`
         : "摸力全开：算算你上班每分钟值多少钱",
-      path: "/pages/home/index?from=share"
+      path: "/pages/home/index?from=share",
+      imageUrl: "/assets/share-card.png"
     };
   }
 });
