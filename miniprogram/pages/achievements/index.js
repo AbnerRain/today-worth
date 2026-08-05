@@ -1,6 +1,12 @@
 const store = require("../../utils/data");
 const shareImage = require("../../utils/share-image");
 
+const badgeGlyphs = {
+  toilet: ["蹲", "三", "坐", "薪", "五", "金"],
+  meal: ["饭", "添", "嚼", "薪", "十", "富"],
+  nap: ["觉", "睡", "卧", "薪", "十", "梦"]
+};
+
 Page({
   data: {
     filters: [
@@ -45,6 +51,7 @@ Page({
       const activity = store.activities[badge.activity];
       const unlocked = current >= badge.target;
       activityIndexes[badge.activity] = (activityIndexes[badge.activity] || 0) + 1;
+      const activityIndex = activityIndexes[badge.activity];
       return {
         id: `${badge.activity}-${badge.metric}-${badge.target}`,
         index: String(index + 1).padStart(2, "0"),
@@ -52,7 +59,7 @@ Page({
         activityLabel: activity.label,
         stamp: activity.stamp,
         color: activity.color,
-        image: `/assets/achievement-badges/${badge.activity}-${String(activityIndexes[badge.activity]).padStart(2, "0")}.png`,
+        glyph: (badgeGlyphs[badge.activity] && badgeGlyphs[badge.activity][activityIndex - 1]) || activity.stamp,
         title: badge.title,
         desc: badge.desc,
         unlocked,

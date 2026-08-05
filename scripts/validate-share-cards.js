@@ -118,13 +118,13 @@ function assertNoBrokenFallback() {
 }
 
 const results = [
-  assertShare("miniprogram/pages/home/index.js", { report: { activityKey: "toilet", title: "本次带薪拉屎", moneyText: "￥0.04" }, activeActivity: "toilet" }, "toilet-20260805d.jpg"),
-  assertShare("miniprogram/pages/home/index.js", { report: { activityKey: "meal", title: "本次带薪吃饭", moneyText: "￥0.04" }, activeActivity: "meal" }, "meal-20260805d.jpg"),
-  assertShare("miniprogram/pages/home/index.js", { report: { activityKey: "nap", title: "本次带薪睡觉", moneyText: "￥0.04" }, activeActivity: "nap" }, "nap-20260805d.jpg"),
-  assertShare("miniprogram/pages/home/index.js", { report: { activityKey: "custom", title: "本次自定义摸鱼", moneyText: "￥0.04" }, activeActivity: "custom" }, "custom-20260805d.jpg"),
-  assertShare("miniprogram/pages/home/index.js", { report: {}, activeActivity: "toilet" }, "toilet-20260805d.jpg"),
-  assertShare("miniprogram/pages/stats/index.js", { periodLabel: "今日", summary: { moneyText: "￥0.04" } }, "general-20260805d.jpg"),
-  assertShare("miniprogram/pages/achievements/index.js", { unlockedCount: 3 }, "general-20260805d.jpg"),
+  assertShare("miniprogram/pages/home/index.js", { report: { activityKey: "toilet", title: "本次带薪拉屎", moneyText: "￥0.04" }, activeActivity: "toilet" }, "toilet-20260805e.jpg"),
+  assertShare("miniprogram/pages/home/index.js", { report: { activityKey: "meal", title: "本次带薪吃饭", moneyText: "￥0.04" }, activeActivity: "meal" }, "meal-20260805e.jpg"),
+  assertShare("miniprogram/pages/home/index.js", { report: { activityKey: "nap", title: "本次带薪睡觉", moneyText: "￥0.04" }, activeActivity: "nap" }, "nap-20260805e.jpg"),
+  assertShare("miniprogram/pages/home/index.js", { report: { activityKey: "custom", title: "本次自定义摸鱼", moneyText: "￥0.04" }, activeActivity: "custom" }, "custom-20260805e.jpg"),
+  assertShare("miniprogram/pages/home/index.js", { report: {}, activeActivity: "toilet" }, "toilet-20260805e.jpg"),
+  assertShare("miniprogram/pages/stats/index.js", { periodLabel: "今日", summary: { moneyText: "￥0.04" } }, "general-20260805e.jpg"),
+  assertShare("miniprogram/pages/achievements/index.js", { unlockedCount: 3 }, "general-20260805e.jpg"),
   assertNoBrokenFallback()
 ];
 

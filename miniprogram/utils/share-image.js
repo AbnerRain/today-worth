@@ -6,7 +6,7 @@ const SHARE_CARD_SOURCES = {
   general: "/assets/share-cards/general.jpg"
 };
 
-const SHARE_IMAGE_VERSION = "20260805d";
+const SHARE_IMAGE_VERSION = "20260805e";
 const preparedImages = {};
 
 function getActivityKey(activityKey) {

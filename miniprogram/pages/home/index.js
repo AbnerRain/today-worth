@@ -1,12 +1,23 @@
 const store = require("../../utils/data");
 const shareImage = require("../../utils/share-image");
 
-const moneyBillAssets = [
-  "/assets/money-rain/time-100.png",
-  "/assets/money-rain/break-50.png",
-  "/assets/money-rain/desk-20.png",
-  "/assets/money-rain/off-10.png"
+const moneyBillItems = [
+  { variant: "time", value: "100", label: "TIME" },
+  { variant: "break", value: "50", label: "BREAK" },
+  { variant: "desk", value: "20", label: "DESK" },
+  { variant: "off", value: "10", label: "OFF" }
 ];
+
+const coinItemsByActivity = {
+  toilet: [{ variant: "toilet", label: "WC" }],
+  meal: [{ variant: "meal", label: "饭" }],
+  nap: [{ variant: "nap", label: "Z" }],
+  custom: [
+    { variant: "toilet", label: "WC" },
+    { variant: "meal", label: "饭" },
+    { variant: "nap", label: "Z" }
+  ]
+};
 
 const initialActivities = store.getActivities();
 const initialActivity = initialActivities.toilet;
@@ -189,17 +200,17 @@ Page({
   startTimer() {
     this.startedAt = Date.now();
     const activity = this.data.activity;
-    const coinAssets = Array.isArray(activity.coins) && activity.coins.length
-      ? activity.coins
-      : [activity.coin];
+    const coinItems = coinItemsByActivity[activity.key] || coinItemsByActivity.custom;
     const rewardItems = Array.from({ length: 18 }, (_, index) => {
       const isCoin = index % 3 === 1;
+      const bill = moneyBillItems[index % moneyBillItems.length];
+      const coin = coinItems[Math.floor(index / 3) % coinItems.length];
       return {
         id: `${this.startedAt}-${index}`,
         kind: isCoin ? "coin" : "bill",
-        src: isCoin
-          ? coinAssets[Math.floor(index / 3) % coinAssets.length]
-          : moneyBillAssets[index % moneyBillAssets.length]
+        variant: isCoin ? coin.variant : bill.variant,
+        label: isCoin ? coin.label : bill.label,
+        value: isCoin ? "" : bill.value
       };
     });
     this.setData({
@@ -253,7 +264,6 @@ Page({
         reportKicker: activity.reportKicker,
         reportTag: activity.reportTag,
         reportSfx: activity.reportSfx,
-        mascot: activity.reportMascot || `/assets/activity-mascots/${activity.key}-report-v1.png`,
         reportCaption,
         todayCountText: `${todayActivityTotal.count}次`,
         todaySecondsText: store.formatDuration(todayActivityTotal.seconds)
