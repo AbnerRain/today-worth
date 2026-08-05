@@ -1,4 +1,5 @@
 const store = require("../../utils/data");
+const shareImage = require("../../utils/share-image");
 
 const periodLabels = { day: "今天", week: "本周", month: "本月", career: "全部" };
 const benchmarks = [
@@ -45,6 +46,7 @@ Page({
   },
 
   onShow() {
+    shareImage.preloadShareImages(["general"]);
     this.refreshCopy();
     this.renderStats();
   },
@@ -122,10 +124,12 @@ Page({
   },
 
   onShareAppMessage() {
-    return {
+    const shareMessage = {
       title: `我的摸力全开：${this.data.periodLabel}已赚${this.data.summary.moneyText || "￥0.00"}`,
-      path: "/pages/home/index?from=stats",
-      imageUrl: "assets/share-cards/general.jpg"
+      path: "/pages/home/index?from=stats"
     };
+    const imageUrl = shareImage.getShareImageUrl("general");
+    if (imageUrl) shareMessage.imageUrl = imageUrl;
+    return shareMessage;
   }
 });

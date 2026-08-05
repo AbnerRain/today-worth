@@ -1,4 +1,5 @@
 const store = require("../../utils/data");
+const shareImage = require("../../utils/share-image");
 
 const moneyBillAssets = [
   "/assets/money-rain/time-100.png",
@@ -6,14 +7,6 @@ const moneyBillAssets = [
   "/assets/money-rain/desk-20.png",
   "/assets/money-rain/off-10.png"
 ];
-
-const shareCardImages = {
-  toilet: "assets/share-cards/toilet.jpg",
-  meal: "assets/share-cards/meal.jpg",
-  nap: "assets/share-cards/nap.jpg",
-  custom: "assets/share-cards/custom.jpg",
-  general: "assets/share-cards/general.jpg"
-};
 
 const initialActivities = store.getActivities();
 const initialActivity = initialActivities.toilet;
@@ -56,6 +49,7 @@ Page({
   onLoad() {
     this.startedAt = 0;
     this.timerId = null;
+    shareImage.preloadShareImages(["toilet", "meal", "nap", "custom", "general"]);
     const profile = store.getProfile();
     this.setData({
       showOnboarding: !store.hasProfile(),
@@ -362,12 +356,14 @@ Page({
   onShareAppMessage() {
     const report = this.data.report;
     const activityKey = report.activityKey || this.data.activeActivity;
-    return {
+    const shareMessage = {
       title: report.title
         ? `${report.title}，赚了${report.moneyText}`
         : "摸力全开：算算你上班每分钟值多少钱",
-      path: "/pages/home/index?from=share",
-      imageUrl: shareCardImages[activityKey] || shareCardImages.general
+      path: "/pages/home/index?from=share"
     };
+    const imageUrl = shareImage.getShareImageUrl(activityKey);
+    if (imageUrl) shareMessage.imageUrl = imageUrl;
+    return shareMessage;
   }
 });

@@ -1,4 +1,5 @@
 const store = require("../../utils/data");
+const shareImage = require("../../utils/share-image");
 
 Page({
   data: {
@@ -19,6 +20,7 @@ Page({
   },
 
   onShow() {
+    shareImage.preloadShareImages(["general"]);
     this.setData({
       pageSubtitle: store.pickLine(store.copyLines.achievements, this.data.pageSubtitle),
       passNote: store.pickLine(store.copyLines.achievementProgress, this.data.passNote)
@@ -94,10 +96,12 @@ Page({
   },
 
   onShareAppMessage() {
-    return {
+    const shareMessage = {
       title: `我的摸鱼履历已解锁 ${this.data.unlockedCount} 枚成就`,
-      path: "/pages/home/index?from=achievement",
-      imageUrl: "assets/share-cards/general.jpg"
+      path: "/pages/home/index?from=achievement"
     };
+    const imageUrl = shareImage.getShareImageUrl("general");
+    if (imageUrl) shareMessage.imageUrl = imageUrl;
+    return shareMessage;
   }
 });
