@@ -41,6 +41,7 @@ Page({
     onboardingProfile: store.defaultProfile,
     onboardingPreview: {},
     showCustomActivityEditor: false,
+    customActivityConfigured: Boolean(initialActivities.custom && initialActivities.custom.configured),
     customActivityDraft: { label: "", stamp: "" }
   },
 
@@ -78,6 +79,7 @@ Page({
     else wx.showTabBar({ animation: false });
     this.setData({
       activities: store.getActivityList(),
+      customActivityConfigured: Boolean(activities.custom && activities.custom.configured),
       activeActivity,
       activity,
       rates: {
@@ -166,6 +168,7 @@ Page({
     this.setData({
       showCustomActivityEditor: false,
       activities: store.getActivityList(),
+      customActivityConfigured: true,
       activeActivity: "custom",
       activity,
       activityHint: store.pickLine(activity.hints, this.data.activityHint),

@@ -34,6 +34,10 @@
       <view class="mascot-stage">
         <view class="activity-figure" aria-hidden="true">
           <image class="activity-mascot-image" src="{{activity.mascot}}" mode="scaleToFill" fade-show="{{false}}" />
+          <view class="custom-activity-visual" aria-hidden="true">
+            <view class="custom-visual-ticket"><text>摸</text><text>TIME</text></view>
+            <view class="custom-visual-shadow"></view>
+          </view>
           <view class="activity-motion motion-toilet">
             <view class="toilet-strain toilet-strain-one"></view><view class="toilet-strain toilet-strain-two"></view>
             <view class="toilet-puff"><view></view><view></view><view></view></view>
@@ -46,6 +50,10 @@
             <text class="nap-z nap-z-one">Z</text><text class="nap-z nap-z-two">Z</text><text class="nap-z nap-z-three">Z</text>
             <view class="nap-breath"></view><view class="nap-ring nap-ring-one"></view><view class="nap-ring nap-ring-two"></view>
           </view>
+          <view class="activity-motion motion-custom">
+            <text class="custom-float custom-float-one">￥</text><text class="custom-float custom-float-two">休</text><text class="custom-float custom-float-three">+1</text>
+            <view class="custom-pulse custom-pulse-one"></view><view class="custom-pulse custom-pulse-two"></view>
+          </view>
         </view>
       </view>
       <view class="scene-copy">
@@ -56,11 +64,16 @@
     </view>
   </view>
 
-  <view class="section-heading"><text class="section-title">带薪模式</text><text class="section-note">{{activityHint}}</text></view>
+  <view class="section-heading mode-heading">
+    <view class="section-heading-copy"><text class="section-title">带薪模式</text><text class="section-note">{{activityHint}}</text></view>
+    <button wx:if="{{customActivityConfigured}}" class="mode-edit-button" disabled="{{running}}" bindtap="openCustomActivityEditor">编辑自定义</button>
+  </view>
   <view class="activity-grid">
-    <button wx:for="{{activities}}" wx:key="key" class="activity-button activity-{{item.key}} {{activeActivity === item.key ? 'is-active' : ''}}" data-key="{{item.key}}" disabled="{{running}}" bindtap="selectActivity" bindlongpress="editActivity">
-      <text class="activity-stamp">{{item.stamp}}</text><text class="activity-label">{{item.label}}</text><text class="activity-english">{{item.english}}</text>
-    </button>
+    <view wx:for="{{activities}}" wx:key="key" class="activity-slot">
+      <button class="activity-button activity-{{item.key}} {{activeActivity === item.key ? 'is-active' : ''}}" data-key="{{item.key}}" disabled="{{running}}" bindtap="selectActivity" bindlongpress="editActivity">
+        <text class="activity-stamp">{{item.stamp}}</text><text class="activity-label">{{item.label}}</text><text class="activity-english">{{item.english}}</text>
+      </button>
+    </view>
   </view>
 
   <view class="main-action-wrap">
@@ -151,7 +164,11 @@
     <view class="report-card comic-card" catchtap="blockBubble">
       <view class="report-scene report-{{report.activityKey}}">
         <text class="report-scene-tag">{{report.reportTag}}</text>
-        <image class="report-scene-mascot" src="{{report.mascot}}" mode="aspectFit" fade-show="{{false}}" />
+        <view wx:if="{{report.activityKey === 'custom'}}" class="report-custom-visual" aria-hidden="true">
+          <view class="report-custom-ticket"><text>摸</text><text>TIME</text></view>
+          <text class="report-custom-coin">￥</text>
+        </view>
+        <image wx:else class="report-scene-mascot" src="{{report.mascot}}" mode="aspectFit" fade-show="{{false}}" />
         <view class="report-scene-ticket"><text class="report-ticket-label">本次入账</text><text class="report-ticket-money">{{report.moneyText}}</text><text class="report-ticket-time">用时 {{report.secondsText}}</text></view>
         <text class="report-stamp">{{report.stamp}}</text><text class="report-pop">{{report.reportSfx}}</text>
       </view>
