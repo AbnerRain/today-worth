@@ -3,9 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>今天值多少钱 Demo</title>
+    <title>摸力全开 Demo</title>
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23ffdc3f'/%3E%3Cpath d='M9 18c0-5 2.5-9 7-9s7 4 7 9c0 3.5-2.5 5.5-7 5.5S9 21.5 9 18z' fill='%23131b2b'/%3E%3Ccircle cx='13.5' cy='16.5' r='1.3' fill='white'/%3E%3Ccircle cx='18.5' cy='16.5' r='1.3' fill='white'/%3E%3C/svg%3E" />
-    <link rel="stylesheet" href="./styles.css?v=office-comic-7" />
+    <link rel="stylesheet" href="./styles.css?v=office-comic-31" />
   </head>
   <body>
     <svg class="icon-sprite" aria-hidden="true">
@@ -30,8 +30,8 @@
       </symbol>
     </svg>
 
-    <main class="app-shell" aria-label="今天值多少钱小程序演示">
-      <section class="phone" aria-label="小程序界面">
+    <main class="app-shell" aria-label="摸力全开小程序演示">
+      <section class="phone" data-active-tab="home" aria-label="小程序界面">
         <div class="money-rain" id="moneyRain" aria-hidden="true"></div>
         <header class="status-bar" aria-hidden="true">
           <span>13:20</span>
@@ -44,16 +44,21 @@
 
         <section class="app-header">
           <div class="header-copy">
-            <span class="eyebrow">OFFICE COMIC · 01</span>
-            <h1>今天值多少钱</h1>
-            <p>算清每一分钟，摸鱼也要明明白白。</p>
+            <span class="eyebrow">OFFICE PAYSLIP · 01</span>
+            <div class="brand-row"><h1>摸力全开</h1><span class="brand-stamp">值</span></div>
+            <p class="header-tagline" id="headerTagline">时间既然卖了，就得知道卖了多少钱。</p>
           </div>
           <button class="icon-button" id="settingsButton" type="button" aria-label="打开工资设置">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M12 8.4a3.6 3.6 0 1 0 0 7.2 3.6 3.6 0 0 0 0-7.2Z" />
-              <path d="M19.2 13.2a7.8 7.8 0 0 0 .05-1.2 7.8 7.8 0 0 0-.05-1.2l2-1.55-2-3.46-2.36.95a8.32 8.32 0 0 0-2.08-1.2L14.4 3h-4.8l-.36 2.54a8.32 8.32 0 0 0-2.08 1.2L4.8 5.79l-2 3.46 2 1.55a7.8 7.8 0 0 0-.05 1.2 7.8 7.8 0 0 0 .05 1.2l-2 1.55 2 3.46 2.36-.95a8.32 8.32 0 0 0 2.08 1.2l.36 2.54h4.8l.36-2.54a8.32 8.32 0 0 0 2.08-1.2l2.36.95 2-3.46-2-1.55Z" />
-            </svg>
+            <span class="settings-icon-shell" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 8.4a3.6 3.6 0 1 0 0 7.2 3.6 3.6 0 0 0 0-7.2Z" /><path d="M19.2 13.2a7.8 7.8 0 0 0 .05-1.2 7.8 7.8 0 0 0-.05-1.2l2-1.55-2-3.46-2.36.95a8.32 8.32 0 0 0-2.08-1.2L14.4 3h-4.8l-.36 2.54a8.32 8.32 0 0 0-2.08 1.2L4.8 5.79l-2 3.46 2 1.55a7.8 7.8 0 0 0-.05 1.2 7.8 7.8 0 0 0 .05 1.2l-2 1.55 2 3.46 2.36-.95a8.32 8.32 0 0 0 2.08 1.2l.36 2.54h4.8l.36-2.54a8.32 8.32 0 0 0 2.08-1.2l2.36.95 2-3.46-2-1.55Z" /></svg></span>
+            <span class="button-label">工资设置</span>
           </button>
+          <div class="header-context-card" id="headerContextCard" aria-live="polite">
+            <span class="header-context-mark" id="headerContextMark" aria-hidden="true">账</span>
+            <span class="header-context-copy">
+              <strong id="headerContextTitle">数据档案</strong>
+              <small id="headerContextDetail">今日账本</small>
+            </span>
+          </div>
         </section>
 
         <section class="rate-panel" aria-label="时间单价">
@@ -73,7 +78,14 @@
 
         <div class="content-scroll">
           <section class="screen active" id="homeScreen" aria-label="首页">
-            <section class="hero-meter" aria-label="实时计时和收益">
+            <section
+              class="hero-meter"
+              id="heroMeter"
+              data-activity="toilet"
+              data-label="摸鱼计价器 // TOILET"
+              aria-label="带薪拉屎实时计时和收益"
+            >
+              <div class="hero-kicker"><span id="heroModeLabel">TOILET MODE</span><span class="live-dot" id="liveDot"></span></div>
               <div class="meter-copy">
                 <span id="sessionState">今日待开工</span>
                 <strong id="timer">00:00:00</strong>
@@ -83,27 +95,101 @@
                 <span>已赚</span>
                 <strong id="liveEarning">￥0.00</strong>
               </div>
+              <div class="activity-scene scene-toilet" id="activityScene" data-activity="toilet" aria-hidden="true">
+                <div class="mascot-stage">
+                  <span class="activity-figure" aria-hidden="true">
+                    <img class="activity-mascot-image" id="activityMascotImage" src="./miniprogram/assets/activity-mascots/toilet-base-v1.png" alt="" />
+                    <span class="activity-motion motion-toilet"><i class="toilet-strain toilet-strain-one"></i><i class="toilet-strain toilet-strain-two"></i><span class="toilet-puff"><i></i><i></i><i></i></span></span>
+                    <span class="activity-motion motion-meal"><i class="meal-steam meal-steam-one"></i><i class="meal-steam meal-steam-two"></i><i class="meal-spark">✦</i><i class="meal-slurp"></i></span>
+                    <span class="activity-motion motion-nap"><i class="nap-z nap-z-one">Z</i><i class="nap-z nap-z-two">Z</i><i class="nap-z nap-z-three">Z</i><i class="nap-breath"></i><i class="nap-ring nap-ring-one"></i><i class="nap-ring nap-ring-two"></i></span>
+                  </span>
+                </div>
+                <div class="scene-copy">
+                  <span class="scene-badge" id="sceneBadge">拉屎计价中</span>
+                  <strong class="scene-money" id="sceneMoney">￥0.00</strong>
+                  <p class="scene-line" id="sceneLine">坐稳别急，这段工时正在自动入账。</p>
+                </div>
+              </div>
             </section>
 
-            <button class="primary-action" id="mainAction" type="button">
+            <section class="activity-picker" aria-label="选择带薪活动">
+              <div class="activity-picker-heading">
+                <strong>带薪模式</strong>
+                <span id="activityHint">肠道健康也算现金流</span>
+              </div>
+              <div class="activity-options" role="radiogroup" aria-label="带薪计时模式">
+                <button
+                  class="activity-option active"
+                  data-activity="toilet"
+                  type="button"
+                  role="radio"
+                  aria-checked="true"
+                  aria-label="选择开始带薪拉屎"
+                >
+                  <span class="activity-stamp" aria-hidden="true">WC</span>
+                  <strong>拉屎</strong>
+                  <small>TOILET</small>
+                </button>
+                <button
+                  class="activity-option"
+                  data-activity="meal"
+                  type="button"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="选择开始带薪吃饭"
+                >
+                  <span class="activity-stamp" aria-hidden="true">饭</span>
+                  <strong>吃饭</strong>
+                  <small>DINING</small>
+                </button>
+                <button
+                  class="activity-option"
+                  data-activity="nap"
+                  type="button"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label="选择开始带薪睡觉"
+                >
+                  <span class="activity-stamp" aria-hidden="true">ZZ</span>
+                  <strong>睡觉</strong>
+                  <small>NAP</small>
+                </button>
+              </div>
+            </section>
+
+            <button class="primary-action" id="mainAction" data-activity="toilet" type="button">
               <span class="action-symbol" id="actionIcon" aria-hidden="true"></span>
               <strong id="actionText">开始带薪拉屎</strong>
             </button>
 
-            <section class="quick-log" aria-label="时间价值快捷入口">
+            <section class="goal-card" id="goalCard" data-complete="false" aria-live="polite">
               <div class="section-title">
-                <h2>时间账本</h2>
-                <span>顺手记一笔</span>
+                <h2>带薪愿望单</h2>
+                <span>今日回本目标</span>
               </div>
-              <div class="ledger-feedback" id="ledgerFeedback" role="status" aria-live="polite">
-                选择一个场景，系统会把它换成时间价值。
+              <div class="goal-ticket">
+                <span class="goal-stamp" id="goalStamp" aria-hidden="true">咖</span>
+                <div class="goal-ticket-copy">
+                  <small>老板赞助进度</small>
+                  <strong id="goalTitle">冰美式</strong>
+                </div>
+                <strong class="goal-current" id="goalCurrent">￥0.00 / ￥18.00</strong>
               </div>
-              <div class="ledger-grid" id="ledgerGrid"></div>
+              <div class="goal-progress" role="progressbar" id="goalProgress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                <span id="goalProgressBar"></span>
+              </div>
+              <p class="goal-status" id="goalStatus">再带薪一会儿，今天的咖啡就有人买单。</p>
+              <div class="goal-options" id="goalOptions" aria-label="选择今日回本目标"></div>
             </section>
 
-            <section class="today-card">
+            <section
+              class="today-card"
+              id="todayCard"
+              data-activity="toilet"
+              data-label="TOILET SCORE"
+            >
               <div class="section-title">
-                <h2>今日累计</h2>
+                <h2 id="todayTitle">今日拉屎累计</h2>
                 <span id="todayMood">还没开始，状态很克制</span>
               </div>
               <div class="today-stats">
@@ -120,6 +206,11 @@
                   <span>收入</span>
                 </div>
               </div>
+              <div
+                class="today-activity-list"
+                id="todayActivityList"
+                aria-label="今日三种带薪模式明细"
+              ></div>
             </section>
           </section>
 
@@ -135,19 +226,71 @@
               <button class="period-button" data-period="career" type="button">生涯</button>
             </div>
             <section class="stats-board" id="statsBoard"></section>
-            <section class="timeline-card">
+            <section class="stats-insight-card contribution-card" aria-live="polite">
               <div class="section-title">
-                <h2>今日轨迹</h2>
-                <span>时间价值切片</span>
+                <h2>老板的钱花哪了</h2>
+                <span id="contributionSubtitle">今日 · 三类贡献</span>
               </div>
-              <div class="timeline" id="timeline"></div>
+              <div id="contributionContent"></div>
             </section>
+            <section class="stats-insight-card comparison-card" aria-live="polite">
+              <div class="section-title">
+                <h2>比以前更会赚吗</h2>
+                <span id="comparisonSubtitle">今天对昨天</span>
+              </div>
+              <div class="comparison-grid" id="comparisonGrid"></div>
+            </section>
+            <section class="timeline-card" aria-live="polite">
+              <div class="section-title">
+                <h2>收益明细</h2>
+                <span id="periodDetailSubtitle">日 · 按单次记录</span>
+              </div>
+              <div class="timeline" id="periodDetails" role="list"></div>
+            </section>
+            <section class="stats-insight-card records-card" aria-live="polite">
+              <div class="section-title">
+                <h2>个人纪录馆</h2>
+                <span>数据越离谱，履历越完整</span>
+              </div>
+              <div class="records-grid" id="recordsGrid"></div>
+            </section>
+            <details class="stats-insight-card ledger-archive">
+              <summary>
+                <span>
+                  <strong>职场损耗</strong>
+                  <small>通勤、补给、会议和加班</small>
+                </span>
+                <b>展开工位流水</b>
+              </summary>
+              <div class="ledger-archive-body">
+                <div class="ledger-feedback" id="ledgerFeedback" role="status" aria-live="polite">
+                  挣的、花的、浪费的都在这里单独记清楚。
+                </div>
+                <div class="ledger-grid" id="ledgerGrid"></div>
+              </div>
+            </details>
           </section>
 
           <section class="screen" id="badgesScreen" aria-label="成就">
             <div class="section-title">
               <h2>成就系统</h2>
-              <span>让荒诞变成收藏</span>
+              <span id="badgeSummary">三条摸鱼晋升通道</span>
+            </div>
+            <section class="achievement-pass" aria-label="成就总进度">
+              <div class="achievement-pass-copy">
+                <span>摸鱼履历完成度</span>
+                <strong id="badgeProgressValue">0 / 45</strong>
+              </div>
+              <div class="achievement-pass-track" aria-hidden="true">
+                <span id="badgeProgressBar"></span>
+              </div>
+              <div class="achievement-group-counts" id="badgeGroupCounts"></div>
+            </section>
+            <div class="achievement-tabs" role="tablist" aria-label="筛选成就模块">
+              <button class="achievement-tab active" data-badge-filter="all" type="button" role="tab" aria-selected="true">全部</button>
+              <button class="achievement-tab" data-badge-filter="toilet" type="button" role="tab" aria-selected="false">拉屎</button>
+              <button class="achievement-tab" data-badge-filter="meal" type="button" role="tab" aria-selected="false">吃饭</button>
+              <button class="achievement-tab" data-badge-filter="nap" type="button" role="tab" aria-selected="false">睡觉</button>
             </div>
             <div class="badges-grid" id="badgesGrid"></div>
           </section>
@@ -187,7 +330,7 @@
         <p>这版采用粗描边、错位阴影、明亮色块和漫画网点，让“带薪拉屎”更像一款年轻、好玩、愿意分享的小工具。</p>
         <ul>
           <li>第一屏是一格实时计价漫画，金额和计时一眼可见。</li>
-          <li>快捷账本变成彩色场景贴纸，分类清楚但不严肃。</li>
+          <li>回本目标把三种带薪收益汇成一张老板赞助进度票。</li>
           <li>战报是一张醒目的漫画成绩单，适合直接发给朋友。</li>
         </ul>
       </aside>
@@ -197,9 +340,21 @@
       <form method="dialog" class="dialog-card" id="salaryForm">
         <div class="sheet-handle" aria-hidden="true"></div>
         <div class="section-title">
-          <h2>工资设置</h2>
-          <span>随时可改</span>
+          <h2>摸鱼基金</h2>
+          <span>工资与身份</span>
         </div>
+        <div class="moyu-pass" aria-label="当前摸鱼代号">
+          <span aria-hidden="true">摸</span>
+          <div>
+            <small>匿名职场身份</small>
+            <strong id="aliasPreview">摸鱼群众 9527</strong>
+          </div>
+        </div>
+        <label>
+          摸鱼代号
+          <input id="aliasInput" type="text" maxlength="12" autocomplete="off" placeholder="例：工位隐士" />
+          <small class="field-hint">不需要注册；代号会出现在你的分享战报中。</small>
+        </label>
         <label>
           月薪
           <input id="salaryInput" type="number" min="1" value="12000" inputmode="decimal" />
@@ -215,6 +370,32 @@
         <div class="dialog-actions">
           <button class="ghost-button" value="cancel" type="button" id="cancelSettings">取消</button>
           <button class="save-button" value="default" type="submit">保存</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog class="goal-dialog" id="goalDialog">
+      <form method="dialog" class="dialog-card" id="goalForm">
+        <div class="sheet-handle" aria-hidden="true"></div>
+        <div class="section-title">
+          <h2>自定义回本目标</h2>
+          <span>想薅什么自己定</span>
+        </div>
+        <label>
+          目标名称
+          <input id="goalNameInput" type="text" maxlength="8" autocomplete="off" placeholder="例：周末电影票" />
+        </label>
+        <label>
+          目标金额
+          <span class="value-input-wrap">
+            <input id="goalAmountInput" type="number" min="0.5" step="0.5" inputmode="decimal" placeholder="50" />
+            <span>元</span>
+          </span>
+          <small class="field-hint">三种带薪活动的今日收益会共同填满它。</small>
+        </label>
+        <div class="dialog-actions">
+          <button class="ghost-button" value="cancel" type="button" id="cancelGoal">取消</button>
+          <button class="save-button" value="default" type="submit">设为今日目标</button>
         </div>
       </form>
     </dialog>
@@ -262,8 +443,26 @@
             <path d="m6 6 12 12M18 6 6 18" />
           </svg>
         </button>
-        <span class="report-title">本次带薪拉屎</span>
-        <strong id="reportMoney">￥0.00</strong>
+        <div class="report-scene" id="reportScene" role="img" aria-label="带薪拉屎结算动画">
+          <span class="report-scene-tag" id="reportSceneTag">冲水到账</span>
+          <img class="report-scene-mascot" id="reportSceneMascot" src="./miniprogram/assets/activity-mascots/toilet-report-v1.png" alt="" />
+          <div class="report-scene-ticket"><span>本次入账</span><strong id="reportSceneMoney">￥0.00</strong><small id="reportSceneDuration">用时 1秒</small></div>
+          <span class="report-scene-sfx">已入账!</span>
+        </div>
+
+        <div class="report-summary">
+          <span class="report-title" id="reportTitle">本次带薪拉屎</span>
+          <strong id="reportMoney">￥0.00</strong>
+          <p class="report-quote" id="reportQuote">肠道清空一格，余额悄悄长了一格。</p>
+        </div>
+        <section class="achievement-unlock" id="achievementUnlock" hidden aria-live="polite">
+          <span class="achievement-unlock-mark" aria-hidden="true">章</span>
+          <div>
+            <small>新成就已盖章</small>
+            <strong id="achievementUnlockTitle">屎无前例</strong>
+            <p id="achievementUnlockCopy">完成第一次带薪拉屎</p>
+          </div>
+        </section>
         <div class="report-grid">
           <div>
             <span>时长</span>
@@ -283,10 +482,12 @@
           </div>
         </div>
         <div class="share-poster">
-          <span>今日带薪拉屎</span>
+          <span class="poster-mark" id="posterMark" aria-hidden="true">WC</span>
+          <span id="posterTitle">今日带薪拉屎</span>
+          <span class="poster-alias" id="posterAlias">摸鱼代号 · 摸鱼群众 9527</span>
           <strong id="posterDuration">0分钟</strong>
           <p id="posterMoney">赚了 ￥0.00</p>
-          <small>分享给朋友看看今天的时间价值</small>
+          <small id="posterCaption">冲水完成，今天的松弛时间已经入账。</small>
         </div>
         <p class="share-status" id="shareStatus" role="status" aria-live="polite"></p>
         <div class="report-actions">
@@ -296,6 +497,6 @@
       </section>
     </dialog>
 
-    <script src="./app.js?v=office-comic-7"></script>
+    <script src="./app.js?v=office-comic-23"></script>
   </body>
 </html>

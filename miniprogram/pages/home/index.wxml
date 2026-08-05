@@ -1,0 +1,189 @@
+<view class="page-shell home-page">
+  <view wx:if="{{running}}" class="money-rain">
+    <view wx:for="{{rewardItems}}" wx:key="id" class="reward-item is-{{item.kind}}">
+      <image class="reward-image" src="{{item.src}}" mode="aspectFit" />
+    </view>
+  </view>
+
+  <view class="masthead">
+    <view>
+      <text class="eyebrow">今日时间工资条</text>
+      <view class="brand-row"><text class="brand">摸力全开</text><text class="brand-stamp">值</text></view>
+      <text class="tagline">{{tagline}}</text>
+    </view>
+  </view>
+
+  <view class="profile-bar">
+    <view class="profile-copy"><text class="profile-name">{{profileMeta.alias}}的时间单价</text><text class="profile-detail">{{profileMeta.detail}}</text></view>
+    <button class="settings-button" aria-label="打开工资设置" bindtap="openSettings" hover-class="settings-button--pressed" hover-start-time="0" hover-stay-time="100"><text class="settings-icon" aria-hidden="true">⚙</text><text class="settings-label">工资设置</text></button>
+  </view>
+
+  <view class="rate-strip comic-card">
+    <view class="rate-cell rate-primary"><text class="rate-label">当前时薪</text><text class="rate-value">{{rates.hour}}</text></view>
+    <view class="rate-cell"><text class="rate-label">每分钟</text><text class="rate-value">{{rates.minute}}</text></view>
+    <view class="rate-cell"><text class="rate-label">每秒</text><text class="rate-value">{{rates.second}}</text></view>
+  </view>
+
+  <view class="meter comic-card activity-{{activeActivity}}">
+    <view class="meter-kicker"><text>{{activity.modeLabel || activity.english + ' MODE'}}</text><text class="live-dot {{running ? 'is-running' : ''}}"></text></view>
+    <text class="meter-state">{{running ? activity.fullLabel + '进行中' : activity.fullLabel + '待开始'}}</text>
+    <text class="timer">{{timerText}}</text>
+    <view class="earning-ticket"><text class="earning-label">本次已赚</text><text class="earning-value">{{liveMoney}}</text></view>
+    <text class="live-line">{{liveLine}}</text>
+    <view wx:if="{{running}}" class="activity-scene scene-{{activeActivity}}">
+      <view class="mascot-stage">
+        <view class="activity-figure" aria-hidden="true">
+          <image class="activity-mascot-image" src="{{activity.mascot}}" mode="scaleToFill" fade-show="{{false}}" />
+          <view class="custom-activity-visual" aria-hidden="true">
+            <view class="custom-visual-ticket"><text>摸</text><text>TIME</text></view>
+            <view class="custom-visual-shadow"></view>
+          </view>
+          <view class="activity-motion motion-toilet">
+            <view class="toilet-strain toilet-strain-one"></view><view class="toilet-strain toilet-strain-two"></view>
+            <view class="toilet-puff"><view></view><view></view><view></view></view>
+          </view>
+          <view class="activity-motion motion-meal">
+            <view class="meal-steam meal-steam-one"></view><view class="meal-steam meal-steam-two"></view>
+            <view class="meal-spark">✦</view><view class="meal-slurp"></view>
+          </view>
+          <view class="activity-motion motion-nap">
+            <text class="nap-z nap-z-one">Z</text><text class="nap-z nap-z-two">Z</text><text class="nap-z nap-z-three">Z</text>
+            <view class="nap-breath"></view><view class="nap-ring nap-ring-one"></view><view class="nap-ring nap-ring-two"></view>
+          </view>
+          <view class="activity-motion motion-custom">
+            <text class="custom-float custom-float-one">￥</text><text class="custom-float custom-float-two">休</text><text class="custom-float custom-float-three">+1</text>
+            <view class="custom-pulse custom-pulse-one"></view><view class="custom-pulse custom-pulse-two"></view>
+          </view>
+        </view>
+      </view>
+      <view class="scene-copy">
+        <text class="scene-badge">{{activity.label}}计价中</text>
+        <text class="scene-money">{{liveMoney}}</text>
+        <text class="scene-line">{{sceneLine}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="section-heading mode-heading">
+    <view class="section-heading-copy"><text class="section-title">带薪模式</text><text class="section-note">{{activityHint}}</text></view>
+    <button wx:if="{{customActivityConfigured}}" class="mode-edit-button" disabled="{{running}}" bindtap="openCustomActivityEditor">编辑自定义</button>
+  </view>
+  <view class="activity-grid">
+    <view wx:for="{{activities}}" wx:key="key" class="activity-slot">
+      <button class="activity-button activity-{{item.key}} {{activeActivity === item.key ? 'is-active' : ''}}" data-key="{{item.key}}" disabled="{{running}}" bindtap="selectActivity" bindlongpress="editActivity">
+        <text class="activity-stamp">{{item.stamp}}</text><text class="activity-label">{{item.label}}</text><text class="activity-english">{{item.english}}</text>
+      </button>
+    </view>
+  </view>
+
+  <view class="main-action-wrap">
+    <button class="main-action {{running ? 'is-running' : ''}}" bindtap="toggleTimer" hover-class="main-action--pressed" hover-start-time="0" hover-stay-time="80">
+      <view class="main-action-icon"><text>{{running ? '■' : '▶'}}</text></view><text class="main-action-label">{{running ? activity.stopText : '开始' + activity.fullLabel}}</text>
+    </button>
+  </view>
+
+  <view class="section-heading"><text class="section-title">带薪愿望单</text><text class="section-note">{{goalNote}}</text></view>
+  <view class="goal-card comic-card">
+    <view class="goal-main">
+      <text class="goal-stamp">{{goal.stamp}}</text>
+      <view class="goal-copy"><text class="goal-label">老板赞助进度</text><text class="goal-title">{{goal.label}}</text></view>
+      <text class="goal-amount">{{goalMoneyText}}</text>
+    </view>
+    <view class="progress-track"><progress class="goal-progress" percent="{{goalProgress}}" stroke-width="8" activeColor="#11a66a" backgroundColor="#e8edf3" /></view>
+    <text class="goal-status">{{goalStatus}}</text>
+    <view class="goal-list">
+      <button wx:for="{{goalPresets}}" wx:key="id" class="goal-chip {{goal.id === item.id ? 'is-active' : ''}}" data-id="{{item.id}}" bindtap="selectGoal">{{item.label}}</button>
+    </view>
+  </view>
+
+  <view class="section-heading"><text class="section-title">今日{{activity.label}}累计</text><text class="section-note">{{todayNote}}</text></view>
+  <view class="today-card comic-card">
+    <view class="today-summary">
+      <view class="today-stat is-first"><text class="today-value">{{today.count}}</text><text class="today-label">次数</text></view>
+      <view class="today-stat"><text class="today-value">{{today.secondsText}}</text><text class="today-label">时长</text></view>
+      <view class="today-stat"><text class="today-value">{{today.moneyText}}</text><text class="today-label">收入</text></view>
+    </view>
+    <view class="activity-ledger">
+      <view wx:for="{{todayActivities}}" wx:key="key" class="ledger-row {{item.active ? 'is-active' : ''}}">
+        <text class="ledger-stamp">{{item.stamp}}</text><view class="ledger-copy"><text class="ledger-title">{{item.label}}</text><text class="ledger-detail">{{item.countText}}</text></view><view class="ledger-copy ledger-values"><text class="ledger-title">{{item.secondsText}}</text><text class="ledger-detail">{{item.moneyText}}</text></view>
+      </view>
+    </view>
+  </view>
+</view>
+
+<view wx:if="{{showCustomActivityEditor}}" class="editor-mask" bindtap="closeCustomActivityEditor" catchtouchmove="blockBubble">
+  <view class="editor-card comic-card" catchtap="blockBubble">
+    <text class="editor-kicker">带薪模式 · 自定义</text>
+    <text class="editor-title">设置一个摸鱼行为</text>
+    <text class="editor-note">保存后，这个按钮会像拉屎、吃饭、睡觉一样计时、结算和进统计。</text>
+    <label class="editor-field">
+      <text class="editor-label">行为名称</text>
+      <input class="editor-input" value="{{customActivityDraft.label}}" maxlength="6" data-field="label" bindinput="onCustomActivityInput" placeholder="例：抽烟" confirm-type="done" />
+    </label>
+    <label class="editor-field">
+      <text class="editor-label">按钮标记</text>
+      <view class="editor-control"><input class="editor-input" value="{{customActivityDraft.stamp}}" maxlength="2" data-field="stamp" bindinput="onCustomActivityInput" placeholder="例：烟" confirm-type="done" /><text class="editor-unit">可空</text></view>
+    </label>
+    <view class="editor-actions">
+      <button class="editor-button editor-secondary" bindtap="closeCustomActivityEditor">取消</button>
+      <button class="editor-button editor-primary" bindtap="saveCustomActivity">保存行为</button>
+    </view>
+  </view>
+</view>
+
+<view wx:if="{{showOnboarding}}" class="onboarding-mask" catchtouchmove="blockBubble">
+  <scroll-view class="onboarding-scroll" scroll-y="{{true}}" enhanced="{{true}}" show-scrollbar="{{false}}">
+    <view class="onboarding-sheet">
+      <view class="onboarding-mark"><text>￥</text><text class="onboarding-mark-time">TIME</text></view>
+      <text class="onboarding-kicker">首次设置 · 约 1 分钟</text>
+      <text class="onboarding-title">先给你的时间标个价</text>
+      <text class="onboarding-subtitle">{{onboardingSubtitle}}</text>
+
+      <view class="onboarding-form">
+        <label class="onboarding-field"><text class="onboarding-label">你的摸鱼代号</text><input class="onboarding-input" value="{{onboardingProfile.alias}}" maxlength="12" data-field="alias" bindinput="onOnboardingInput" placeholder="例：工位隐士" /></label>
+        <label class="onboarding-field"><text class="onboarding-label">每月税前工资</text><view class="onboarding-control"><input class="onboarding-input" type="digit" value="{{onboardingProfile.salary}}" data-field="salary" bindinput="onOnboardingInput" /><text class="onboarding-unit">元</text></view></label>
+        <view class="onboarding-field-row">
+          <label class="onboarding-field onboarding-half"><text class="onboarding-label">每月工作</text><view class="onboarding-control"><input class="onboarding-input" type="digit" value="{{onboardingProfile.workdays}}" data-field="workdays" bindinput="onOnboardingInput" /><text class="onboarding-unit">天</text></view></label>
+          <label class="onboarding-field onboarding-half"><text class="onboarding-label">每天工作</text><view class="onboarding-control"><input class="onboarding-input" type="digit" value="{{onboardingProfile.hours}}" data-field="hours" bindinput="onOnboardingInput" /><text class="onboarding-unit">小时</text></view></label>
+        </view>
+      </view>
+
+      <view class="onboarding-result">
+        <view class="onboarding-rate"><text class="onboarding-rate-label">每小时</text><text class="onboarding-rate-value">{{onboardingPreview.hour}}</text></view>
+        <view class="onboarding-rate"><text class="onboarding-rate-label">每分钟</text><text class="onboarding-rate-value">{{onboardingPreview.minute}}</text></view>
+        <view class="onboarding-rate"><text class="onboarding-rate-label">每秒</text><text class="onboarding-rate-value">{{onboardingPreview.second}}</text></view>
+      </view>
+
+      <button class="onboarding-submit" bindtap="saveOnboarding">生成我的时间工资条</button>
+      <text class="onboarding-privacy">工资和计时数据仅保存在当前手机，不会上传。</text>
+    </view>
+  </scroll-view>
+</view>
+
+<view wx:if="{{showReport}}" class="report-mask" bindtap="closeReport">
+    <view class="report-card comic-card" catchtap="blockBubble">
+      <view class="report-scene report-{{report.activityKey}}">
+        <text class="report-scene-tag">{{report.reportTag}}</text>
+        <view wx:if="{{report.activityKey === 'custom'}}" class="report-custom-visual" aria-hidden="true">
+          <view class="report-custom-ticket"><text>摸</text><text>TIME</text></view>
+          <text class="report-custom-coin">￥</text>
+        </view>
+        <image wx:else class="report-scene-mascot" src="{{report.mascot}}" mode="aspectFit" fade-show="{{false}}" />
+        <view class="report-scene-ticket"><text class="report-ticket-label">本次入账</text><text class="report-ticket-money">{{report.moneyText}}</text><text class="report-ticket-time">用时 {{report.secondsText}}</text></view>
+        <text class="report-stamp">{{report.stamp}}</text><text class="report-pop">{{report.reportSfx}}</text>
+      </view>
+    <text class="report-kicker">{{report.reportKicker}}</text>
+    <text class="report-title">{{report.title}}</text>
+    <text class="report-money">{{report.moneyText}}</text>
+    <text class="report-quote">{{report.quote}}</text>
+    <view class="report-breakdown">
+      <view><text>本次时长</text><text>{{report.secondsText}}</text></view>
+      <view><text>今日第几次</text><text>{{report.todayCountText}}</text></view>
+      <view><text>今日累计</text><text>{{report.todaySecondsText}}</text></view>
+      <view><text>本次入账</text><text>{{report.moneyText}}</text></view>
+    </view>
+    <text class="report-caption">{{report.reportCaption}}</text>
+    <button class="share-button" open-type="share">分享给微信好友</button>
+    <button class="close-button" bindtap="closeReport">先自己乐会儿</button>
+  </view>
+</view>
