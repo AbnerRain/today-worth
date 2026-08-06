@@ -23,17 +23,7 @@
     <view class="profile-copy"><text class="profile-name">{{profileMeta.alias}}的时间单价</text><text class="profile-detail">{{profileMeta.detail}}</text></view>
     <button class="settings-button" aria-label="打开工资设置" bindtap="openSettings" hover-class="settings-button--pressed" hover-start-time="0" hover-stay-time="100">
       <view class="settings-icon-shell" aria-hidden="true">
-        <view class="settings-gear" aria-hidden="true">
-          <view class="settings-gear-tooth tooth-1"></view>
-          <view class="settings-gear-tooth tooth-2"></view>
-          <view class="settings-gear-tooth tooth-3"></view>
-          <view class="settings-gear-tooth tooth-4"></view>
-          <view class="settings-gear-tooth tooth-5"></view>
-          <view class="settings-gear-tooth tooth-6"></view>
-          <view class="settings-gear-tooth tooth-7"></view>
-          <view class="settings-gear-tooth tooth-8"></view>
-          <view class="settings-gear-ring"></view>
-        </view>
+        <image class="settings-gear-image" src="/assets/settings-gear.svg" mode="aspectFit" />
       </view>
       <text class="settings-label">工资设置</text>
     </button>

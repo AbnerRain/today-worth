@@ -12,22 +12,10 @@
 .settings-button { display: inline-flex; flex: 0 0 248rpx; width: 248rpx; max-width: 248rpx; min-width: 248rpx; height: 98rpx; margin: 0 8rpx 8rpx auto; padding: 0 16rpx; align-items: center; justify-content: center; gap: 12rpx; overflow: hidden; border: 4rpx solid #131b2b; border-radius: 16rpx; background: #fff; box-shadow: 6rpx 6rpx 0 #131b2b; color: #131b2b; font-weight: 900; line-height: 1; white-space: nowrap; box-sizing: border-box; }
 .settings-button::after { border: 0; }
 .settings-icon-shell { display: flex; flex: 0 0 60rpx; width: 60rpx; height: 60rpx; align-items: center; justify-content: center; border: 4rpx solid #131b2b; border-radius: 12rpx; background: #ffdc3f; color: #131b2b; box-sizing: border-box; }
-.settings-gear { position: relative; width: 42rpx; height: 42rpx; color: currentColor; }
-.settings-gear-tooth { position: absolute; left: 50%; top: 50%; width: 6rpx; height: 9rpx; margin: -21rpx 0 0 -3rpx; border-radius: 3rpx; background: currentColor; transform-origin: 3rpx 21rpx; }
-.settings-gear-tooth.tooth-1 { transform: rotate(0deg); }
-.settings-gear-tooth.tooth-2 { transform: rotate(45deg); }
-.settings-gear-tooth.tooth-3 { transform: rotate(90deg); }
-.settings-gear-tooth.tooth-4 { transform: rotate(135deg); }
-.settings-gear-tooth.tooth-5 { transform: rotate(180deg); }
-.settings-gear-tooth.tooth-6 { transform: rotate(225deg); }
-.settings-gear-tooth.tooth-7 { transform: rotate(270deg); }
-.settings-gear-tooth.tooth-8 { transform: rotate(315deg); }
-.settings-gear-ring { position: absolute; left: 8rpx; top: 8rpx; width: 26rpx; height: 26rpx; border: 4rpx solid currentColor; border-radius: 50%; background: transparent; box-sizing: border-box; }
-.settings-gear-ring::after { content: ""; position: absolute; left: 50%; top: 50%; width: 10rpx; height: 10rpx; margin: -5rpx 0 0 -5rpx; border: 3rpx solid currentColor; border-radius: 50%; background: transparent; box-sizing: border-box; }
-.settings-label { flex: 0 0 auto; font-size: 28rpx; line-height: 1; }
+.settings-gear-image { display: block; width: 42rpx; height: 42rpx; }
+.settings-label { flex: 0 0 auto; overflow: hidden; font-size: 28rpx; line-height: 1; text-overflow: ellipsis; white-space: nowrap; }
 .settings-button--pressed { background: #ffdc3f; box-shadow: 3rpx 3rpx 0 #131b2b; transform: translate(4rpx, 4rpx); }
 .settings-button--pressed .settings-icon-shell { background: #2f6bff; color: #fff; }
-.settings-button--pressed .settings-gear-ring { background: transparent; }
 
 .rate-strip { display: grid; grid-template-columns: 1.15fr 1fr 1fr; overflow: hidden; box-shadow: 6rpx 6rpx 0 #131b2b; }
 .rate-cell { display: flex; min-width: 0; flex-direction: column; gap: 6rpx; padding: 20rpx 16rpx; border-left: 3rpx solid #131b2b; }
@@ -115,7 +103,7 @@
 
 .mode-heading { align-items: center; }
 .section-heading-copy { display: flex; min-width: 0; flex: 1 1 auto; flex-direction: column; gap: 4rpx; }
-.mode-edit-button { display: flex; flex: 0 0 auto; min-width: 148rpx; height: 60rpx; margin: 0; padding: 0 18rpx; align-items: center; justify-content: center; border: 3rpx solid #131b2b; border-radius: 999rpx; background: #fff; box-shadow: 4rpx 4rpx 0 #131b2b; color: #131b2b; font-size: 22rpx; font-weight: 900; line-height: 54rpx; box-sizing: border-box; }
+.mode-edit-button { display: flex; flex: 0 0 auto; max-width: 190rpx; min-width: 148rpx; height: 60rpx; margin: 0; padding: 0 18rpx; align-items: center; justify-content: center; overflow: hidden; border: 3rpx solid #131b2b; border-radius: 999rpx; background: #fff; box-shadow: 4rpx 4rpx 0 #131b2b; color: #131b2b; font-size: 22rpx; font-weight: 900; line-height: 54rpx; text-overflow: ellipsis; white-space: nowrap; box-sizing: border-box; }
 .mode-edit-button[disabled] { opacity: .45; }
 .activity-grid { display: flex; flex-wrap: wrap; margin: -8rpx; }
 .activity-slot { position: relative; width: 50%; padding: 8rpx; box-sizing: border-box; }
@@ -145,7 +133,7 @@
 .main-action-icon { display: flex; width: 56rpx; height: 56rpx; flex: 0 0 56rpx; align-items: center; justify-content: center; border: 4rpx solid currentColor; border-radius: 50%; box-sizing: border-box; }
 .main-action-icon text { margin-left: 3rpx; font-size: 27rpx; line-height: 1; }
 .main-action.is-running .main-action-icon text { margin-left: 0; font-size: 23rpx; }
-.main-action-label { font-size: 34rpx; line-height: 1; }
+.main-action-label { max-width: 100%; overflow: hidden; font-size: 34rpx; line-height: 1; text-overflow: ellipsis; white-space: nowrap; }
 
 .goal-card, .today-card { padding: 24rpx; }
 .goal-main { display: grid; grid-template-columns: 70rpx 1fr auto; gap: 16rpx; align-items: center; }
@@ -252,7 +240,7 @@
 .mode-chip { display: flex; width: 100%; min-width: 0; height: 64rpx; margin: 0; padding: 0 10rpx; align-items: center; justify-content: center; border: 3rpx solid #131b2b; border-radius: 10rpx; background: #fff; color: #131b2b; font-size: 21rpx; font-weight: 900; box-sizing: border-box; }
 .mode-chip.is-active { background: #ffdc3f; }
 .editor-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 14rpx; margin-top: 28rpx; }
-.editor-button { width: 100%; height: 82rpx; margin: 0; border: 3rpx solid #131b2b; border-radius: 12rpx; font-size: 26rpx; font-weight: 900; box-sizing: border-box; }
+.editor-button { width: 100%; height: 82rpx; margin: 0; overflow: hidden; border: 3rpx solid #131b2b; border-radius: 12rpx; font-size: 26rpx; font-weight: 900; text-overflow: ellipsis; white-space: nowrap; box-sizing: border-box; }
 .editor-primary { background: #2f6bff; box-shadow: 5rpx 5rpx 0 #131b2b; color: #fff; }
 .editor-secondary { background: #fff; color: #131b2b; }
 
@@ -313,7 +301,7 @@
 .report-breakdown text:last-child { max-width: 100%; overflow: hidden; font-family: "SF Mono", Menlo, monospace; font-size: 23rpx; font-weight: 900; text-overflow: ellipsis; white-space: nowrap; }
 .report-caption { display: block; padding: 10rpx 12rpx; border-left: 5rpx solid #2f6bff; background: #e8f0ff; color: #596377; font-size: 20rpx; font-weight: 700; line-height: 1.45; text-align: left; }
 .report-meal + .report-kicker { color: #da3a32; }
-.share-button, .close-button { width: 100%; height: 82rpx; margin: 14rpx 0 0; border: 3rpx solid #131b2b; border-radius: 12rpx; font-size: 26rpx; font-weight: 900; }
+.share-button, .close-button { width: 100%; height: 82rpx; margin: 14rpx 0 0; overflow: hidden; border: 3rpx solid #131b2b; border-radius: 12rpx; font-size: 26rpx; font-weight: 900; text-overflow: ellipsis; white-space: nowrap; }
 .share-button { background: #2f6bff; box-shadow: 6rpx 6rpx 0 #131b2b; color: #fff; }
 .close-button { background: #fff; color: #131b2b; }
 

@@ -9,6 +9,13 @@ button::after {
   border: 0;
 }
 
+button {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+
 .page-shell {
   min-height: 100vh;
   padding: 28rpx 28rpx calc(44rpx + env(safe-area-inset-bottom));
