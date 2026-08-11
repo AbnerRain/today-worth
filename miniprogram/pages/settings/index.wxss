@@ -18,20 +18,4 @@
 .save-button { background: #2f6bff; box-shadow: 7rpx 7rpx 0 #131b2b; color: #fff; }
 .feedback-button { margin-top: 22rpx; background: #ffdc3f; box-shadow: 7rpx 7rpx 0 #131b2b; color: #131b2b; }
 .clear-button { margin-top: 22rpx; background: #fff; color: #d83a34; }
-.version-section { margin-top: 42rpx; }
-.version-heading { display: flex; margin-bottom: 16rpx; align-items: flex-end; justify-content: space-between; gap: 20rpx; }
-.version-heading-title { flex: 0 0 auto; font-size: 30rpx; font-weight: 900; }
-.version-heading-note { color: #687186; font-size: 19rpx; font-weight: 700; text-align: right; }
-.version-card { overflow: hidden; background: #fff; }
-.version-row { position: relative; padding: 22rpx 24rpx; border-top: 2rpx dashed #bbc3cf; }
-.version-row:first-child { border-top: 0; }
-.version-row.is-current { background: #fff8ca; }
-.version-row.is-current::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 8rpx; background: #2f6bff; }
-.version-line { display: flex; min-width: 0; align-items: center; gap: 12rpx; }
-.version-tag { flex: 0 0 auto; font-family: "SF Mono", Menlo, monospace; font-size: 23rpx; font-weight: 900; }
-.version-current { flex: 0 0 auto; padding: 5rpx 9rpx; border: 2rpx solid #131b2b; border-radius: 6rpx; background: #2f6bff; color: #fff; font-size: 16rpx; font-weight: 900; line-height: 1; }
-.version-date { min-width: 0; margin-left: auto; color: #687186; font-family: "SF Mono", Menlo, monospace; font-size: 18rpx; font-weight: 700; white-space: nowrap; }
-.version-title, .version-summary { display: block; }
-.version-title { margin-top: 12rpx; font-size: 25rpx; font-weight: 900; }
-.version-summary { margin-top: 6rpx; color: #596377; font-size: 21rpx; font-weight: 700; line-height: 1.55; }
 .privacy-note { display: block; padding: 24rpx 24rpx 0; color: #687186; font-size: 21rpx; line-height: 1.6; text-align: center; }
