@@ -1,13 +1,7 @@
 <view class="page-shell home-page">
   <view wx:if="{{running}}" class="money-rain">
-    <view wx:for="{{rewardItems}}" wx:key="id" class="reward-item is-{{item.kind}} reward-{{item.variant}}">
-      <view wx:if="{{item.kind === 'bill'}}" class="reward-bill-face">
-        <text class="reward-bill-value">{{item.value}}</text>
-        <text class="reward-bill-label">{{item.label}}</text>
-      </view>
-      <view wx:else class="reward-coin-face">
-        <text>{{item.label}}</text>
-      </view>
+    <view wx:for="{{rewardItems}}" wx:key="id" class="reward-item is-{{item.kind}}">
+      <image class="reward-image" src="{{item.src}}" mode="aspectFit" fade-show="{{false}}" />
     </view>
   </view>
 
@@ -44,29 +38,8 @@
     <view wx:if="{{running}}" class="activity-scene scene-{{activeActivity}}">
       <view class="mascot-stage">
         <view class="activity-figure" aria-hidden="true">
-          <view class="activity-visual visual-toilet" aria-hidden="true">
-            <view class="toilet-visual-back"></view>
-            <view class="toilet-visual-tank"></view>
-            <view class="toilet-visual-seat"></view>
-            <view class="toilet-visual-bowl"></view>
-            <view class="toilet-visual-roll"><text>WC</text></view>
-            <view class="visual-shadow"></view>
-          </view>
-          <view class="activity-visual visual-meal" aria-hidden="true">
-            <view class="meal-visual-plate"></view>
-            <view class="meal-visual-bowl"><text>饭</text></view>
-            <view class="meal-visual-stick stick-left"></view>
-            <view class="meal-visual-stick stick-right"></view>
-            <view class="visual-shadow"></view>
-          </view>
-          <view class="activity-visual visual-nap" aria-hidden="true">
-            <view class="nap-visual-bed"></view>
-            <view class="nap-visual-pillow"></view>
-            <view class="nap-visual-blanket"></view>
-            <view class="nap-visual-moon"><text>Z</text></view>
-            <view class="visual-shadow"></view>
-          </view>
-          <view class="activity-visual visual-custom" aria-hidden="true">
+          <image class="activity-mascot-image" src="{{activity.mascot}}" mode="scaleToFill" fade-show="{{false}}" />
+          <view class="custom-activity-visual" aria-hidden="true">
             <view class="custom-visual-ticket"><text>摸</text><text>TIME</text></view>
             <view class="custom-visual-shadow"></view>
           </view>
@@ -196,30 +169,11 @@
     <view class="report-card comic-card" catchtap="blockBubble">
       <view class="report-scene report-{{report.activityKey}}">
         <text class="report-scene-tag">{{report.reportTag}}</text>
-        <view class="report-visual" aria-hidden="true">
-          <view class="report-token report-token-toilet">
-            <view class="report-toilet-tank"></view>
-            <view class="report-toilet-seat"></view>
-            <view class="report-toilet-bowl"></view>
-            <text class="report-coin-pop">￥</text>
-          </view>
-          <view class="report-token report-token-meal">
-            <view class="report-meal-plate"></view>
-            <view class="report-meal-bowl"><text>饭</text></view>
-            <view class="report-meal-stick"></view>
-            <text class="report-meal-spark">✦</text>
-          </view>
-          <view class="report-token report-token-nap">
-            <view class="report-nap-bed"></view>
-            <view class="report-nap-pillow"></view>
-            <view class="report-nap-blanket"></view>
-            <text class="report-nap-z">Z</text>
-          </view>
-          <view class="report-token report-token-custom">
-            <view class="report-custom-ticket"><text>摸</text><text>TIME</text></view>
-            <text class="report-custom-coin">￥</text>
-          </view>
+        <view wx:if="{{report.activityKey === 'custom'}}" class="report-custom-visual" aria-hidden="true">
+          <view class="report-custom-ticket"><text>摸</text><text>TIME</text></view>
+          <text class="report-custom-coin">￥</text>
         </view>
+        <image wx:else class="report-scene-mascot" src="{{report.mascot}}" mode="aspectFit" fade-show="{{false}}" />
         <view class="report-scene-ticket"><text class="report-ticket-label">本次入账</text><text class="report-ticket-money">{{report.moneyText}}</text><text class="report-ticket-time">用时 {{report.secondsText}}</text></view>
         <text class="report-stamp">{{report.stamp}}</text><text class="report-pop">{{report.reportSfx}}</text>
       </view>

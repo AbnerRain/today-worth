@@ -1,21 +1,21 @@
 const store = require("../../utils/data");
 const shareImage = require("../../utils/share-image");
 
-const moneyBillItems = [
-  { variant: "time", value: "100", label: "TIME" },
-  { variant: "break", value: "50", label: "BREAK" },
-  { variant: "desk", value: "20", label: "DESK" },
-  { variant: "off", value: "10", label: "OFF" }
+const moneyBillAssets = [
+  "/assets/money-rain/time-100.png",
+  "/assets/money-rain/break-50.png",
+  "/assets/money-rain/desk-20.png",
+  "/assets/money-rain/off-10.png"
 ];
 
-const coinItemsByActivity = {
-  toilet: [{ variant: "toilet", label: "WC" }],
-  meal: [{ variant: "meal", label: "饭" }],
-  nap: [{ variant: "nap", label: "Z" }],
+const coinAssetsByActivity = {
+  toilet: ["/assets/reward-rain/toilet-coin.png"],
+  meal: ["/assets/reward-rain/meal-coin.png"],
+  nap: ["/assets/reward-rain/nap-coin.png"],
   custom: [
-    { variant: "toilet", label: "WC" },
-    { variant: "meal", label: "饭" },
-    { variant: "nap", label: "Z" }
+    "/assets/reward-rain/toilet-coin.png",
+    "/assets/reward-rain/meal-coin.png",
+    "/assets/reward-rain/nap-coin.png"
   ]
 };
 
@@ -200,17 +200,15 @@ Page({
   startTimer() {
     this.startedAt = Date.now();
     const activity = this.data.activity;
-    const coinItems = coinItemsByActivity[activity.key] || coinItemsByActivity.custom;
+    const coinAssets = coinAssetsByActivity[activity.key] || coinAssetsByActivity.custom;
     const rewardItems = Array.from({ length: 18 }, (_, index) => {
       const isCoin = index % 3 === 1;
-      const bill = moneyBillItems[index % moneyBillItems.length];
-      const coin = coinItems[Math.floor(index / 3) % coinItems.length];
       return {
         id: `${this.startedAt}-${index}`,
         kind: isCoin ? "coin" : "bill",
-        variant: isCoin ? coin.variant : bill.variant,
-        label: isCoin ? coin.label : bill.label,
-        value: isCoin ? "" : bill.value
+        src: isCoin
+          ? coinAssets[Math.floor(index / 3) % coinAssets.length]
+          : moneyBillAssets[index % moneyBillAssets.length]
       };
     });
     this.setData({
@@ -264,6 +262,7 @@ Page({
         reportKicker: activity.reportKicker,
         reportTag: activity.reportTag,
         reportSfx: activity.reportSfx,
+        mascot: activity.reportMascot || `/assets/activity-mascots/${activity.key}-report-v1.png`,
         reportCaption,
         todayCountText: `${todayActivityTotal.count}次`,
         todaySecondsText: store.formatDuration(todayActivityTotal.seconds)
