@@ -1,9 +1,12 @@
 const store = require("../../utils/data");
+const versionInfo = require("../../utils/version");
 
 Page({
   data: {
     profile: store.defaultProfile,
     preview: {},
+    currentVersion: versionInfo.CURRENT_VERSION,
+    versionHistory: versionInfo.VERSION_HISTORY,
     pageSubtitle: store.copyLines.settings[0],
     privacyNote: store.copyLines.privacy[0]
   },

@@ -1,5 +1,8 @@
 <view class="page-shell settings-page">
-  <view class="page-header"><text class="page-title">摸鱼基金</text><text class="page-subtitle">{{pageSubtitle}}</text></view>
+  <view class="page-header">
+    <view class="page-title-row"><text class="page-title">摸鱼基金</text><text class="version-pill">v{{currentVersion}}</text></view>
+    <text class="page-subtitle">{{pageSubtitle}}</text>
+  </view>
   <view class="preview comic-card">
     <view class="preview-cell is-first"><text class="preview-label">时薪</text><text class="preview-value">{{preview.hour}}</text></view>
     <view class="preview-cell"><text class="preview-label">分钟</text><text class="preview-value">{{preview.minute}}</text></view>
@@ -14,5 +17,19 @@
   <button class="save-button" bindtap="save">保存工资条</button>
   <button class="feedback-button" open-type="feedback">反馈建议</button>
   <button class="clear-button" bindtap="clearData">清空本机数据</button>
+  <view class="version-section">
+    <view class="version-heading"><text class="version-heading-title">版本履历</text><text class="version-heading-note">每次升级，都算一笔工时</text></view>
+    <view class="version-card comic-card">
+      <view wx:for="{{versionHistory}}" wx:key="version" class="version-row {{item.isCurrent ? 'is-current' : ''}}">
+        <view class="version-line">
+          <text class="version-tag">v{{item.version}}</text>
+          <text wx:if="{{item.isCurrent}}" class="version-current">当前版本</text>
+          <text class="version-date">{{item.date}}</text>
+        </view>
+        <text class="version-title">{{item.title}}</text>
+        <text class="version-summary">{{item.summary}}</text>
+      </view>
+    </view>
+  </view>
   <text class="privacy-note">{{privacyNote}}</text>
 </view>
