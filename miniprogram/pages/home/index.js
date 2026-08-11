@@ -47,6 +47,7 @@ Page({
     goalStatus: "开始一次带薪活动，向冰美式发起冲击。",
     showReport: false,
     report: {},
+    reportShareImageUrl: "",
     rewardItems: [],
     profileMeta: {},
     showOnboarding: false,
@@ -245,6 +246,21 @@ Page({
     const todayActivityTotal = store.aggregate(todayActivitySessions);
     this.clearTimer();
     this.startedAt = 0;
+    const report = {
+      activityKey: activity.key,
+      stamp: activity.stamp,
+      title: `本次${activity.fullLabel}`,
+      secondsText: store.formatDuration(seconds),
+      moneyText: store.formatMoney(money),
+      quote,
+      reportKicker: activity.reportKicker,
+      reportTag: activity.reportTag,
+      reportSfx: activity.reportSfx,
+      mascot: activity.reportMascot || `/assets/activity-mascots/${activity.key}-report-v1.png`,
+      reportCaption,
+      todayCountText: `${todayActivityTotal.count}次`,
+      todaySecondsText: store.formatDuration(todayActivityTotal.seconds)
+    };
     this.setData({
       running: false,
       timerText: "00:00:00",
@@ -252,21 +268,15 @@ Page({
       liveLine: store.pickLine(activity.doneLines, this.data.liveLine),
       rewardItems: [],
       showReport: true,
-      report: {
-        activityKey: activity.key,
-        stamp: activity.stamp,
-        title: `本次${activity.fullLabel}`,
-        secondsText: store.formatDuration(seconds),
-        moneyText: store.formatMoney(money),
-        quote,
-        reportKicker: activity.reportKicker,
-        reportTag: activity.reportTag,
-        reportSfx: activity.reportSfx,
-        mascot: activity.reportMascot || `/assets/activity-mascots/${activity.key}-report-v1.png`,
-        reportCaption,
-        todayCountText: `${todayActivityTotal.count}次`,
-        todaySecondsText: store.formatDuration(todayActivityTotal.seconds)
-      }
+      report,
+      reportShareImageUrl: ""
+    }, () => {
+      shareImage.prepareReportShareImage(this, report).then((imageUrl) => {
+        const currentReport = this.data.report || {};
+        if (currentReport.activityKey === report.activityKey && currentReport.moneyText === report.moneyText) {
+          this.setData({ reportShareImageUrl: imageUrl });
+        }
+      });
     });
     this.renderTotals();
   },
@@ -367,15 +377,20 @@ Page({
 
   onShareAppMessage() {
     const report = this.data.report;
+    const hasReport = Boolean(report.title && report.moneyText);
     const activityKey = report.activityKey || this.data.activeActivity;
     const shareMessage = {
-      title: report.title
+      title: hasReport
         ? `${report.title}，赚了${report.moneyText}`
         : "摸力全开：算算你上班每分钟值多少钱",
       path: "/pages/home/index?from=share"
     };
-    const imageUrl = shareImage.getShareImageUrl(activityKey);
-    if (imageUrl) shareMessage.imageUrl = imageUrl;
+    if (hasReport && this.data.reportShareImageUrl) {
+      shareMessage.imageUrl = this.data.reportShareImageUrl;
+    } else if (!hasReport) {
+      const imageUrl = shareImage.getShareImageUrl(activityKey);
+      if (imageUrl) shareMessage.imageUrl = imageUrl;
+    }
     return shareMessage;
   }
 });

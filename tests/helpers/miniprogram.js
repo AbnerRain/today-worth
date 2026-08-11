@@ -64,8 +64,9 @@ function loadPage(relativePath, initialStorage = {}) {
   const page = Object.assign({}, pageConfig, {
     data: structuredClone(pageConfig.data)
   });
-  page.setData = function setData(patch) {
+  page.setData = function setData(patch, callback) {
     Object.entries(patch).forEach(([key, value]) => assignPath(this.data, key, value));
+    if (typeof callback === "function") callback();
   };
 
   return { page, storage, store: require(dataPath) };

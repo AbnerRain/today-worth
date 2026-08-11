@@ -1,4 +1,5 @@
 <view class="page-shell home-page">
+  <canvas id="reportShareCanvas" class="report-share-canvas" type="2d" aria-hidden="true"></canvas>
   <view wx:if="{{running}}" class="money-rain">
     <view wx:for="{{rewardItems}}" wx:key="id" class="reward-item is-{{item.kind}}">
       <image class="reward-image" src="{{item.src}}" mode="aspectFit" fade-show="{{false}}" />

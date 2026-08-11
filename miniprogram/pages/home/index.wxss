@@ -1,4 +1,5 @@
 .home-page { padding-top: 20rpx; }
+.report-share-canvas { position: fixed; left: -600px; top: -500px; z-index: -1; width: 500px; height: 400px; opacity: .01; pointer-events: none; }
 .masthead { margin-bottom: 22rpx; }
 .eyebrow { color: #2f6bff; font-size: 20rpx; font-weight: 900; }
 .brand-row { display: flex; align-items: center; gap: 12rpx; margin: 8rpx 0; }

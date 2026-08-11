@@ -63,3 +63,46 @@ test("结束计时只写入当前活动并生成专属结算页", () => {
   assert.equal(page.data.today.count, 1);
   assert.equal(page.data.today.secondsText, "3秒");
 });
+
+test("四种结算分享均使用含真实金额的动态卡片", () => {
+  const { page, store } = loadPage(homePage);
+  const scenarios = [
+    { key: "toilet", moneyText: "￥0.31" },
+    { key: "meal", moneyText: "￥1.28" },
+    { key: "nap", moneyText: "￥2.56" },
+    { key: "custom", moneyText: "￥8.88" }
+  ];
+
+  scenarios.forEach(({ key, moneyText }) => {
+    const activity = store.getActivities()[key];
+    page.data.activeActivity = key;
+    page.data.report = {
+      activityKey: key,
+      title: `本次${activity.fullLabel}`,
+      moneyText
+    };
+    page.data.reportShareImageUrl = `/tmp/${key}-${moneyText}.jpg`;
+    const result = page.onShareAppMessage();
+    assert.equal(result.title, `本次${activity.fullLabel}，赚了${moneyText}`);
+    assert.equal(result.imageUrl, `/tmp/${key}-${moneyText}.jpg`);
+  });
+});
+
+test("动态分享卡生成失败时退回含金额的当前结算页截图", () => {
+  const { page } = loadPage(homePage);
+  page.data.activeActivity = "toilet";
+  page.data.report = { activityKey: "toilet", title: "本次带薪拉屎", moneyText: "￥0.66" };
+  page.data.reportShareImageUrl = "";
+  const result = page.onShareAppMessage();
+  assert.equal(result.title, "本次带薪拉屎，赚了￥0.66");
+  assert.equal(Object.prototype.hasOwnProperty.call(result, "imageUrl"), false);
+});
+
+test("未结算时首页分享仍使用静态活动卡", () => {
+  const { page } = loadPage(homePage);
+  page.data.activeActivity = "toilet";
+  page.data.report = {};
+  const result = page.onShareAppMessage();
+  assert.equal(result.title, "摸力全开：算算你上班每分钟值多少钱");
+  assert.equal(result.imageUrl, "/assets/share-cards/toilet.jpg");
+});

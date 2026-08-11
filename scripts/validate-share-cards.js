@@ -107,7 +107,7 @@ function assertNoBrokenFallback() {
   const page = loadPage("miniprogram/pages/home/index.js", { failPackageRead: true });
   const result = page.onShareAppMessage.call({
     data: {
-      report: { activityKey: "toilet", title: "本次带薪拉屎", moneyText: "￥0.04" },
+      report: {},
       activeActivity: "toilet"
     }
   });
@@ -117,11 +117,30 @@ function assertNoBrokenFallback() {
   return { title: result.title, imageUrl: "页面截图兜底" };
 }
 
+function assertReportShare(activityKey, title, moneyText) {
+  const page = loadPage("miniprogram/pages/home/index.js");
+  const result = page.onShareAppMessage.call({
+    data: {
+      report: { activityKey, title, moneyText },
+      reportShareImageUrl: `/tmp/${activityKey}-${moneyText}.jpg`,
+      activeActivity: activityKey
+    }
+  });
+  if (result.imageUrl !== `/tmp/${activityKey}-${moneyText}.jpg`) {
+    throw new Error(`${activityKey} 结算分享没有使用动态金额卡: ${result.imageUrl}`);
+  }
+  const expectedTitle = `${title}，赚了${moneyText}`;
+  if (result.title !== expectedTitle) {
+    throw new Error(`${activityKey} 分享金额不正确: ${result.title}`);
+  }
+  return { title: result.title, imageUrl: "动态金额卡" };
+}
+
 const results = [
-  assertShare("miniprogram/pages/home/index.js", { report: { activityKey: "toilet", title: "本次带薪拉屎", moneyText: "￥0.04" }, activeActivity: "toilet" }, "toilet-20260805e.jpg"),
-  assertShare("miniprogram/pages/home/index.js", { report: { activityKey: "meal", title: "本次带薪吃饭", moneyText: "￥0.04" }, activeActivity: "meal" }, "meal-20260805e.jpg"),
-  assertShare("miniprogram/pages/home/index.js", { report: { activityKey: "nap", title: "本次带薪睡觉", moneyText: "￥0.04" }, activeActivity: "nap" }, "nap-20260805e.jpg"),
-  assertShare("miniprogram/pages/home/index.js", { report: { activityKey: "custom", title: "本次自定义摸鱼", moneyText: "￥0.04" }, activeActivity: "custom" }, "custom-20260805e.jpg"),
+  assertReportShare("toilet", "本次带薪拉屎", "￥0.31"),
+  assertReportShare("meal", "本次带薪吃饭", "￥1.28"),
+  assertReportShare("nap", "本次带薪睡觉", "￥2.56"),
+  assertReportShare("custom", "本次自定义摸鱼", "￥8.88"),
   assertShare("miniprogram/pages/home/index.js", { report: {}, activeActivity: "toilet" }, "toilet-20260805e.jpg"),
   assertShare("miniprogram/pages/stats/index.js", { periodLabel: "今日", summary: { moneyText: "￥0.04" } }, "general-20260805e.jpg"),
   assertShare("miniprogram/pages/achievements/index.js", { unlockedCount: 3 }, "general-20260805e.jpg"),

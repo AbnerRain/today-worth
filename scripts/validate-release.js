@@ -74,9 +74,13 @@ requiredAssets.forEach((relative) => {
 
 const homeWxml = read("miniprogram/pages/home/index.wxml");
 const homeWxss = read("miniprogram/pages/home/index.wxss");
+const homeSource = read("miniprogram/pages/home/index.js");
+const shareImageSource = read("miniprogram/utils/share-image.js");
 const statsWxss = read("miniprogram/pages/stats/index.wxss");
 const achievementsWxss = read("miniprogram/pages/achievements/index.wxss");
 record(homeWxml.includes('class="money-rain"') && homeWxml.includes('class="activity-motion motion-toilet"'), "首页包含钞票雨与活动动作层");
+record(homeWxml.includes('id="reportShareCanvas"') && homeWxml.includes("{{report.moneyText}}"), "结算页包含动态金额分享画布与真实金额");
+record(homeSource.includes("prepareReportShareImage") && shareImageSource.includes("drawReportAmount"), "结算分享卡会动态绘制本次金额");
 record(["toilet", "meal", "nap"].every((key) => homeWxss.includes(`.motion-${key}`)), "三种核心活动均有动画样式");
 record(homeWxss.includes("@keyframes reward-fall") && homeWxss.includes("animation: reward-fall linear infinite both"), "钞票雨使用连续下落动画");
 record(!sourceText.includes("用膳"), "业务文案不再包含旧称用膳");
