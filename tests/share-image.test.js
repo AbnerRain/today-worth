@@ -22,8 +22,8 @@ test("四种分享卡都把真实金额绘制到本次入账区域", () => {
       fillText(...args) { operations.push(["fillText", ...args]); }
     };
     shareImage.drawReportAmount(context, activityKey, moneyText);
-    assert.deepEqual(operations.find((item) => item[0] === "fillRect"), ["fillRect", 276, 207, 130, 47]);
-    assert.deepEqual(operations.find((item) => item[0] === "fillText"), ["fillText", moneyText, 341, 232]);
+    assert.deepEqual(operations.find((item) => item[0] === "fillRect"), ["fillRect", 276, 210, 130, 35]);
+    assert.deepEqual(operations.find((item) => item[0] === "fillText"), ["fillText", moneyText, 341, 227]);
     assert.ok(operations.some((item) => item[0] === "fillStyle" && item[1] === color));
   });
 });

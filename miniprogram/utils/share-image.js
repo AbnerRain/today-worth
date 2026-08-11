@@ -93,14 +93,14 @@ function getShareImageUrl(activityKey) {
 
 function drawReportAmount(context, activityKey, moneyText) {
   const text = String(moneyText || "￥0.00");
-  const fontSize = text.length >= 10 ? 20 : text.length >= 8 ? 24 : 28;
+  const fontSize = text.length >= 10 ? 19 : text.length >= 8 ? 22 : 27;
   context.fillStyle = "#ffffff";
-  context.fillRect(276, 207, 130, 47);
+  context.fillRect(276, 210, 130, 35);
   context.fillStyle = REPORT_COLORS[getActivityKey(activityKey)] || REPORT_COLORS.custom;
-  context.font = `900 ${fontSize}px sans-serif`;
+  context.font = `bold ${fontSize}px "Arial Black", sans-serif`;
   context.textAlign = "center";
   context.textBaseline = "middle";
-  context.fillText(text, 341, 232);
+  context.fillText(text, 341, 227);
 }
 
 function getCanvasNode(page) {
