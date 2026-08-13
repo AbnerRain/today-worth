@@ -91,16 +91,54 @@ function getShareImageUrl(activityKey) {
   return imageUrl;
 }
 
+function parseMoneyText(moneyText) {
+  const value = Number(String(moneyText || "").replace(/[^0-9.-]/g, ""));
+  return Number.isFinite(value) ? Math.max(0, value) : 0;
+}
+
+function formatCompactMoney(moneyText) {
+  const value = parseMoneyText(moneyText);
+  if (value < 10000) return `￥${value.toFixed(2)}`;
+  const divisor = value >= 100000000 ? 100000000 : 10000;
+  const unit = divisor === 100000000 ? "亿" : "万";
+  const amount = (value / divisor).toFixed(2).replace(/\.00$/, "").replace(/(\.\d)0$/, "$1");
+  return `￥${amount}${unit}`;
+}
+
+function measureTextWidth(context, text, fontSize) {
+  context.font = `bold ${fontSize}px "Arial Black", sans-serif`;
+  if (typeof context.measureText === "function") {
+    const metrics = context.measureText(text);
+    if (metrics && Number.isFinite(metrics.width)) return metrics.width;
+  }
+  return text.length * fontSize * 0.62;
+}
+
+function fitReportAmount(context, moneyText, maxWidth = 118) {
+  let text = String(moneyText || "￥0.00");
+  let fontSize = 27;
+  while (fontSize > 14 && measureTextWidth(context, text, fontSize) > maxWidth) {
+    fontSize -= 1;
+  }
+  if (measureTextWidth(context, text, fontSize) > maxWidth) {
+    text = formatCompactMoney(text);
+    fontSize = 20;
+    while (fontSize > 14 && measureTextWidth(context, text, fontSize) > maxWidth) {
+      fontSize -= 1;
+    }
+  }
+  return { text, fontSize, width: measureTextWidth(context, text, fontSize) };
+}
+
 function drawReportAmount(context, activityKey, moneyText) {
-  const text = String(moneyText || "￥0.00");
-  const fontSize = text.length >= 10 ? 19 : text.length >= 8 ? 22 : 27;
+  const fitted = fitReportAmount(context, moneyText);
   context.fillStyle = "#ffffff";
   context.fillRect(276, 210, 130, 35);
   context.fillStyle = REPORT_COLORS[getActivityKey(activityKey)] || REPORT_COLORS.custom;
-  context.font = `bold ${fontSize}px "Arial Black", sans-serif`;
+  context.font = `bold ${fitted.fontSize}px "Arial Black", sans-serif`;
   context.textAlign = "center";
   context.textBaseline = "middle";
-  context.fillText(text, 341, 227);
+  context.fillText(fitted.text, 341, 227);
 }
 
 function getCanvasNode(page) {
@@ -162,6 +200,8 @@ async function prepareReportShareImage(page, report = {}) {
 
 module.exports = {
   drawReportAmount,
+  fitReportAmount,
+  formatCompactMoney,
   getShareImageUrl,
   getSourcePath,
   preloadShareImages,

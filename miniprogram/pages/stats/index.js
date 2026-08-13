@@ -1,5 +1,6 @@
 const store = require("../../utils/data");
 const shareImage = require("../../utils/share-image");
+const analytics = require("../../utils/analytics");
 
 const periodLabels = { day: "今天", week: "本周", month: "本月", career: "全部" };
 const benchmarks = [
@@ -42,13 +43,16 @@ Page({
     summary: {},
     verdict: {},
     contributions: [],
-    records: []
+    records: [],
+    showRecordDetail: false,
+    selectedRecord: {}
   },
 
   onShow() {
     shareImage.preloadShareImages(["general"]);
     this.refreshCopy();
     this.renderStats();
+    analytics.report("stats_view", { period: this.data.activePeriod });
   },
 
   selectPeriod(event) {
@@ -59,6 +63,7 @@ Page({
       recordsNote: store.pickLine(store.copyLines.statsRecordNotes, this.data.recordsNote)
     });
     this.renderStats();
+    analytics.report("stats_view", { period: this.data.activePeriod });
   },
 
   refreshCopy() {
@@ -102,16 +107,63 @@ Page({
         const activity = activities[session.activity] || activities.toilet;
         const date = new Date(session.at);
         return {
-          id: `${session.at}-${session.activity}`,
+          id: session.id,
+          sessionId: session.id,
           stamp: activity.stamp,
           label: activity.fullLabel,
+          activity: session.activity,
           time: `${String(date.getMonth() + 1).padStart(2, "0")}/${String(date.getDate()).padStart(2, "0")} ${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`,
+          startedText: this.formatDateTime(session.startedAt),
+          endedText: this.formatDateTime(session.endedAt),
           secondsText: store.formatDuration(session.seconds),
           moneyText: store.formatMoney(session.money)
         };
       })
     });
   },
+
+  formatDateTime(value) {
+    const date = new Date(Number(value) || Date.now());
+    return `${date.getFullYear()}/${String(date.getMonth() + 1).padStart(2, "0")}/${String(date.getDate()).padStart(2, "0")} ${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}:${String(date.getSeconds()).padStart(2, "0")}`;
+  },
+
+  openRecordDetail(event) {
+    const sessionId = event.currentTarget.dataset.id;
+    const record = this.data.records.find((item) => item.sessionId === sessionId);
+    if (!record) return;
+    this.setData({ showRecordDetail: true, selectedRecord: record });
+  },
+
+  closeRecordDetail() {
+    this.setData({ showRecordDetail: false, selectedRecord: {} });
+  },
+
+  deleteSelectedRecord() {
+    const record = this.data.selectedRecord;
+    if (!record.sessionId) return;
+    wx.showModal({
+      title: "删除这条记录？",
+      content: "删除后，统计、愿望单和成就都会同步更新。",
+      confirmText: "确认删除",
+      confirmColor: "#d83a34",
+      success: (result) => {
+        if (!result.confirm) return;
+        const deleted = store.deleteSessionById(record.sessionId);
+        if (!deleted) {
+          wx.showToast({ title: "记录已经不存在", icon: "none" });
+          this.closeRecordDetail();
+          this.renderStats();
+          return;
+        }
+        analytics.report("record_delete", { activity: deleted.activity });
+        this.closeRecordDetail();
+        this.renderStats();
+        wx.showToast({ title: "记录已删除", icon: "success" });
+      }
+    });
+  },
+
+  blockBubble() {},
 
   makeVerdict(money) {
     if (money <= 0) return { label: "还没开始薅", detail: "完成一次计时再换算" };
@@ -126,7 +178,7 @@ Page({
   onShareAppMessage() {
     const shareMessage = {
       title: `我的摸力全开：${this.data.periodLabel}已赚${this.data.summary.moneyText || "￥0.00"}`,
-      path: "/pages/home/index?from=stats"
+      path: "/pages/home/index?from=stats&src=wechat_friend"
     };
     const imageUrl = shareImage.getShareImageUrl("general");
     if (imageUrl) shareMessage.imageUrl = imageUrl;

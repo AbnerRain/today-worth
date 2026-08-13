@@ -1,5 +1,6 @@
 const store = require("../../utils/data");
 const shareImage = require("../../utils/share-image");
+const analytics = require("../../utils/analytics");
 
 Page({
   data: {
@@ -26,6 +27,7 @@ Page({
       passNote: store.pickLine(store.copyLines.achievementProgress, this.data.passNote)
     });
     this.renderBadges();
+    analytics.report("achievement_view", { unlock_bucket: analytics.unlockBucket(this.data.unlockedCount) });
   },
 
   selectFilter(event) {
@@ -98,7 +100,7 @@ Page({
   onShareAppMessage() {
     const shareMessage = {
       title: `我的摸鱼履历已解锁 ${this.data.unlockedCount} 枚成就`,
-      path: "/pages/home/index?from=achievement"
+      path: "/pages/home/index?from=achievement&src=wechat_friend"
     };
     const imageUrl = shareImage.getShareImageUrl("general");
     if (imageUrl) shareMessage.imageUrl = imageUrl;

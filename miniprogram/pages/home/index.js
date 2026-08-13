@@ -1,5 +1,8 @@
 const store = require("../../utils/data");
 const shareImage = require("../../utils/share-image");
+const analytics = require("../../utils/analytics");
+
+const LONG_TIMER_SECONDS = 12 * 60 * 60;
 
 const moneyBillAssets = [
   "/assets/money-rain/time-100.png",
@@ -47,6 +50,7 @@ Page({
     goalStatus: "开始一次带薪活动，向冰美式发起冲击。",
     showReport: false,
     report: {},
+    reportSessionId: "",
     reportShareImageUrl: "",
     rewardItems: [],
     profileMeta: {},
@@ -63,17 +67,35 @@ Page({
     this.timerId = null;
     shareImage.preloadShareImages(["toilet", "meal", "nap", "custom", "general"]);
     const profile = store.getProfile();
+    const showOnboarding = !store.hasProfile();
     this.setData({
-      showOnboarding: !store.hasProfile(),
+      showOnboarding,
       onboardingProfile: profile,
       onboardingPreview: this.makeRatePreview(profile)
     });
+    if (showOnboarding) analytics.report("onboarding_view");
   },
 
   onShow() {
     this.refreshCopy();
     this.refreshData();
-    if (this.data.running) this.tick();
+    if (!this.data.running) this.restoreTimer();
+    if (this.data.running) {
+      this.tick();
+      this.ensureTimerInterval();
+      if (this.wasHidden) {
+        analytics.report("timer_restore", {
+          activity: this.data.activity.key,
+          duration_bucket: analytics.durationBucket(Math.max(0, Math.floor((Date.now() - this.startedAt) / 1000)))
+        });
+      }
+    }
+    this.wasHidden = false;
+  },
+
+  onHide() {
+    this.wasHidden = true;
+    this.clearTimer();
   },
 
   onUnload() {
@@ -199,8 +221,21 @@ Page({
   },
 
   startTimer() {
-    this.startedAt = Date.now();
     const activity = this.data.activity;
+    const timer = store.saveActiveTimer({
+      id: `timer_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+      activity: activity.key,
+      startedAt: Date.now(),
+      secondRate: this.rates.second,
+      schemaVersion: 1
+    });
+    if (!timer) {
+      wx.showToast({ title: "计时保存失败，请稍后重试", icon: "none" });
+      return;
+    }
+    this.startedAt = timer.startedAt;
+    this.activeTimerId = timer.id;
+    this.activeSecondRate = timer.secondRate;
     const coinAssets = coinAssetsByActivity[activity.key] || coinAssetsByActivity.custom;
     const rewardItems = Array.from({ length: 18 }, (_, index) => {
       const isCoin = index % 3 === 1;
@@ -219,7 +254,51 @@ Page({
       rewardItems
     });
     this.tick();
-    this.timerId = setInterval(() => this.tick(), 250);
+    this.ensureTimerInterval();
+    analytics.report("timer_start", { activity: activity.key });
+  },
+
+  restoreTimer() {
+    const timer = store.getActiveTimer();
+    if (!timer) return false;
+    const activity = store.getActivities()[timer.activity];
+    if (!activity) {
+      store.clearActiveTimer();
+      return false;
+    }
+    this.startedAt = timer.startedAt;
+    this.activeTimerId = timer.id;
+    this.activeSecondRate = timer.secondRate;
+    const coinAssets = coinAssetsByActivity[activity.key] || coinAssetsByActivity.custom;
+    const rewardItems = Array.from({ length: 18 }, (_, index) => {
+      const isCoin = index % 3 === 1;
+      return {
+        id: `${timer.id}-${index}`,
+        kind: isCoin ? "coin" : "bill",
+        src: isCoin
+          ? coinAssets[Math.floor(index / 3) % coinAssets.length]
+          : moneyBillAssets[index % moneyBillAssets.length]
+      };
+    });
+    this.setData({
+      activeActivity: activity.key,
+      activity,
+      running: true,
+      rewardItems,
+      liveLine: store.pickLine(activity.runningLines, this.data.liveLine),
+      sceneLine: store.pickLine(activity.sceneLines, this.data.sceneLine)
+    });
+    this.tick();
+    this.ensureTimerInterval();
+    analytics.report("timer_restore", {
+      activity: activity.key,
+      duration_bucket: analytics.durationBucket(Math.max(0, Math.floor((Date.now() - timer.startedAt) / 1000)))
+    });
+    return true;
+  },
+
+  ensureTimerInterval() {
+    if (!this.timerId) this.timerId = setInterval(() => this.tick(), 250);
   },
 
   tick() {
@@ -227,25 +306,60 @@ Page({
     const elapsed = Math.max(0, Math.floor((Date.now() - this.startedAt) / 1000));
     this.setData({
       timerText: store.formatClock(elapsed),
-      liveMoney: store.formatMoney(elapsed * this.rates.second)
+      liveMoney: store.formatMoney(elapsed * (this.activeSecondRate || this.rates.second))
     });
   },
 
   stopTimer() {
+    if (!this.startedAt || !this.data.running) return;
+    if (Date.now() < this.startedAt) {
+      wx.showToast({ title: "系统时间异常，请校准后重试", icon: "none" });
+      return;
+    }
     const seconds = Math.max(1, Math.round((Date.now() - this.startedAt) / 1000));
-    const money = seconds * this.rates.second;
+    if (seconds > LONG_TIMER_SECONDS) {
+      wx.showModal({
+        title: "这次计时有点久",
+        content: "本次记录持续时间较长，是否按完整时长结算？",
+        confirmText: "完整结算",
+        cancelText: "其他操作",
+        success: (result) => {
+          if (result.confirm) this.finishTimer(seconds);
+          else this.confirmDiscardLongTimer();
+        }
+      });
+      return;
+    }
+    this.finishTimer(seconds);
+  },
+
+  finishTimer(seconds) {
+    if (!this.startedAt || !this.data.running || this.finishingTimer) return;
+    this.finishingTimer = true;
+    const money = seconds * (this.activeSecondRate || this.rates.second);
     const activity = this.data.activity;
     const quote = store.pickLine(activity.reportQuotes, this.data.report && this.data.report.quote);
     const reportCaption = store.pickLine(activity.reportCaptions, this.data.report && this.data.report.reportCaption);
     const finishedAt = Date.now();
-    store.addSession({ activity: activity.key, seconds, money, at: finishedAt });
+    const session = store.addSession({
+      activity: activity.key,
+      startedAt: this.startedAt,
+      endedAt: finishedAt,
+      seconds,
+      money,
+      rateSnapshot: this.activeSecondRate || this.rates.second,
+      at: finishedAt
+    });
     const todayKey = store.getDateKey(finishedAt);
     const todayActivitySessions = store.getSessions().filter((session) => (
       session.activity === activity.key && store.getDateKey(session.at) === todayKey
     ));
     const todayActivityTotal = store.aggregate(todayActivitySessions);
     this.clearTimer();
+    store.clearActiveTimer();
     this.startedAt = 0;
+    this.activeTimerId = "";
+    this.activeSecondRate = 0;
     const report = {
       activityKey: activity.key,
       stamp: activity.stamp,
@@ -269,6 +383,7 @@ Page({
       rewardItems: [],
       showReport: true,
       report,
+      reportSessionId: session.id,
       reportShareImageUrl: ""
     }, () => {
       shareImage.prepareReportShareImage(this, report).then((imageUrl) => {
@@ -279,6 +394,38 @@ Page({
       });
     });
     this.renderTotals();
+    analytics.report("timer_complete", {
+      activity: activity.key,
+      duration_bucket: analytics.durationBucket(seconds),
+      money_bucket: analytics.moneyBucket(money)
+    });
+    this.finishingTimer = false;
+  },
+
+  confirmDiscardLongTimer() {
+    wx.showModal({
+      title: "继续还是放弃？",
+      content: "继续计时会保留当前进度；放弃后本次不会生成记录。",
+      confirmText: "放弃记录",
+      confirmColor: "#d83a34",
+      cancelText: "继续计时",
+      success: (result) => {
+        if (!result.confirm) return;
+        const activity = this.data.activity;
+        this.clearTimer();
+        store.clearActiveTimer();
+        this.startedAt = 0;
+        this.activeTimerId = "";
+        this.activeSecondRate = 0;
+        this.setData({
+          running: false,
+          timerText: "00:00:00",
+          liveMoney: "￥0.00",
+          rewardItems: [],
+          liveLine: store.pickLine(activity.doneLines, this.data.liveLine)
+        });
+      }
+    });
   },
 
   clearTimer() {
@@ -367,15 +514,48 @@ Page({
     wx.showTabBar({ animation: false });
     this.refreshData();
     wx.showToast({ title: "工资条已生成", icon: "success" });
+    analytics.report("onboarding_complete");
   },
 
   closeReport() {
     this.setData({ showReport: false });
   },
 
+  undoReport() {
+    const sessionId = this.data.reportSessionId;
+    if (!sessionId) {
+      wx.showToast({ title: "记录已撤销", icon: "none" });
+      return;
+    }
+    wx.showModal({
+      title: "撤销本次记录？",
+      content: "撤销后，首页累计、统计和成就都会同步更新。",
+      confirmText: "确认撤销",
+      confirmColor: "#d83a34",
+      success: (result) => {
+        if (!result.confirm) return;
+        const deleted = store.deleteSessionById(sessionId);
+        if (!deleted) {
+          wx.showToast({ title: "记录已撤销", icon: "none" });
+          this.setData({ showReport: false, reportSessionId: "" });
+          return;
+        }
+        analytics.report("timer_cancel", { activity: deleted.activity });
+        this.setData({
+          showReport: false,
+          report: {},
+          reportSessionId: "",
+          reportShareImageUrl: ""
+        });
+        this.renderTotals();
+        wx.showToast({ title: "本次记录已撤销", icon: "success" });
+      }
+    });
+  },
+
   blockBubble() {},
 
-  onShareAppMessage() {
+  onShareAppMessage(event = {}) {
     const report = this.data.report;
     const hasReport = Boolean(report.title && report.moneyText);
     const activityKey = report.activityKey || this.data.activeActivity;
@@ -383,13 +563,19 @@ Page({
       title: hasReport
         ? `${report.title}，赚了${report.moneyText}`
         : "摸力全开：算算你上班每分钟值多少钱",
-      path: "/pages/home/index?from=share"
+      path: "/pages/home/index?from=share&src=wechat_friend"
     };
     if (hasReport && this.data.reportShareImageUrl) {
       shareMessage.imageUrl = this.data.reportShareImageUrl;
     } else if (!hasReport) {
       const imageUrl = shareImage.getShareImageUrl(activityKey);
       if (imageUrl) shareMessage.imageUrl = imageUrl;
+    }
+    if (hasReport && event.from === "button") {
+      analytics.report("report_share_open", {
+        activity: activityKey,
+        money_bucket: analytics.moneyBucket(Number(String(report.moneyText).replace(/[^0-9.-]/g, "")))
+      });
     }
     return shareMessage;
   }

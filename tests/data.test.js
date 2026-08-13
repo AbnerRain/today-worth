@@ -58,6 +58,51 @@ test("会话记录最多保留最近五千条", () => {
   assert.equal(saved[4999].at, 5004);
 });
 
+test("旧记录会补齐稳定ID和时间字段且重复迁移不变", () => {
+  const oldRecord = { activity: "meal", seconds: 60, money: 1.25, at: 1720000060000 };
+  const { store } = loadStore({ "time-payslip-sessions-v1": [oldRecord] });
+  const first = store.getSessions()[0];
+  const second = store.getSessions()[0];
+  assert.match(first.id, /^legacy_/);
+  assert.equal(first.startedAt, 1720000000000);
+  assert.equal(first.endedAt, 1720000060000);
+  assert.equal(first.money, 1.25);
+  assert.equal(first.rateSnapshot, 1.25 / 60);
+  assert.equal(first.schemaVersion, 2);
+  assert.deepEqual(second, first);
+});
+
+test("新记录可按唯一ID读取和删除", () => {
+  const { store } = loadStore();
+  const saved = store.addSession({
+    activity: "toilet",
+    startedAt: 1720000000000,
+    endedAt: 1720000030000,
+    seconds: 30,
+    money: 0.5,
+    rateSnapshot: 1 / 60
+  });
+  assert.match(saved.id, /^session_/);
+  assert.equal(store.getSessionById(saved.id).money, 0.5);
+  assert.equal(store.deleteSessionById(saved.id).id, saved.id);
+  assert.equal(store.getSessions().length, 0);
+  assert.equal(store.deleteSessionById(saved.id), null);
+});
+
+test("活动计时缓存会校验保存恢复与清理", () => {
+  const { store } = loadStore();
+  const timer = store.saveActiveTimer({
+    id: "timer_test",
+    activity: "nap",
+    startedAt: 1720000000000,
+    secondRate: 0.02
+  });
+  assert.deepEqual(store.getActiveTimer(), timer);
+  store.clearActiveTimer();
+  assert.equal(store.getActiveTimer(), null);
+  assert.equal(store.saveActiveTimer({ activity: "nap", startedAt: -1, secondRate: 1 }), null);
+});
+
 test("自定义活动会截断名称与标记并参与活动列表", () => {
   const { store } = loadStore();
   const activity = store.saveCustomActivity({ label: "开会摸鱼测试", stamp: "会议" });
@@ -91,6 +136,7 @@ test("十八枚成就均有对应图片", () => {
 test("金额与时长格式保持稳定", () => {
   const { store } = loadStore();
   assert.equal(store.formatMoney(0.286), "￥0.29");
+  assert.equal(store.formatMoney(Infinity), "￥0.00");
   assert.equal(store.formatClock(3661), "01:01:01");
   assert.equal(store.formatDuration(59), "59秒");
   assert.equal(store.formatDuration(3661), "1小时1分钟");

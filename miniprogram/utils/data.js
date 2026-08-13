@@ -3,6 +3,9 @@ const SESSIONS_KEY = "time-payslip-sessions-v1";
 const GOAL_KEY = "time-payslip-goal-v1";
 const CUSTOM_ACTIVITY_KEY = "time-payslip-custom-activity-v1";
 const LEGACY_LEDGER_KEY = "time-payslip-ledger-v1";
+const ACTIVE_TIMER_KEY = "moli-active-timer-v1";
+const ENTRY_CHANNEL_KEY = "moli-entry-channel-v1";
+const SESSION_SCHEMA_VERSION = 2;
 
 const copyLines = {
   home: [
@@ -95,10 +98,10 @@ const copyLines = {
     "先把单价算清楚，快乐才好报销。"
   ],
   privacy: [
-    "数据只保存在你的手机里，工资和记录不上传。",
-    "这是你的私人时间账本，当前版本只在本机保存。",
-    "工资信息仅用于计算单价，不会离开这台手机。",
-    "本机记账，放心摸鱼；数据不会自动发给老板。"
+    "工资和明细只存在本机，仅上报匿名功能使用统计。",
+    "这是你的私人时间账本，精确金额和记录不会上传。",
+    "工资只用于本机计算，匿名统计不包含你的具体数据。",
+    "本机记账，匿名分析只帮助我们改进功能体验。"
   ],
   emptyStats: [
     "还没有记录，先去首页赚下第一笔。",
@@ -317,12 +320,17 @@ const defaultProfile = {
   hours: 8
 };
 
+function getPositiveNumber(value, fallback) {
+  const number = Number(value);
+  return Number.isFinite(number) && number > 0 ? number : fallback;
+}
+
 function normalizeProfile(profile = {}) {
   return {
     alias: String(profile.alias || defaultProfile.alias).trim().slice(0, 12) || defaultProfile.alias,
-    salary: Math.max(1, Number(profile.salary) || defaultProfile.salary),
-    workdays: Math.max(1, Number(profile.workdays) || defaultProfile.workdays),
-    hours: Math.max(1, Number(profile.hours) || defaultProfile.hours)
+    salary: Math.max(1, getPositiveNumber(profile.salary, defaultProfile.salary)),
+    workdays: Math.max(1, getPositiveNumber(profile.workdays, defaultProfile.workdays)),
+    hours: Math.max(1, getPositiveNumber(profile.hours, defaultProfile.hours))
   };
 }
 
@@ -342,20 +350,157 @@ function saveProfile(profile) {
   return normalized;
 }
 
+function makeHash(value) {
+  let hash = 2166136261;
+  const text = String(value);
+  for (let index = 0; index < text.length; index += 1) {
+    hash ^= text.charCodeAt(index);
+    hash = Math.imul(hash, 16777619);
+  }
+  return (hash >>> 0).toString(36);
+}
+
+function createId(prefix, timestamp = Date.now()) {
+  return `${prefix}_${timestamp}_${Math.random().toString(36).slice(2, 8)}`;
+}
+
+function normalizeSession(session = {}, legacyIndex = 0, occurrences = {}) {
+  const activity = ["toilet", "meal", "nap", "custom"].includes(session.activity)
+    ? session.activity
+    : "toilet";
+  const rawSeconds = Number(session.seconds);
+  const seconds = Number.isFinite(rawSeconds) ? Math.max(0, Math.round(rawSeconds)) : 0;
+  const rawMoney = Number(session.money);
+  const money = Number.isFinite(rawMoney) ? Math.max(0, rawMoney) : 0;
+  const rawEndedAt = Number(session.endedAt);
+  const rawAt = Number(session.at);
+  const endedAt = Number.isFinite(rawEndedAt)
+    ? rawEndedAt
+    : Number.isFinite(rawAt) ? rawAt : Date.now();
+  const rawStartedAt = Number(session.startedAt);
+  const startedAt = Number.isFinite(rawStartedAt)
+    ? rawStartedAt
+    : Math.max(0, endedAt - seconds * 1000);
+  const rawRate = Number(session.rateSnapshot);
+  const rateSnapshot = Number.isFinite(rawRate) && rawRate >= 0
+    ? rawRate
+    : seconds > 0 ? money / seconds : null;
+  const legacySeed = `${endedAt}|${activity}|${seconds}|${money.toFixed(8)}`;
+  const occurrence = occurrences[legacySeed] || 0;
+  occurrences[legacySeed] = occurrence + 1;
+  const fallbackId = `legacy_${makeHash(legacySeed)}_${occurrence}`;
+  const id = typeof session.id === "string" && session.id.trim()
+    ? session.id.trim().slice(0, 80)
+    : fallbackId;
+
+  return {
+    id,
+    activity,
+    startedAt,
+    endedAt,
+    seconds,
+    money,
+    rateSnapshot,
+    source: session.source === "timer" ? "timer" : "legacy",
+    schemaVersion: SESSION_SCHEMA_VERSION,
+    at: endedAt,
+    legacyIndex
+  };
+}
+
+function normalizeSessions(sessions) {
+  const occurrences = {};
+  return sessions.slice(-5000).map((session, index) => {
+    const normalized = normalizeSession(session, index, occurrences);
+    delete normalized.legacyIndex;
+    return normalized;
+  });
+}
+
 function getSessions() {
   const saved = wx.getStorageSync(SESSIONS_KEY);
-  return Array.isArray(saved) ? saved : [];
+  if (!Array.isArray(saved)) return [];
+  const normalized = normalizeSessions(saved);
+  if (JSON.stringify(saved) !== JSON.stringify(normalized)) {
+    try {
+      wx.setStorageSync(SESSIONS_KEY, normalized);
+    } catch (error) {
+      // 存储不可用时仍返回兼容后的内存数据，避免旧记录阻断页面。
+    }
+  }
+  return normalized;
 }
 
 function saveSessions(sessions) {
-  wx.setStorageSync(SESSIONS_KEY, sessions.slice(-5000));
+  const normalized = normalizeSessions(Array.isArray(sessions) ? sessions : []);
+  wx.setStorageSync(SESSIONS_KEY, normalized);
+  return normalized;
 }
 
 function addSession(session) {
   const sessions = getSessions();
-  sessions.push(session);
+  const endedAt = Number.isFinite(Number(session.endedAt)) ? Number(session.endedAt) : Date.now();
+  const saved = normalizeSession(Object.assign({
+    id: createId("session", endedAt),
+    source: "timer",
+    endedAt,
+    at: endedAt
+  }, session));
+  delete saved.legacyIndex;
+  sessions.push(saved);
   saveSessions(sessions);
-  return sessions;
+  return saved;
+}
+
+function getSessionById(id) {
+  return getSessions().find((session) => session.id === id) || null;
+}
+
+function deleteSessionById(id) {
+  const sessions = getSessions();
+  const index = sessions.findIndex((session) => session.id === id);
+  if (index < 0) return null;
+  const deleted = sessions[index];
+  sessions.splice(index, 1);
+  saveSessions(sessions);
+  return deleted;
+}
+
+function normalizeActiveTimer(timer = {}) {
+  const startedAt = Number(timer.startedAt);
+  const secondRate = Number(timer.secondRate);
+  if (!Number.isFinite(startedAt) || startedAt <= 0) return null;
+  if (!Number.isFinite(secondRate) || secondRate < 0) return null;
+  if (!["toilet", "meal", "nap", "custom"].includes(timer.activity)) return null;
+  return {
+    id: typeof timer.id === "string" && timer.id ? timer.id.slice(0, 80) : createId("timer", startedAt),
+    activity: timer.activity,
+    startedAt,
+    secondRate,
+    schemaVersion: 1
+  };
+}
+
+function getActiveTimer() {
+  const saved = wx.getStorageSync(ACTIVE_TIMER_KEY);
+  const normalized = saved && typeof saved === "object" ? normalizeActiveTimer(saved) : null;
+  if (!normalized && saved) wx.removeStorageSync(ACTIVE_TIMER_KEY);
+  return normalized;
+}
+
+function saveActiveTimer(timer) {
+  const normalized = normalizeActiveTimer(timer);
+  if (!normalized) return null;
+  try {
+    wx.setStorageSync(ACTIVE_TIMER_KEY, normalized);
+    return normalized;
+  } catch (error) {
+    return null;
+  }
+}
+
+function clearActiveTimer() {
+  wx.removeStorageSync(ACTIVE_TIMER_KEY);
 }
 
 function getGoal() {
@@ -383,9 +528,9 @@ function saveGoal(goal) {
 }
 
 function getRates(profile = getProfile()) {
-  const salary = Math.max(1, Number(profile.salary) || defaultProfile.salary);
-  const workdays = Math.max(1, Number(profile.workdays) || defaultProfile.workdays);
-  const hours = Math.max(1, Number(profile.hours) || defaultProfile.hours);
+  const salary = Math.max(1, getPositiveNumber(profile.salary, defaultProfile.salary));
+  const workdays = Math.max(1, getPositiveNumber(profile.workdays, defaultProfile.workdays));
+  const hours = Math.max(1, getPositiveNumber(profile.hours, defaultProfile.hours));
   const hour = salary / workdays / hours;
   return { hour, minute: hour / 60, second: hour / 3600 };
 }
@@ -437,7 +582,8 @@ function getPeriodSessions(sessions, period) {
 }
 
 function formatMoney(value) {
-  return `￥${(Number(value) || 0).toFixed(2)}`;
+  const number = Number(value);
+  return `￥${(Number.isFinite(number) ? number : 0).toFixed(2)}`;
 }
 
 function formatClock(totalSeconds) {
@@ -460,6 +606,8 @@ function clearAllData() {
   wx.removeStorageSync(GOAL_KEY);
   wx.removeStorageSync(CUSTOM_ACTIVITY_KEY);
   wx.removeStorageSync(LEGACY_LEDGER_KEY);
+  wx.removeStorageSync(ACTIVE_TIMER_KEY);
+  wx.removeStorageSync(ENTRY_CHANNEL_KEY);
 }
 
 module.exports = {
@@ -481,6 +629,12 @@ module.exports = {
   getSessions,
   saveSessions,
   addSession,
+  getSessionById,
+  deleteSessionById,
+  normalizeSession,
+  getActiveTimer,
+  saveActiveTimer,
+  clearActiveTimer,
   getGoal,
   normalizeGoal,
   saveGoal,
@@ -492,5 +646,10 @@ module.exports = {
   formatMoney,
   formatClock,
   formatDuration,
-  clearAllData
+  clearAllData,
+  storageKeys: {
+    activeTimer: ACTIVE_TIMER_KEY,
+    entryChannel: ENTRY_CHANNEL_KEY,
+    sessions: SESSIONS_KEY
+  }
 };

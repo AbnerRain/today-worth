@@ -1,10 +1,11 @@
 {
   "name": "moli-quankai-miniprogram",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "private": true,
   "description": "摸力全开微信小程序",
   "scripts": {
     "test": "node --test --test-concurrency=1 tests/*.test.js",
-    "test:release": "node scripts/validate-release.js && node scripts/validate-share-cards.js && npm test"
+    "test:stress": "node scripts/stress-test.js",
+    "test:release": "node scripts/validate-release.js && node scripts/validate-share-cards.js && npm test && npm run test:stress"
   }
 }

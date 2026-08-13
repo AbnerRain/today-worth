@@ -161,7 +161,7 @@
       </view>
 
       <button class="onboarding-submit" bindtap="saveOnboarding"><text class="onboarding-submit-label">生成我的时间工资条</text></button>
-      <text class="onboarding-privacy">工资和计时数据仅保存在当前手机，不会上传。</text>
+      <text class="onboarding-privacy">工资和精确记录只保存在本机，仅上报匿名功能使用统计。</text>
     </view>
   </scroll-view>
 </view>
@@ -191,5 +191,6 @@
     <text class="report-caption">{{report.reportCaption}}</text>
     <button class="share-button" open-type="share">分享给微信好友</button>
     <button class="close-button" bindtap="closeReport">先自己乐会儿</button>
+    <button class="undo-button" bindtap="undoReport">记录有误？撤销本次</button>
   </view>
 </view>

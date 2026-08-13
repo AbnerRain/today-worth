@@ -27,8 +27,23 @@
   <view class="section-heading"><text class="section-title">收益明细</text><text class="section-note">{{recordsNote}}</text></view>
   <view class="records-card comic-card">
     <view wx:if="{{!records.length}}" class="empty">{{emptyText}}</view>
-    <view wx:for="{{records}}" wx:key="id" class="record-row">
+    <view wx:for="{{records}}" wx:key="id" class="record-row" data-id="{{item.sessionId}}" bindtap="openRecordDetail">
       <text class="record-stamp">{{item.stamp}}</text><view class="record-copy"><text class="record-title">{{item.label}}</text><text class="record-detail">{{item.time}}</text></view><view class="record-copy record-values"><text class="record-title">{{item.moneyText}}</text><text class="record-detail">{{item.secondsText}}</text></view>
     </view>
+  </view>
+</view>
+
+<view wx:if="{{showRecordDetail}}" class="record-detail-mask" bindtap="closeRecordDetail" catchtouchmove="blockBubble">
+  <view class="record-detail-card comic-card" catchtap="blockBubble">
+    <view class="record-detail-head"><text class="record-detail-kicker">时间账本 · 单笔明细</text><text class="record-detail-stamp">{{selectedRecord.stamp}}</text></view>
+    <text class="record-detail-title">{{selectedRecord.label}}</text>
+    <view class="record-detail-list">
+      <view><text>开始时间</text><text>{{selectedRecord.startedText}}</text></view>
+      <view><text>结束时间</text><text>{{selectedRecord.endedText}}</text></view>
+      <view><text>本次时长</text><text>{{selectedRecord.secondsText}}</text></view>
+      <view><text>本次入账</text><text>{{selectedRecord.moneyText}}</text></view>
+    </view>
+    <button class="record-detail-close" bindtap="closeRecordDetail">保留记录</button>
+    <button class="record-detail-delete" bindtap="deleteSelectedRecord">删除此记录</button>
   </view>
 </view>

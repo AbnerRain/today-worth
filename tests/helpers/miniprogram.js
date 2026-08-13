@@ -3,9 +3,11 @@ const path = require("node:path");
 const root = path.resolve(__dirname, "../..");
 const dataPath = path.join(root, "miniprogram/utils/data.js");
 const shareImagePath = path.join(root, "miniprogram/utils/share-image.js");
+const analyticsPath = path.join(root, "miniprogram/utils/analytics.js");
 
 function installWx(initialStorage = {}) {
   const storage = new Map(Object.entries(initialStorage));
+  const analyticsEvents = [];
   global.wx = {
     env: {},
     getStorageSync(key) {
@@ -22,8 +24,12 @@ function installWx(initialStorage = {}) {
     showToast() {},
     navigateTo() {},
     navigateBack() {},
-    showModal() {}
+    showModal() {},
+    reportAnalytics(eventName, data) {
+      analyticsEvents.push({ eventName, data });
+    }
   };
+  storage.analyticsEvents = analyticsEvents;
   return storage;
 }
 
@@ -34,6 +40,7 @@ function clearModule(file) {
 function loadStore(initialStorage = {}) {
   const storage = installWx(initialStorage);
   clearModule(dataPath);
+  clearModule(analyticsPath);
   return { store: require(dataPath), storage };
 }
 
@@ -51,6 +58,7 @@ function loadPage(relativePath, initialStorage = {}) {
   const storage = installWx(initialStorage);
   clearModule(dataPath);
   clearModule(shareImagePath);
+  clearModule(analyticsPath);
   const pagePath = path.join(root, relativePath);
   clearModule(pagePath);
 
