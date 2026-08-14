@@ -123,8 +123,8 @@
     <text class="editor-title">设置一个摸鱼行为</text>
     <text class="editor-note">保存后，这个按钮会像拉屎、吃饭、睡觉一样计时、结算和进统计。</text>
     <label class="editor-field">
-      <text class="editor-label">行为名称</text>
-      <input class="editor-input" value="{{customActivityDraft.label}}" maxlength="6" data-field="label" bindinput="onCustomActivityInput" placeholder="例：抽烟" confirm-type="done" />
+      <view class="editor-label-row"><text class="editor-label">行为名称</text><text class="editor-count">{{customActivityDraft.label.length}} / {{customActivityLabelMaxLength}} 字</text></view>
+      <input class="editor-input" value="{{customActivityDraft.label}}" maxlength="{{customActivityLabelMaxLength}}" data-field="label" bindinput="onCustomActivityInput" placeholder="例：茶水间放空一下" confirm-type="done" />
     </label>
     <label class="editor-field">
       <text class="editor-label">按钮标记</text>
