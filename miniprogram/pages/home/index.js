@@ -60,7 +60,8 @@ Page({
     showCustomActivityEditor: false,
     customActivityConfigured: Boolean(initialActivities.custom && initialActivities.custom.configured),
     customActivityDraft: { label: "", stamp: "" },
-    customActivityLabelMaxLength: store.CUSTOM_ACTIVITY_LABEL_MAX_LENGTH
+    customActivityLabelMaxLength: store.CUSTOM_ACTIVITY_LABEL_MAX_LENGTH,
+    customActivityStampMaxLength: store.CUSTOM_ACTIVITY_STAMP_MAX_LENGTH
   },
 
   onLoad() {
@@ -198,7 +199,9 @@ Page({
     const label = String(this.data.customActivityDraft.label || "")
       .trim()
       .slice(0, store.CUSTOM_ACTIVITY_LABEL_MAX_LENGTH);
-    const stamp = String(this.data.customActivityDraft.stamp || "").trim().slice(0, 2);
+    const stamp = String(this.data.customActivityDraft.stamp || "")
+      .trim()
+      .slice(0, store.CUSTOM_ACTIVITY_STAMP_MAX_LENGTH);
     if (!label) {
       wx.showToast({ title: "先填行为名称", icon: "none" });
       return;

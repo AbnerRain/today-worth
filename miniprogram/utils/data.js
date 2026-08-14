@@ -3,6 +3,7 @@ const SESSIONS_KEY = "time-payslip-sessions-v1";
 const GOAL_KEY = "time-payslip-goal-v1";
 const CUSTOM_ACTIVITY_KEY = "time-payslip-custom-activity-v1";
 const CUSTOM_ACTIVITY_LABEL_MAX_LENGTH = 12;
+const CUSTOM_ACTIVITY_STAMP_MAX_LENGTH = 4;
 const LEGACY_LEDGER_KEY = "time-payslip-ledger-v1";
 const ACTIVE_TIMER_KEY = "moli-active-timer-v1";
 const ENTRY_CHANNEL_KEY = "moli-entry-channel-v1";
@@ -197,7 +198,7 @@ const activityList = Object.keys(activities).map((key) => activities[key]);
 
 function normalizeCustomActivityConfig(config = {}) {
   const label = String(config.label || "").trim().slice(0, CUSTOM_ACTIVITY_LABEL_MAX_LENGTH);
-  const stamp = String(config.stamp || "").trim().slice(0, 2) || label.slice(0, 1) || "+";
+  const stamp = String(config.stamp || "").trim().slice(0, CUSTOM_ACTIVITY_STAMP_MAX_LENGTH) || label.slice(0, 1) || "+";
   return { label, stamp };
 }
 
@@ -613,6 +614,7 @@ function clearAllData() {
 
 module.exports = {
   CUSTOM_ACTIVITY_LABEL_MAX_LENGTH,
+  CUSTOM_ACTIVITY_STAMP_MAX_LENGTH,
   activities,
   activityList,
   getActivities,

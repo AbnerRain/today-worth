@@ -94,6 +94,7 @@ record(dataSource.includes("moli-active-timer-v1") && homeSource.includes("resto
 record(homeSource.includes("undoReport") && statsSource.includes("deleteSelectedRecord"), "单次记录支持撤销和删除");
 record(homeWxss.includes(".share-button, .close-button, .undo-button") && homeWxss.includes("background: #fff1ef"), "结算撤销入口使用完整按钮样式");
 record(dataSource.includes("CUSTOM_ACTIVITY_LABEL_MAX_LENGTH = 12") && homeWxml.includes('maxlength="{{customActivityLabelMaxLength}}"'), "自定义活动名称支持十二个汉字");
+record(dataSource.includes("CUSTOM_ACTIVITY_STAMP_MAX_LENGTH = 4") && homeWxml.includes('maxlength="{{customActivityStampMaxLength}}"'), "自定义按钮标记支持四个汉字");
 record(shareImageSource.includes("measureText") && shareImageSource.includes("formatCompactMoney"), "分享金额按真实宽度自适应");
 record(analyticsSource.includes("wx.reportAnalytics") && analyticsSource.includes("ALLOWED_CHANNELS"), "渠道与匿名分析已接入");
 record(!analyticsSource.includes("salary") && !analyticsSource.includes("alias"), "匿名分析不包含工资与用户代号");

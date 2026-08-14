@@ -112,6 +112,7 @@
 .activity-meal .activity-stamp { background: #fff0a6; }
 .activity-nap .activity-stamp { background: #cbe8ff; }
 .activity-custom .activity-stamp { background: #e8f0ff; }
+.activity-custom .activity-stamp { max-width: 92rpx; padding: 0 6rpx; overflow: hidden; font-size: 17rpx; text-overflow: ellipsis; white-space: nowrap; }
 
 .main-action-wrap { width: 100%; margin-top: 28rpx; }
 .main-action { display: flex; width: 100%; min-width: 100%; max-width: none; height: 116rpx; margin: 0; padding: 0 24rpx; align-items: center; justify-content: center; gap: 20rpx; border: 4rpx solid #131b2b; border-radius: 16rpx; background: #2f6bff; box-shadow: 8rpx 8rpx 0 #131b2b; color: #fff; font-weight: 900; box-sizing: border-box; }
