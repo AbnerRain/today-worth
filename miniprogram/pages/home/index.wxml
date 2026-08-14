@@ -127,8 +127,8 @@
       <input class="editor-input" value="{{customActivityDraft.label}}" maxlength="{{customActivityLabelMaxLength}}" data-field="label" bindinput="onCustomActivityInput" placeholder="例：茶水间放空一下" confirm-type="done" />
     </label>
     <label class="editor-field">
-      <view class="editor-label-row"><text class="editor-label">按钮标记</text><text class="editor-count">{{customActivityDraft.stamp.length}} / {{customActivityStampMaxLength}} 字</text></view>
-      <view class="editor-control"><input class="editor-input" value="{{customActivityDraft.stamp}}" maxlength="{{customActivityStampMaxLength}}" data-field="stamp" bindinput="onCustomActivityInput" placeholder="例：烟" confirm-type="done" /><text class="editor-unit">可空</text></view>
+      <view class="editor-label-row"><text class="editor-label">按钮标记</text><text class="editor-count">{{customActivityDraft.stamp.length}} / {{customActivityLabelMaxLength}} 字</text></view>
+      <view class="editor-control"><input class="editor-input" value="{{customActivityDraft.stamp}}" maxlength="{{customActivityLabelMaxLength}}" data-field="stamp" bindinput="onCustomActivityInput" placeholder="例：烟" confirm-type="done" /><text class="editor-unit">可空</text></view>
     </label>
     <view class="editor-actions">
       <button class="editor-button editor-secondary" bindtap="closeCustomActivityEditor">取消</button>

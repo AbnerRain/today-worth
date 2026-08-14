@@ -106,11 +106,11 @@ test("活动计时缓存会校验保存恢复与清理", () => {
 test("自定义活动会截断名称与标记并参与活动列表", () => {
   const { store } = loadStore();
   const longLabel = "开会摸鱼测试顺便放空一下看看";
-  const activity = store.saveCustomActivity({ label: longLabel, stamp: "会议" });
+  const longStamp = "会议摸鱼项目代号";
+  const activity = store.saveCustomActivity({ label: longLabel, stamp: longStamp });
   assert.equal(store.CUSTOM_ACTIVITY_LABEL_MAX_LENGTH, 12);
-  assert.equal(store.CUSTOM_ACTIVITY_STAMP_MAX_LENGTH, 4);
   assert.equal(activity.label, longLabel.slice(0, 12));
-  assert.equal(activity.stamp, "会议".slice(0, 4));
+  assert.equal(activity.stamp, longStamp.slice(0, 12));
   assert.equal(activity.configured, true);
   assert.equal(store.getActivityList().length, 4);
 });
