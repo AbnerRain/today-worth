@@ -221,8 +221,8 @@
 .mode-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12rpx; }
 .mode-chip { display: flex; width: 100%; min-width: 0; height: 64rpx; margin: 0; padding: 0 10rpx; align-items: center; justify-content: center; border: 3rpx solid #131b2b; border-radius: 10rpx; background: #fff; color: #131b2b; font-size: 21rpx; font-weight: 900; box-sizing: border-box; }
 .mode-chip.is-active { background: #ffdc3f; }
-.editor-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 14rpx; margin-top: 22rpx; }
-.editor-button { display: flex; width: 100%; height: 72rpx; margin: 0; padding: 0 12rpx; align-items: center; justify-content: center; overflow: hidden; border: 3rpx solid #131b2b; border-radius: 10rpx; font-size: 24rpx; font-weight: 900; line-height: 1; text-align: center; text-overflow: ellipsis; white-space: nowrap; box-sizing: border-box; }
+.editor-actions { display: flex; width: 100%; min-height: 72rpx; margin-top: 22rpx; align-items: center; justify-content: center; gap: 14rpx; }
+.editor-button { display: flex; width: 0; height: 72rpx; flex: 1 1 0; min-width: 0; margin: 0; padding: 0; align-items: center; justify-content: center; overflow: hidden; border: 3rpx solid #131b2b; border-radius: 10rpx; font-size: 24rpx; font-weight: 900; line-height: 1; text-align: center; text-indent: 0; text-overflow: ellipsis; white-space: nowrap; box-sizing: border-box; }
 .editor-button::after { border: 0; }
 .editor-primary { background: #2f6bff; box-shadow: 4rpx 4rpx 0 #131b2b; color: #fff; }
 .editor-secondary { background: #fff; color: #131b2b; }
