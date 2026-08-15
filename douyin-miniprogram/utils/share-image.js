@@ -23,13 +23,26 @@ function getSourcePath(activityKey) {
   return SHARE_CARD_SOURCES[getActivityKey(activityKey)];
 }
 
+function getUserDataPath() {
+  if (typeof tt === "undefined") return "";
+  if (typeof tt.getEnvInfoSync === "function") {
+    try {
+      const info = tt.getEnvInfoSync();
+      return info && info.common && info.common.USER_DATA_PATH ? info.common.USER_DATA_PATH : "";
+    } catch (error) {
+      return "";
+    }
+  }
+  return "";
+}
+
 function canUseFileSystem() {
-  return typeof tt !== "undefined" && tt.env && tt.env.USER_DATA_PATH && tt.getFileSystemManager;
+  return Boolean(getUserDataPath() && typeof tt.getFileSystemManager === "function");
 }
 
 function getTargetPath(sourcePath) {
   const fileName = sourcePath.split("/").pop().replace(".jpg", `-${SHARE_IMAGE_VERSION}.jpg`);
-  return `${tt.env.USER_DATA_PATH}/${fileName}`;
+  return `${getUserDataPath()}/${fileName}`;
 }
 
 function fileExists(manager, filePath) {
