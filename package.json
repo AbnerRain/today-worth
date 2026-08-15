@@ -2,10 +2,11 @@
   "name": "moli-quankai-miniprogram",
   "version": "1.0.5",
   "private": true,
-  "description": "摸力全开微信小程序",
+  "description": "摸力全开微信与抖音双平台小程序",
   "scripts": {
     "test": "node --test --test-concurrency=1 tests/*.test.js",
     "test:stress": "node scripts/stress-test.js",
-    "test:release": "node scripts/validate-release.js && node scripts/validate-share-cards.js && npm test && npm run test:stress"
+    "test:douyin": "node scripts/validate-douyin.js",
+    "test:release": "node scripts/validate-release.js && npm run test:douyin && node scripts/validate-share-cards.js && npm test && npm run test:stress"
   }
 }

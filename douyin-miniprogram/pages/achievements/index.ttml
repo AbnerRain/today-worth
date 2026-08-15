@@ -1,0 +1,28 @@
+<view class="page-shell achievements-page">
+  <view class="page-header"><text class="page-title">摸鱼履历</text><text class="page-subtitle">{{pageSubtitle}}</text></view>
+  <view class="pass comic-card">
+    <view class="pass-head"><text>履历完成度</text><text>{{unlockedCount}} / {{totalCount}}</text></view>
+    <view class="pass-track"><view class="pass-fill" style="width: {{completion}}%;"></view></view>
+    <text class="pass-foot">已解锁 {{completion}}% · {{passNote}}</text>
+    <view class="activity-progress-list">
+      <view tt:for="{{activityProgress}}" tt:key="key" class="activity-progress-row">
+        <view class="activity-progress-head"><view class="activity-progress-name"><text class="activity-progress-stamp activity-{{item.key}}">{{item.stamp}}</text><text>{{item.label}}</text></view><text>{{item.unlocked}} / {{item.total}}</text></view>
+        <view class="activity-progress-track"><view class="activity-progress-fill activity-{{item.key}}" style="width: {{item.percent}}%; background: {{item.color}};"></view></view>
+        <text class="activity-progress-detail">{{item.detail}} · {{item.percent}}%</text>
+      </view>
+    </view>
+  </view>
+  <view class="filter-tabs">
+    <button tt:for="{{filters}}" tt:key="key" class="filter-button {{activeFilter === item.key ? 'is-active' : ''}}" data-filter="{{item.key}}" bindtap="selectFilter">{{item.label}}</button>
+  </view>
+  <view class="badge-grid">
+    <view tt:for="{{badges}}" tt:key="id" class="badge-card comic-card {{item.unlocked ? 'is-unlocked' : 'is-locked'}}">
+      <view class="badge-meta"><text>{{item.activityLabel}}线</text><text>NO.{{item.index}}</text></view>
+      <image class="badge-stamp {{item.unlocked ? 'is-unlocked' : 'is-locked'}}" src="{{item.image}}" mode="aspectFit" />
+      <text class="badge-title">{{item.title}}</text>
+      <text class="badge-desc">{{item.desc}}</text>
+      <view class="badge-track"><view class="badge-fill" style="width: {{item.progress}}%; background: {{item.color}};"></view></view>
+      <text class="badge-progress">{{item.progressText}}</text>
+    </view>
+  </view>
+</view>

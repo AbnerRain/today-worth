@@ -1,0 +1,21 @@
+<view class="page-shell settings-page">
+  <view class="page-header">
+    <view class="page-title-row"><text class="page-title">摸鱼基金</text><text class="version-pill">v{{currentVersion}}</text></view>
+    <text class="page-subtitle">{{pageSubtitle}}</text>
+  </view>
+  <view class="preview comic-card">
+    <view class="preview-cell is-first"><text class="preview-label">时薪</text><text class="preview-value">{{preview.hour}}</text></view>
+    <view class="preview-cell"><text class="preview-label">分钟</text><text class="preview-value">{{preview.minute}}</text></view>
+    <view class="preview-cell"><text class="preview-label">每秒</text><text class="preview-value">{{preview.second}}</text></view>
+  </view>
+  <view class="form-card comic-card">
+    <label class="field"><text class="field-label">摸鱼代号</text><input class="field-input" value="{{profile.alias}}" maxlength="12" data-field="alias" bindinput="onInput" placeholder="例：工位隐士" /></label>
+    <label class="field"><text class="field-label">月薪</text><view class="field-control"><input class="field-input" type="digit" value="{{profile.salary}}" data-field="salary" bindinput="onInput" /><text class="field-unit">元</text></view></label>
+    <label class="field"><text class="field-label">每月工作天数</text><view class="field-control"><input class="field-input" type="digit" value="{{profile.workdays}}" data-field="workdays" bindinput="onInput" /><text class="field-unit">天</text></view></label>
+    <label class="field is-last"><text class="field-label">每天工作时长</text><view class="field-control"><input class="field-input" type="digit" value="{{profile.hours}}" data-field="hours" bindinput="onInput" /><text class="field-unit">小时</text></view></label>
+  </view>
+  <button class="save-button" bindtap="save">保存工资条</button>
+  <button class="feedback-button" bindtap="openFeedback">反馈建议</button>
+  <button class="clear-button" bindtap="clearData">清空本机数据</button>
+  <text class="privacy-note">{{privacyNote}}</text>
+</view>

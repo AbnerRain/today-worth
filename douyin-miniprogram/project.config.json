@@ -1,0 +1,20 @@
+{
+  "description": "摸力全开抖音小程序原生项目",
+  "projectname": "摸力全开-抖音版",
+  "appid": "tt69ce1f73f7b4b3ee01",
+  "compileType": "miniprogram",
+  "miniprogramRoot": "./",
+  "douyinProjectType": "native",
+  "setting": {
+    "urlCheck": true,
+    "es6": true,
+    "postcss": true,
+    "minified": true,
+    "enhance": true,
+    "autoCompile": true
+  },
+  "packOptions": {
+    "ignore": [],
+    "include": []
+  }
+}
